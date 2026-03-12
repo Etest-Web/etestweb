@@ -10,14 +10,14 @@ import { api } from "@/convex/_generated/api";
 const navLinks = [
   { name: "The Journey", href: "#process" },
   { name: "Transformations", href: "#transformations" },
-  { name: "Manifesto", href: "#" },
+  { name: "Learn Graphic Design", href: "#" },
 ];
 
 export default function NavMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { signIn, signOut } = useAuthActions();
-  const user = useQuery((api as { users: { getCurrentUser: unknown } }).users.getCurrentUser);
+  const user = useQuery(api.users.getCurrentUser);
 
   // Close menu on outside click
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function NavMenu() {
               <span className="hidden md:inline-block h-9 w-24 animate-pulse rounded-lg bg-white/10" aria-hidden />
             ) : user ? (
               <div className="hidden md:flex items-center gap-3">
-                <span className="text-sm text-white/80 truncate max-w-[120px]" title={user.email ?? undefined}>
+                <span className="text-sm text-white/80 truncate max-w-30" title={user.email ?? undefined}>
                   {user.name ?? user.email ?? "User"}
                 </span>
                 <button
