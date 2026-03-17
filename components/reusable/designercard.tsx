@@ -1,8 +1,18 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { MapPin, Zap } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import { MapPin, Search, Zap } from "lucide-react";
+import Link from "next/link";
 
 type Sample = { imageUrl: string };
 type Location = { city: string };
@@ -18,18 +28,19 @@ interface Designer {
 
 export function DesignerCard({ designer }: { designer: Designer }) {
   // Format distance for UI
-  const distanceLabel = designer.distance < 5 
-    ? "Very Close" 
-    : `${Math.round(designer.distance)} km away`;
+  const distanceLabel =
+    designer.distance < 5
+      ? "Very Close"
+      : `${Math.round(designer.distance)} km away`;
 
   return (
     <Card className="w-full max-w-md overflow-hidden border-2 hover:border-primary transition-all">
       <CardHeader className="p-4 flex-row items-center gap-4 space-y-0">
         <div className="relative">
-          <img 
-            src={designer.image} 
-            className="h-12 w-12 rounded-full object-cover" 
-            alt={designer.name} 
+          <img
+            src={designer.image}
+            className="h-12 w-12 rounded-full object-cover"
+            alt={designer.name}
           />
           {/* Pulsing Online Indicator */}
           <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white">
@@ -51,10 +62,10 @@ export function DesignerCard({ designer }: { designer: Designer }) {
           <CarouselContent className="-ml-1">
             {designer.samples.map((sample, index) => (
               <CarouselItem key={index} className="pl-1 basis-full">
-                <img 
-                  src={sample.imageUrl} 
-                  className="aspect-video w-full object-cover bg-muted" 
-                  alt="Work sample" 
+                <img
+                  src={sample.imageUrl}
+                  className="aspect-video w-full object-cover bg-muted"
+                  alt="Work sample"
                 />
               </CarouselItem>
             ))}
@@ -64,13 +75,22 @@ export function DesignerCard({ designer }: { designer: Designer }) {
 
       <CardFooter className="p-4 flex justify-between items-center bg-secondary/10">
         <div className="flex flex-col">
-          <span className="text-xs uppercase text-muted-foreground font-semibold">Rating</span>
-          <span className="text-sm font-bold">★ {designer.averageRating ?? "New"}</span>
+          <span className="text-xs uppercase text-muted-foreground font-semibold">
+            Rating
+          </span>
+          <span className="text-sm font-bold">
+            ★ {designer.averageRating ?? "New"}
+          </span>
         </div>
         <Button size="sm" className="gap-2">
           <Zap className="h-4 w-4 fill-current" />
           Hire Now
         </Button>
+        {/* <Link href={"/designers"}>
+          <Button className="gap-2"> 
+            <Search className="h-4 w-4 fill-current" />
+            Meet other designers </Button>
+        </Link> */}
       </CardFooter>
     </Card>
   );
