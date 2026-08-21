@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Upload, X } from "lucide-react";
+import { getErrorMessage } from "@/lib/utils";
 
 interface ImageUploadProps {
   onUploadComplete: (storageId: string, url: string) => void;
@@ -56,9 +57,9 @@ export function ImageUpload({
         const { storageId } = await response.json();
 
         onUploadComplete(storageId, storageId);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Upload error:", err);
-        setError(err?.message ?? "Failed to upload image");
+        setError(getErrorMessage(err, "Failed to upload image"));
       } finally {
         setUploading(false);
       }
@@ -177,8 +178,8 @@ export function ImageUploadModal({
 
       const { storageId } = await response.json();
       setUploadedStorageId(storageId);
-    } catch (err: any) {
-      setError(err?.message ?? "Failed to upload");
+    } catch (err) {
+      setError(getErrorMessage(err, "Failed to upload"));
     } finally {
       setUploading(false);
     }

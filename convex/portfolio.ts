@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import type { QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
@@ -78,13 +79,13 @@ export const removePortfolioItem = mutation({
 /**
  * Helper to resolve imageUrl - handles both external URLs and Convex storage IDs
  */
-async function resolveImageUrl(ctx: any, imageUrl: string): Promise<string> {
+async function resolveImageUrl(ctx: QueryCtx, imageUrl: string): Promise<string> {
   // If it's a regular URL (contains slash), return as-is
   if (imageUrl.includes("/")) {
     return imageUrl;
   }
   // Otherwise treat as Convex storage ID and get URL
-  return await ctx.storage.getUrl(imageUrl);
+  return (await ctx.storage.getUrl(imageUrl)) ?? imageUrl;
 }
 
 /**

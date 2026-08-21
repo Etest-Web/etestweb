@@ -97,7 +97,11 @@ export const updatePresence = mutation({
 
     if (profile.length === 0) return;
 
-    const updateData: any = {
+    const updateData: Partial<{
+      lastSeen: number;
+      isOnline: boolean;
+      location: { lat: number; lng: number; city: string; country: string };
+    }> = {
       lastSeen: Date.now(),
     };
 

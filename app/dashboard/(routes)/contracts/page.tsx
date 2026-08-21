@@ -3,8 +3,10 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { FileText, CheckCircle, AlertTriangle, Flag, Star, DollarSign, User } from "lucide-react";
 import { useState } from "react";
+import { getErrorMessage } from "@/lib/utils";
 
 export default function ContractsPage() {
   const user = useQuery(api.users.getCurrentUser);
@@ -34,9 +36,9 @@ export default function ContractsPage() {
       });
       setReviewingContract(null);
       setReviewData({ rating: 5, comment: "" });
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      alert(err?.message ?? "Failed to submit review");
+      alert(getErrorMessage(err, "Failed to submit review"));
     } finally {
       setSubmittingReview(false);
     }
@@ -215,6 +217,14 @@ export default function ContractsPage() {
   );
 }
 
+type ContractStatus = "active" | "disputed" | "finished";
+
+type ContractWithDetails = Doc<"contracts"> & {
+  jobTitle: string;
+  counterpartyName: string;
+  counterpartyRole: string;
+};
+
 function ContractCard({
   contract,
   onUpdateStatus,
@@ -223,8 +233,8 @@ function ContractCard({
   onReview,
   canReview,
 }: {
-  contract: any;
-  onUpdateStatus: (id: Id<"contracts">, status: any) => void;
+  contract: ContractWithDetails;
+  onUpdateStatus: (id: Id<"contracts">, status: ContractStatus) => void;
   onFinish?: () => void;
   onDispute?: () => void;
   onReview?: () => void;

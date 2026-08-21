@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function ThirdSection() {
   return (
     <section className="py-32 bg-gray-950" id="transformations">
@@ -10,7 +12,7 @@ export default function ThirdSection() {
             The Power of Visual Storytelling
           </h2>
           <p className="mt-4 text-slate-400 max-w-2xl mx-auto">
-            We don't provide services; we deliver evolutions. See how we reshape
+            We don&apos;t provide services; we deliver evolutions. See how we reshape
             reality for our partners.
           </p>
         </div>
@@ -40,7 +42,7 @@ export default function ThirdSection() {
                     The Evolution
                   </span>
                   <p className="text-white">
-                    We introduced "Emotive UX"—a journey that guides users with
+                    We introduced &quot;Emotive UX&quot;&mdash;a journey that guides users with
                     confidence. Conversions surged by 150% as the app became a
                     trusted financial companion.
                   </p>
@@ -51,9 +53,10 @@ export default function ThirdSection() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <div className="aspect-[4/5] rounded-2xl bg-slate-800 flex items-end p-6 overflow-hidden relative">
-                    <img
+                    <Image
                       alt="Before concept"
-                      className="absolute inset-0 w-full h-full object-cover grayscale opacity-40"
+                      fill
+                      className="object-cover grayscale opacity-40"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7xlAFF8NQXWPTz0Dzg08x3EVEVm4laqRb8jgfT7ewagMNobEzMjGnBLnsR2BTLd8-ZrBRN4tPPf5k2TggxGmVyTqOrctjUQ6AFyf_kz1j5d_2YNQkrbiiIZrXkfVaMYvWZgSmAfRakj8MUQKD5kimgJijYSBVivjBPJjLi8ewbJ8EqFOQkB42I_Tcys3oylqHN2lNsN9yBrg06uuzycAJGDNoPb4WJvTAaK4F41BTsiCIYA8BjW1CFtzeP-TkQv47iefs0Z-fjzWl"
                     />
                     <span className="relative z-10 text-white/50 text-xs font-bold">
@@ -63,9 +66,10 @@ export default function ThirdSection() {
                 </div>
                 <div className="pt-12 space-y-4">
                   <div className="aspect-[4/5] rounded-2xl bg-primary/20 flex items-end p-6 overflow-hidden relative border-2 border-primary">
-                    <img
+                    <Image
                       alt="After concept"
-                      className="absolute inset-0 w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7xlAFF8NQXWPTz0Dzg08x3EVEVm4laqRb8jgfT7ewagMNobEzMjGnBLnsR2BTLd8-ZrBRN4tPPf5k2TggxGmVyTqOrctjUQ6AFyf_kz1j5d_2YNQkrbiiIZrXkfVaMYvWZgSmAfRakj8MUQKD5kimgJijYSBVivjBPJjLi8ewbJ8EqFOQkB42I_Tcys3oylqHN2lNsN9yBrg06uuzycAJGDNoPb4WJvTAaK4F41BTsiCIYA8BjW1CFtzeP-TkQv47iefs0Z-fjzWl"
                     />
                     <span className="relative z-10 text-white text-xs font-bold">
@@ -101,8 +105,8 @@ export default function ThirdSection() {
                     The Evolution
                   </span>
                   <p className="text-white">
-                    We crafted a visual language rooted in heritage and "quiet
-                    luxury." The brand now commands a 3x price premium and
+                    We crafted a visual language rooted in heritage and &quot;quiet
+                    luxury.&quot; The brand now commands a 3x price premium and
                     attracts global acclaim.
                   </p>
                 </div>
@@ -110,15 +114,16 @@ export default function ThirdSection() {
             </div>
             <div className="lg:order-1 relative">
               <div className="relative aspect-video rounded-3xl overflow-hidden border border-white/10">
-                <img
+                <Image
                   alt="Brand transformation"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7xlAFF8NQXWPTz0Dzg08x3EVEVm4laqRb8jgfT7ewagMNobEzMjGnBLnsR2BTLd8-ZrBRN4tPPf5k2TggxGmVyTqOrctjUQ6AFyf_kz1j5d_2YNQkrbiiIZrXkfVaMYvWZgSmAfRakj8MUQKD5kimgJijYSBVivjBPJjLi8ewbJ8EqFOQkB42I_Tcys3oylqHN2lNsN9yBrg06uuzycAJGDNoPb4WJvTAaK4F41BTsiCIYA8BjW1CFtzeP-TkQv47iefs0Z-fjzWl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
                   <div className="text-white italic">
-                    "They didn't just redesign our logo; they redefined who we
-                    are." — CEO
+                    &quot;They didn&apos;t just redesign our logo; they redefined who we
+                    are.&quot; &mdash; CEO
                   </div>
                 </div>
               </div>

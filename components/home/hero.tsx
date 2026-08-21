@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DesignerCard } from "@/components/reusable/designercard";
 
 export default function Hero() {
@@ -45,7 +45,7 @@ export default function Hero() {
           </span>
         </h1>
         <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-          We don't just build websites; we architect legacies. Elevate your
+          We don&apos;t just build websites; we architect legacies. Elevate your
           narrative with design that speaks louder than words.
         </p>
         <div className="flex flex-wrap justify-center gap-6">

@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { User, MapPin, Briefcase, Plus, X, Upload, Link as LinkIcon, Trash2, Grid3X3 } from "lucide-react";
 import Image from "next/image";
 import { ImageUploadModal } from "@/components/reusable/ImageUpload";
+import { getErrorMessage } from "@/lib/utils";
 
 const SKILL_CATEGORIES = [
   "UI/UX Design",
@@ -108,9 +110,9 @@ export default function ProfilePage() {
         lng: location.lng,
       });
       setIsEditing(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err?.message ?? "Failed to save profile");
+      setError(getErrorMessage(err, "Failed to save profile"));
     } finally {
       setSaving(false);
     }
@@ -421,7 +423,7 @@ export default function ProfilePage() {
 
           {myPortfolio && myPortfolio.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {myPortfolio.map((item: any) => (
+              {myPortfolio.map((item: Doc<"portfolioItems">) => (
                 <div
                   key={item._id}
                   className="group relative aspect-square rounded-xl overflow-hidden bg-[#1a1610] border border-white/10"

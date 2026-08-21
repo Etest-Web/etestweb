@@ -2,6 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { FileText, CheckCircle, XCircle, Clock, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
@@ -82,7 +83,13 @@ export default function MyProposalsPage() {
   );
 }
 
-function ProposalCard({ proposal }: { proposal: any }) {
+type ProposalWithJob = Doc<"proposals"> & {
+  jobTitle: string;
+  jobStatus: string;
+  clientName: string;
+};
+
+function ProposalCard({ proposal }: { proposal: ProposalWithJob }) {
   const statusConfig = {
     pending: {
       bg: "bg-yellow-400/20",

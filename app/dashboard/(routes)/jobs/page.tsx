@@ -3,6 +3,7 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { Plus, MessageSquare, CheckCircle, XCircle, Trash2, Briefcase, Clock, DollarSign } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -83,7 +84,7 @@ function JobCard({
   onViewProposals,
   onDelete,
 }: {
-  job: any;
+  job: Doc<"jobs">;
   onViewProposals: () => void;
   onDelete: () => void;
 }) {

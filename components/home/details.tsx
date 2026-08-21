@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Details() {
   return (
     <section className="py-32 relative bg-background-dark" id="process">
@@ -21,15 +23,16 @@ export default function Details() {
               <p className="text-slate-400 text-lg leading-relaxed">
                 Every masterpiece begins with a spark. We create the opportunity for you to find 
                 that spark,  to find the unique story that needs to be
-                told. It's not a consultation; it's an awakening. Awakening creativity.
+                told. It&apos;s not a consultation; it&apos;s an awakening. Awakening creativity.
               </p>
             </div>
             <div className="md:w-1/2">
               <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10 group">
                 <div className="absolute inset-0 bg-primary/20 mix-blend-overlay group-hover:opacity-0 transition-opacity"></div>
-                <img
+                <Image
                   alt="Abstract spark concept"
-                  className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
+                  fill
+                  className="object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
                   src="https://bw0vyo4i33.ufs.sh/f/ELXzaNpHGwv9YkBUJzqc3nwxryWvUVthRK6AbE2MZduzICc7"
                 />
                 
@@ -47,15 +50,16 @@ export default function Details() {
               <p className="text-slate-400 text-lg leading-relaxed">
                 Our artisans transform raw vision into refined digital gold. We
                 meticulously craft every pixel and interaction to ensure your
-                brand's essence is felt in every touchpoint.
+                brand&apos;s essence is felt in every touchpoint.
               </p>
             </div>
             <div className="md:w-1/2">
               <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10 group">
                 <div className="absolute inset-0 bg-blue-500/10 mix-blend-overlay group-hover:opacity-0 transition-opacity"></div>
-                <img
+                <Image
                   alt="Metaphorical design process"
-                  className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
+                  fill
+                  className="object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
                   src="https://bw0vyo4i33.ufs.sh/f/ELXzaNpHGwv9RjLCsq5W96TEPnJtmYbZHVqLzNsdQAixvF7o"
                 />
                 
@@ -77,9 +81,10 @@ export default function Details() {
             <div className="md:w-1/2">
               <div className="relative aspect-square rounded-3xl overflow-hidden border border-white/10 group">
                 <div className="absolute inset-0 bg-orange-500/10 mix-blend-overlay group-hover:opacity-0 transition-opacity"></div>
-                <img
+                <Image
                   alt="Abstract launch visual"
-                  className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
+                  fill
+                  className="object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
                   src="https://bw0vyo4i33.ufs.sh/f/ELXzaNpHGwv9kHVNrntJeq90HAuryBz3mRxwFZsc2df4ojiV"
                 />
                 

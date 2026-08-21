@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import type { Doc } from "@/convex/_generated/dataModel"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Search, SlidersHorizontal, MapPin, Star, Users } from "lucide-react"
@@ -140,7 +141,12 @@ const Designers = () => {
   )
 }
 
-function DesignerCard({ designer }: { designer: any }) {
+type DesignerWithSamples = Pick<
+  Doc<"profiles">,
+  "_id" | "name" | "bio" | "location" | "skills" | "averageRating" | "isOnline"
+>;
+
+function DesignerCard({ designer }: { designer: DesignerWithSamples }) {
   const portfolioItems = useQuery(api.portfolio.getDesignerPortfolio, {
     designerId: designer._id,
   })

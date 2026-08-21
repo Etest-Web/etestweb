@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { Send, MessageSquare, ArrowLeft, User, Search, Briefcase } from "lucide-react";
 
 export default function MessagesPage() {
@@ -184,8 +185,8 @@ function ChatView({
   };
 
   // Group messages by date
-  const groupMessagesByDate = (msgs: any[]) => {
-    const groups: { date: string; messages: any[] }[] = [];
+  const groupMessagesByDate = (msgs: Doc<"messages">[]) => {
+    const groups: { date: string; messages: Doc<"messages">[] }[] = [];
     let currentDate = "";
 
     msgs.forEach((msg) => {

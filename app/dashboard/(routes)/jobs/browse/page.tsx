@@ -3,9 +3,10 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { Search, Filter, Briefcase, MapPin, DollarSign, Clock } from "lucide-react";
 import Link from "next/link";
+import { getErrorMessage } from "@/lib/utils";
 
 const CATEGORIES = [
   "All",
@@ -21,6 +22,8 @@ const CATEGORIES = [
   "Digital Marketing",
 ];
 
+type AvailableJob = Doc<"jobs"> & { clientName: string; clientRating?: number };
+
 export default function BrowseJobsPage() {
   const user = useQuery(api.users.getCurrentUser);
   const allJobs = useQuery(api.jobs.getAvailableJobs, {});
@@ -28,7 +31,7 @@ export default function BrowseJobsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [selectedJob, setSelectedJob] = useState<AvailableJob | null>(null);
   const [proposalData, setProposalData] = useState({ amount: "", coverLetter: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,9 +66,9 @@ export default function BrowseJobsPage() {
       });
       setSelectedJob(null);
       setProposalData({ amount: "", coverLetter: "" });
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err?.message ?? "Failed to submit proposal");
+      setError(getErrorMessage(err, "Failed to submit proposal"));
       setSubmitting(false);
     }
   };
@@ -256,7 +259,7 @@ export default function BrowseJobsPage() {
   );
 }
 
-function JobCard({ job, onApply }: { job: any; onApply: () => void }) {
+function JobCard({ job, onApply }: { job: AvailableJob; onApply: () => void }) {
   return (
     <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 hover:border-primary/30 transition-colors">
       <div className="flex items-start justify-between">

@@ -3,6 +3,7 @@
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import type { Doc } from "@/convex/_generated/dataModel"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, MapPin, Star, Briefcase, MessageSquare, ExternalLink } from "lucide-react"
@@ -34,7 +35,7 @@ export default function DesignerDetailPage() {
       <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Designer not found</h1>
-          <p className="text-white/60 mb-4">This profile may have been removed or doesn't exist.</p>
+          <p className="text-white/60 mb-4">This profile may have been removed or doesn&apos;t exist.</p>
           <Link
             href="/designers"
             className="inline-flex items-center gap-2 h-10 px-6 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors"
@@ -159,7 +160,7 @@ export default function DesignerDetailPage() {
 
             {portfolioItems && portfolioItems.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {portfolioItems.map((item: any) => (
+                {portfolioItems.map((item: Doc<"portfolioItems">) => (
                   <button
                     key={item._id}
                     onClick={() => setSelectedImage(item.imageUrl)}
@@ -183,7 +184,7 @@ export default function DesignerDetailPage() {
                 <Briefcase className="w-16 h-16 text-white/20 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">No portfolio items yet</h3>
                 <p className="text-white/60">
-                  This designer hasn't added any portfolio items yet.
+                  This designer hasn&apos;t added any portfolio items yet.
                 </p>
               </div>
             )}

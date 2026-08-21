@@ -56,7 +56,7 @@ export default function DashboardOverview() {
           Welcome back, {user?.name ?? "User"}!
         </h1>
         <p className="text-white/60">
-          Here's what's happening with your {user?.role === "client" ? "jobs" : "projects"} today.
+          Here&apos;s what&apos;s happening with your {user?.role === "client" ? "jobs" : "projects"} today.
         </p>
       </div>
 
@@ -95,7 +95,7 @@ export default function DashboardOverview() {
           </h2>
           {recentActivity && recentActivity.length > 0 ? (
             <div className="space-y-3">
-              {recentActivity.map((item: any) => (
+              {recentActivity.map((item) => (
                 <div
                   key={item._id}
                   className="p-4 bg-white/5 rounded-lg border border-white/10"
@@ -113,7 +113,7 @@ export default function DashboardOverview() {
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        item.status === "open" || item.status === "active"
+                        item.status === "open"
                           ? "bg-green-400/20 text-green-400"
                           : item.status === "pending"
                           ? "bg-yellow-400/20 text-yellow-400"

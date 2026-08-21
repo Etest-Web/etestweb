@@ -6,6 +6,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ArrowLeft, Briefcase, DollarSign, Tag, FileText } from "lucide-react";
 import Link from "next/link";
+import { getErrorMessage } from "@/lib/utils";
 
 const CATEGORIES = [
   "UI/UX Design",
@@ -54,9 +55,9 @@ export default function PostJobPage() {
         category: formData.category,
       });
       router.push("/dashboard/jobs");
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err?.message ?? "Failed to post job");
+      setError(getErrorMessage(err, "Failed to post job"));
       setLoading(false);
     }
   };
@@ -154,7 +155,7 @@ export default function PostJobPage() {
             required
           />
           <p className="mt-2 text-sm text-white/60">
-            The more details you provide, the better proposals you'll receive
+            The more details you provide, the better proposals you&apos;ll receive
           </p>
         </div>
 

@@ -32,7 +32,7 @@ export default function PasswordResetPage() {
                 </div>
                 <h1 className="text-white tracking-tight text-3xl font-bold leading-tight mb-3 font-display">Reset your password</h1>
                 <p className="text-white/70 text-base font-normal leading-relaxed">
-                  No worries! Enter the email address associated with your account and we'll send you a recovery link.
+                  No worries! Enter the email address associated with your account and we&apos;ll send you a recovery link.
                 </p>
               </div>
               <form className="space-y-6">
