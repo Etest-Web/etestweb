@@ -53,6 +53,8 @@
   --color-chart-1: var(--chart-1);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-background-dark: var(--background-dark);
+  --color-background-light: var(--background-light);
 }
 
 /* ================================
@@ -60,6 +62,8 @@
 ================================ */
 :root {
   --radius: 0.625rem;
+  --background-dark: #231e0f; /* EliteDesign Dark */
+  --background-light: #f8f8f5; /* lime-cream */
   /* Base */ /* lime-cream */ /* near-black */
   /* Surfaces */
   --card: oklch(1 0 0);
@@ -156,5 +160,56 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ================================
+   Home Page Utilities
+================================ */
+.hero-gradient {
+  background: linear-gradient(
+    to bottom,
+    rgba(35, 30, 15, 0.55) 0%,
+    rgba(35, 30, 15, 0.72) 55%,
+    #231e0f 100%
+  );
+}
+
+.narrative-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(250, 198, 56, 0.35) 15%,
+    rgba(250, 198, 56, 0.35) 85%,
+    transparent
+  );
+}
+
+.narrative-line::before {
+  content: "";
+  position: absolute;
+  inset: 0 -3px;
+  background: radial-gradient(
+    circle at center,
+    rgba(250, 198, 56, 0.25),
+    transparent 70%
+  );
+  filter: blur(4px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -1,5 +1,3 @@
-import Rocket from 'lucide'
-
 export default function Details() {
   return (
     <section className="py-32 relative bg-background-dark" id="process">

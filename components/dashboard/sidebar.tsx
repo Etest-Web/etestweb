@@ -11,7 +11,6 @@ import {
   Users,
   Settings,
   UserCircle,
-  LogOut,
   Menu,
   X,
 } from "lucide-react";
@@ -39,14 +38,12 @@ const designerNavItems = [
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
-export const Sidebar = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+const SidebarContent = () => {
   const user = useUser();
   const pathname = usePathname();
-
   const navItems = user?.isSignedIn === true ? clientNavItems : designerNavItems;
 
-  const SidebarContent = () => (
+  return (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
@@ -111,6 +108,10 @@ export const Sidebar = () => {
       </div> */}
     </div>
   );
+};
+
+export const Sidebar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <>

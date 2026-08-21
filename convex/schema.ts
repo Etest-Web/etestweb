@@ -87,7 +87,7 @@ export default defineSchema({
     budgetRange: v.string(),
     status: v.union(v.literal("open"), v.literal("in-progress"), v.literal("completed")),
     category: v.string(),
-  }).index("by_status", ["status"]),
+  }).index("by_status", ["status"]).index("by_clientId", ["clientId"]),
 
   // Bids/Proposals (Designers applying to Jobs)
   proposals: defineTable({

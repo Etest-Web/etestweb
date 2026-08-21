@@ -72,7 +72,13 @@ export const updateJob = mutation({
       throw new Error("Unauthorized to update this job");
     }
 
-    const updateData: any = {};
+    const updateData: Partial<{
+      title: string;
+      description: string;
+      budgetRange: string;
+      category: string;
+      status: "open" | "in-progress" | "completed";
+    }> = {};
     if (args.title) updateData.title = args.title;
     if (args.description) updateData.description = args.description;
     if (args.budgetRange) updateData.budgetRange = args.budgetRange;
@@ -174,8 +180,7 @@ export const getMyJobs = query({
 
     const jobs = await ctx.db
       .query("jobs")
-      .withIndex("by_status", (q) => q.eq("status", "open"))
-      .filter((q) => q.eq(q.field("clientId"), profile[0]._id))
+      .withIndex("by_clientId", (q) => q.eq("clientId", profile[0]._id))
       .collect();
 
     return jobs;
