@@ -8,10 +8,13 @@
  * @module
  */
 
-import type * as auth from "../auth.js";
-import type * as http from "../http.js";
-import type * as resendotp from "../resendotp.js";
-import type * as resetpassword from "../resetpassword.js";
+import type * as contracts from "../contracts.js";
+import type * as jobs from "../jobs.js";
+import type * as messages from "../messages.js";
+import type * as portfolio from "../portfolio.js";
+import type * as profiles from "../profiles.js";
+import type * as proposals from "../proposals.js";
+import type * as reviews from "../reviews.js";
 import type * as users from "../users.js";
 import type * as utils_geo from "../utils/geo.js";
 
@@ -22,10 +25,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  auth: typeof auth;
-  http: typeof http;
-  resendotp: typeof resendotp;
-  resetpassword: typeof resetpassword;
+  contracts: typeof contracts;
+  jobs: typeof jobs;
+  messages: typeof messages;
+  portfolio: typeof portfolio;
+  profiles: typeof profiles;
+  proposals: typeof proposals;
+  reviews: typeof reviews;
   users: typeof users;
   "utils/geo": typeof utils_geo;
 }>;

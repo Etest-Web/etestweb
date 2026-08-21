@@ -1,5 +1,5 @@
 import React from "react";
-import { LogoIcon } from "@/app/(auth)/signin/page";
+import { LogoIcon } from "@/app/(auth)/signin/[[...rest]]/page";
 
 /**
  * Footer component used across the application.

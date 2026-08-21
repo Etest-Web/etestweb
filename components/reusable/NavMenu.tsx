@@ -1,23 +1,19 @@
 "use client";
 
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useQuery } from "convex/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { api } from "@/convex/_generated/api";
+import {  Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 
 const navLinks = [
   { name: "The Journey", href: "#process" },
-  { name: "Transformations", href: "#transformations" },
+  { name: "Designers", href: "/designers" },
   { name: "Learn Graphic Design", href: "#" },
 ];
 
 export default function NavMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { signIn, signOut } = useAuthActions();
-  const user = useQuery(api.users.getCurrentUser);
 
   // Close menu on outside click
   useEffect(() => {
@@ -70,29 +66,17 @@ export default function NavMenu() {
 
           {/* Desktop CTA + Auth */}
           <div className="flex items-center gap-4">
-            {user === undefined ? (
-              <span className="hidden md:inline-block h-9 w-24 animate-pulse rounded-lg bg-white/10" aria-hidden />
-            ) : user ? (
-              <div className="hidden md:flex items-center gap-3">
-                <span className="text-sm text-white/80 truncate max-w-30" title={user.email ?? undefined}>
-                  {user.name ?? user.email ?? "User"}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => void signOut()}
-                  className="bg-white/10 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  Sign out
+           <Show when="signed-out">
+              <SignInButton />
+              <SignUpButton>
+                <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                  Sign Up
                 </button>
-              </div>
-            ) : (
-              <Link
-                href="/signin"
-                className="hidden md:block bg-primary text-background-dark text-sm font-bold px-6 py-2.5 rounded-lg shadow-lg shadow-primary/20 hover:scale-105 transition-all"
-              >
-                Sign in
-              </Link>
-            )}
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
 
             {/* Mobile Hamburger */}
             <button
@@ -147,29 +131,17 @@ export default function NavMenu() {
               ))}
             </ul>
 
-            {user === undefined ? null : user ? (
-              <>
-                <p className="text-sm text-white/80 truncate">{user.name ?? user.email ?? "User"}</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    void signOut();
-                  }}
-                  className="w-full bg-white/10 text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-white/20"
-                >
-                  Sign out
+            <Show when="signed-out">
+              <SignInButton />
+              <SignUpButton>
+                <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                  Sign Up
                 </button>
-              </>
-            ) : (
-              <Link
-                href="/signin"
-                onClick={() => setOpen(false)}
-                className="block w-full text-center bg-primary text-background-dark text-sm font-bold px-6 py-2.5 rounded-lg shadow-lg shadow-primary/20"
-              >
-                Sign in
-              </Link>
-            )}
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
           </div>
         </div>
       )}

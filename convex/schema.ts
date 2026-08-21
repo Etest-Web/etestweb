@@ -1,15 +1,37 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
-  // Integrate Convex Auth tables (users, sessions, accounts)
-  ...authTables,
+  users: defineTable({
+    clerkId: v.string(),
+    email: v.optional(v.string()),
+    name: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    role: v.union(
+      v.literal("designer"),
+      v.literal("customer"),
+      v.literal("admin")
+    ),
+    createdAt: v.number(),
+  }).index("by_clerk_id", ["clerkId"]),
+
+  
+
+  // Messages for communication between clients and designers
+  messages: defineTable({
+    contractId: v.id("contracts"),
+    senderId: v.id("profiles"),
+    content: v.string(),
+    createdAt: v.number(),
+    isRead: v.boolean(),
+  })
+    .index("by_contract", ["contractId"])
+    .index("by_sender", ["senderId"]),
 
   // Separate profile table that references the auth `users` doc.
   // This avoids redefining the built-in `users` table provided by authTables.
   profiles: defineTable({
-    userId: v.id("users"),
+    userId: v.string(),
     name: v.optional(v.string()),
     email: v.optional(v.string()),
     image: v.optional(v.string()), // Profile pic

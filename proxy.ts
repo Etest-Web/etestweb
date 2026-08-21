@@ -1,24 +1,25 @@
-import {
-  convexAuthNextjsMiddleware,
-  createRouteMatcher,
-  nextjsMiddlewareRedirect,
-} from "@convex-dev/auth/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isAuthPage = createRouteMatcher(["/signin", "/signup", "/passwordreset"]);
-// Add paths that require auth, e.g. ["/dashboard", "/dashboard(.*)"]
-const isProtectedRoute = createRouteMatcher(["/dashboard", "/dashboard(.*)"]);
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/designers",
+  "/signin(.*)",
+  "/signup(.*)",
+  "/passwordreset(.*)",
+  "/api(.*)",
+]);
 
-export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
-  // Redirect authenticated users away from auth pages (sign-in, sign-up, password reset)
-  if (isAuthPage(request) && (await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/");
-  }
-  // Redirect unauthenticated users from protected routes to sign-in
-  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/signin");
+export default clerkMiddleware(async (auth, req) => {
+  if (!isPublicRoute(req)) {
+    await auth.protect();
   }
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|eot|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };

@@ -1,24 +1,21 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
 import NavMenu from "@/components/reusable/NavMenu";
 import Footer from "@/components/reusable/Footer";
 
-const AUTH_PATHS = ["/signin", "/signup", "/passwordreset"];
-
-export default function ConditionalLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ConditionalLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isAuthPage = AUTH_PATHS.some((path) => pathname === path || pathname?.startsWith(`${path}/`));
+
+  const isAuthPage = pathname.startsWith("/signin") || pathname.startsWith("/signup") || pathname.startsWith("/passwordreset");
+  const isDashboardPage = pathname.startsWith("/dashboard");
 
   return (
-    <>
-      {!isAuthPage && <NavMenu />}
-      {children}
-      {!isAuthPage && <Footer />}
-    </>
+    <div className="flex min-h-screen flex-col">
+      {!isAuthPage && !isDashboardPage && <NavMenu />}
+      <main className="flex-1">{children}</main>
+      {!isAuthPage && !isDashboardPage && <Footer />}
+    </div>
   );
 }

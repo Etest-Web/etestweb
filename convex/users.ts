@@ -1,8 +1,6 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "./_generated/server";
 import { v } from "convex/values";
 import { calculateDistance } from "./utils/geo";
-import { mutation } from "./_generated/server";
 
 /**
  * Returns the current user document if authenticated, null otherwise.
@@ -11,43 +9,70 @@ import { mutation } from "./_generated/server";
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (userId === null) {
+    const identity = await ctx.auth.getUserIdentity();
+    const userId = identity?.subject;
+    if (!userId) {
       return null;
     }
-    const authUser = await ctx.db.get(userId);
     const profiles = await ctx.db
       .query("profiles")
       .withIndex("by_userId", (q) => q.eq("userId", userId))
       .take(1);
 
     const profile = profiles[0] ?? null;
-    // For backward compatibility return the profile document when available,
-    // otherwise return the auth user document.
-    return profile ?? authUser;
+    return profile;
   },
 });
 
-// convex/users.ts
-export const updatePresence = mutation({
-  handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) return;
-    // Patch the profile associated with this auth user (if present)
-    const profiles = await ctx.db
+/**
+ * Get all designers with their portfolio preview
+ */
+export const getAllDesigners = query({
+  args: {
+    search: v.optional(v.string()),
+    specialty: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const allDesigners = await ctx.db
       .query("profiles")
-      .withIndex("by_userId", (q) => q.eq("userId", userId))
-      .take(1);
+      .withIndex("by_online_and_role", (q) => q.eq("isOnline", true).eq("role", "designer"))
+      .collect();
 
-    if (profiles.length) {
-      await ctx.db.patch(profiles[0]._id, {
-        isOnline: true,
-        lastSeen: Date.now(),
-      });
+    let filtered = allDesigners;
+
+    if (args.search) {
+      const searchLower = args.search.toLowerCase();
+      filtered = filtered.filter(
+        (d) =>
+          d.name?.toLowerCase().includes(searchLower) ||
+          d.location.city.toLowerCase().includes(searchLower) ||
+          d.skills.some((s) => s.toLowerCase().includes(searchLower))
+      );
     }
+
+    if (args.specialty) {
+      filtered = filtered.filter((d) => d.skills.includes(args.specialty!));
+    }
+
+    // Enrich with portfolio samples
+    const designersWithSamples = await Promise.all(
+      filtered.map(async (designer) => {
+        const samples = await ctx.db
+          .query("portfolioItems")
+          .withIndex("by_designer_category", (q) => q.eq("designerId", designer._id))
+          .take(3);
+
+        return {
+          ...designer,
+          samples,
+          distance: 0, // Placeholder for compatibility
+        };
+      })
+    );
+
+    return designersWithSamples;
   },
 });
-
 
 export const getDesignersByDemand = query({
   args: { 
