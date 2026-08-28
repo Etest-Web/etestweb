@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { createNotification } from "./notifications";
 
 /**
  * Create a contract from an accepted proposal
@@ -45,6 +46,17 @@ export const createContract = mutation({
       totalPrice: args.totalPrice,
     });
 
+    // Notify the designer that a contract was started
+    await createNotification(ctx, {
+      recipientId: proposal.designerId,
+      type: "contract_started",
+      title: "Contract started",
+      body: `A contract was started for "${job.title}".`,
+      jobId: job._id,
+      contractId,
+      link: "/dashboard/contracts",
+    });
+
     return contractId;
   },
 });
@@ -84,9 +96,35 @@ export const updateContractStatus = mutation({
 
     await ctx.db.patch(args.contractId, { status: args.status });
 
+    const job = await ctx.db.get(contract.jobId);
+    const counterpartyId =
+      profile[0]._id === contract.clientId
+        ? contract.designerId
+        : contract.clientId;
+
     // If contract is finished, update job status
     if (args.status === "finished") {
       await ctx.db.patch(contract.jobId, { status: "completed" });
+
+      await createNotification(ctx, {
+        recipientId: counterpartyId,
+        type: "contract_completed",
+        title: "Contract completed",
+        body: `The contract for "${job?.title ?? "your job"}" was marked complete.`,
+        jobId: contract.jobId,
+        contractId: args.contractId,
+        link: "/dashboard/contracts",
+      });
+    } else if (args.status === "disputed") {
+      await createNotification(ctx, {
+        recipientId: counterpartyId,
+        type: "contract_disputed",
+        title: "Contract disputed",
+        body: `The contract for "${job?.title ?? "your job"}" was flagged as disputed.`,
+        jobId: contract.jobId,
+        contractId: args.contractId,
+        link: "/dashboard/contracts",
+      });
     }
   },
 });

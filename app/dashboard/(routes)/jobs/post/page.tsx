@@ -7,6 +7,8 @@ import { api } from "@/convex/_generated/api";
 import { ArrowLeft, Briefcase, DollarSign, Tag, FileText } from "lucide-react";
 import Link from "next/link";
 import { getErrorMessage } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
+import { Spinner } from "@/components/ui/spinner";
 
 const CATEGORIES = [
   "UI/UX Design",
@@ -41,6 +43,7 @@ export default function PostJobPage() {
     category: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +57,7 @@ export default function PostJobPage() {
         budgetRange: formData.budgetRange,
         category: formData.category,
       });
+      toast.success("Job posted", "Designers can now discover and apply to your project.");
       router.push("/dashboard/jobs");
     } catch (err) {
       console.error(err);
@@ -171,8 +175,9 @@ export default function PostJobPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
+            {loading && <Spinner className="w-5 h-5" />}
             {loading ? "Posting Job..." : "Post Job"}
           </button>
           <Link

@@ -51,6 +51,19 @@ export default defineSchema({
     skills: v.array(v.string()), // e.g., ["youtube-thumbnail", "logo-design"]
     bio: v.string(),
     averageRating: v.optional(v.number()),
+
+    // --- USER PREFERENCES ---
+    preferences: v.optional(
+      v.object({
+        emailNotifications: v.optional(v.boolean()),
+        proposalAlerts: v.optional(v.boolean()),
+        contractUpdates: v.optional(v.boolean()),
+        marketingEmails: v.optional(v.boolean()),
+        profileVisible: v.optional(v.boolean()),
+        showOnlineStatus: v.optional(v.boolean()),
+        showLocation: v.optional(v.boolean()),
+      })
+    ),
   })
     .index("by_online_and_role", ["isOnline", "role"])
     .index("by_country", ["location.country"])
@@ -113,4 +126,40 @@ export default defineSchema({
     ),
     totalPrice: v.number(),
   }).index("by_client", ["clientId"]).index("by_designer", ["designerId"]),
+
+  // Reviews left on a finished contract, about the counterparty
+  reviews: defineTable({
+    contractId: v.id("contracts"),
+    reviewerId: v.id("profiles"),
+    reviewedId: v.id("profiles"),
+    rating: v.number(), // 1-5
+    comment: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_reviewed", ["reviewedId"])
+    .index("by_contract", ["contractId"])
+    .index("by_contract_and_reviewer", ["contractId", "reviewerId"]),
+
+  // In-app notifications for platform events (proposals, contracts, reviews)
+  notifications: defineTable({
+    recipientId: v.id("profiles"),
+    type: v.union(
+      v.literal("proposal_received"),
+      v.literal("proposal_accepted"),
+      v.literal("proposal_rejected"),
+      v.literal("contract_started"),
+      v.literal("contract_completed"),
+      v.literal("contract_disputed"),
+      v.literal("review_received")
+    ),
+    title: v.string(),
+    body: v.string(),
+    jobId: v.optional(v.id("jobs")),
+    contractId: v.optional(v.id("contracts")),
+    link: v.optional(v.string()),
+    isRead: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_recipient", ["recipientId"])
+    .index("by_recipient_read", ["recipientId", "isRead"]),
 });

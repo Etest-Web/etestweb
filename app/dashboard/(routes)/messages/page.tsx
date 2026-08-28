@@ -5,16 +5,42 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { Send, MessageSquare, ArrowLeft, User, Search, Briefcase } from "lucide-react";
+import { Send, MessageSquare, ArrowLeft, Search, Briefcase } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
+
+function ConversationRowSkeleton() {
+  return (
+    <div className="p-4 animate-pulse">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-full bg-white/[0.07]" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-28 rounded bg-white/[0.07]" />
+          <div className="h-3 w-40 rounded bg-white/[0.07]" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function MessagesPage() {
   const user = useQuery(api.users.getCurrentUser);
   const myContracts = useQuery(api.contracts.getMyContracts);
   const unreadCount = useQuery(api.messages.getUnreadCount);
   const [selectedContractId, setSelectedContractId] = useState<Id<"contracts"> | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Get the selected contract object for passing to ChatView
   const selectedContract = myContracts?.find((c) => c._id === selectedContractId) ?? null;
+
+  const filteredContracts = myContracts?.filter((c) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      c.counterpartyName?.toLowerCase().includes(q) ||
+      c.jobTitle?.toLowerCase().includes(q) ||
+      c.status?.toLowerCase().includes(q)
+    );
+  });
 
   if (!user) {
     return (
@@ -43,6 +69,8 @@ export default function MessagesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search conversations..."
                 className="w-full h-10 pl-10 pr-4 rounded-lg border border-white/10 bg-white/5 text-white text-sm placeholder:text-white/30 focus:border-primary focus:outline-none"
               />
@@ -50,9 +78,15 @@ export default function MessagesPage() {
           </div>
 
           <div className="flex-1 overflow-y-auto">
-            {myContracts && myContracts.length > 0 ? (
+            {myContracts === undefined ? (
+              <div className="divide-y divide-white/5" aria-hidden>
+                {[0, 1, 2].map((i) => (
+                  <ConversationRowSkeleton key={i} />
+                ))}
+              </div>
+            ) : filteredContracts && filteredContracts.length > 0 ? (
               <div className="divide-y divide-white/5">
-                {myContracts.map((contract) => (
+                {filteredContracts.map((contract) => (
                   <button
                     key={contract._id}
                     onClick={() => setSelectedContractId(contract._id)}
@@ -94,6 +128,12 @@ export default function MessagesPage() {
                     </div>
                   </button>
                 ))}
+              </div>
+            ) : searchQuery.trim() ? (
+              <div className="p-8 text-center text-white/60">
+                <Search className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                <p className="font-medium">No conversations match &quot;{searchQuery.trim()}&quot;</p>
+                <p className="text-sm mt-2">Try a different name, job title, or status.</p>
               </div>
             ) : (
               <div className="p-8 text-center text-white/60">
@@ -156,6 +196,7 @@ function ChatView({
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const toast = useToast();
 
   // Mark messages as read when viewing
   useEffect(() => {
@@ -179,6 +220,7 @@ function ChatView({
       setNewMessage("");
     } catch (err) {
       console.error(err);
+      toast.error("Message not sent", "Please check your connection and try again.");
     } finally {
       setSending(false);
     }
@@ -231,7 +273,19 @@ function ChatView({
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {messageGroups.length > 0 ? (
+        {messages === undefined ? (
+          <div className="space-y-3 animate-pulse" aria-hidden>
+            <div className="flex justify-start">
+              <div className="h-12 w-40 rounded-2xl bg-white/[0.07] rounded-bl-md" />
+            </div>
+            <div className="flex justify-end">
+              <div className="h-10 w-32 rounded-2xl bg-primary/20 rounded-br-md" />
+            </div>
+            <div className="flex justify-start">
+              <div className="h-14 w-52 rounded-2xl bg-white/[0.07] rounded-bl-md" />
+            </div>
+          </div>
+        ) : messageGroups.length > 0 ? (
           messageGroups.map((group, groupIndex) => (
             <div key={groupIndex}>
               {/* Date separator */}

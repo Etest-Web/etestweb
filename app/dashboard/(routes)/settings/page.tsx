@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useClerk } from "@clerk/nextjs";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Bell, Shield, Palette, Globe, Trash2, LogOut } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 
 export default function SettingsPage() {
   const { signOut } = useClerk();
@@ -86,41 +89,76 @@ export default function SettingsPage() {
   );
 }
 
+type PreferenceKey =
+  | "emailNotifications"
+  | "proposalAlerts"
+  | "contractUpdates"
+  | "marketingEmails"
+  | "profileVisible"
+  | "showOnlineStatus"
+  | "showLocation";
+
 function NotificationsTab() {
-  const [settings, setSettings] = useState({
-    emailNotifications: true,
-    proposalAlerts: true,
-    contractUpdates: true,
-    marketingEmails: false,
-  });
+  const user = useQuery(api.users.getCurrentUser);
+  const profile = useQuery(api.profiles.getCurrentUserProfile);
+  const updatePreferences = useMutation(api.profiles.updatePreferences);
+  const toast = useToast();
+  const prefs = profile?.preferences ?? {};
+
+  const toggle = async (key: PreferenceKey, current: boolean) => {
+    try {
+      await updatePreferences({ preferences: { [key]: !current } });
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not update preference", "Please try again.");
+    }
+  };
+
+  if (profile === undefined) {
+    return (
+      <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 min-h-[200px] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const settings = {
+    emailNotifications: prefs.emailNotifications ?? true,
+    proposalAlerts: prefs.proposalAlerts ?? true,
+    contractUpdates: prefs.contractUpdates ?? true,
+    marketingEmails: prefs.marketingEmails ?? false,
+  };
 
   return (
     <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-      <h2 className="text-xl font-bold text-white mb-6">Notification Preferences</h2>
+      <h2 className="text-xl font-bold text-white mb-1">Notification Preferences</h2>
+      <p className="text-sm text-white/60 mb-6">
+        {user && profile ? `Saved for ${profile.name ?? "your account"}` : "Your preferences are saved to your profile"}
+      </p>
       <div className="space-y-4">
         <ToggleSetting
           label="Email Notifications"
           description="Receive email updates about your account activity"
           enabled={settings.emailNotifications}
-          onChange={() => setSettings({ ...settings, emailNotifications: !settings.emailNotifications })}
+          onChange={() => toggle("emailNotifications", settings.emailNotifications)}
         />
         <ToggleSetting
           label="Proposal Alerts"
           description="Get notified when someone submits a proposal to your job"
           enabled={settings.proposalAlerts}
-          onChange={() => setSettings({ ...settings, proposalAlerts: !settings.proposalAlerts })}
+          onChange={() => toggle("proposalAlerts", settings.proposalAlerts)}
         />
         <ToggleSetting
           label="Contract Updates"
           description="Receive notifications about contract status changes"
           enabled={settings.contractUpdates}
-          onChange={() => setSettings({ ...settings, contractUpdates: !settings.contractUpdates })}
+          onChange={() => toggle("contractUpdates", settings.contractUpdates)}
         />
         <ToggleSetting
           label="Marketing Emails"
           description="Receive promotional emails and platform updates"
           enabled={settings.marketingEmails}
-          onChange={() => setSettings({ ...settings, marketingEmails: !settings.marketingEmails })}
+          onChange={() => toggle("marketingEmails", settings.marketingEmails)}
         />
       </div>
     </div>
@@ -128,28 +166,59 @@ function NotificationsTab() {
 }
 
 function PrivacyTab() {
+  const profile = useQuery(api.profiles.getCurrentUserProfile);
+  const updatePreferences = useMutation(api.profiles.updatePreferences);
+  const toast = useToast();
+  const prefs = profile?.preferences ?? {};
+
+  const toggle = async (key: PreferenceKey, current: boolean) => {
+    try {
+      await updatePreferences({ preferences: { [key]: !current } });
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not update preference", "Please try again.");
+    }
+  };
+
+  if (profile === undefined) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 min-h-[200px] flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  const settings = {
+    profileVisible: prefs.profileVisible ?? true,
+    showOnlineStatus: prefs.showOnlineStatus ?? true,
+    showLocation: prefs.showLocation ?? true,
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-        <h2 className="text-xl font-bold text-white mb-4">Privacy Settings</h2>
+        <h2 className="text-xl font-bold text-white mb-1">Privacy Settings</h2>
+        <p className="text-sm text-white/60 mb-4">These preferences are saved to your profile</p>
         <div className="space-y-4">
           <ToggleSetting
             label="Profile Visibility"
             description="Make your profile visible to other users"
-            enabled={true}
-            onChange={() => {}}
+            enabled={settings.profileVisible}
+            onChange={() => toggle("profileVisible", settings.profileVisible)}
           />
           <ToggleSetting
             label="Show Online Status"
             description="Let others see when you're online"
-            enabled={true}
-            onChange={() => {}}
+            enabled={settings.showOnlineStatus}
+            onChange={() => toggle("showOnlineStatus", settings.showOnlineStatus)}
           />
           <ToggleSetting
             label="Show Location"
             description="Display your location on your profile"
-            enabled={true}
-            onChange={() => {}}
+            enabled={settings.showLocation}
+            onChange={() => toggle("showLocation", settings.showLocation)}
           />
         </div>
       </div>

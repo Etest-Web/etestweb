@@ -7,6 +7,13 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import { FileText, CheckCircle, AlertTriangle, Flag, Star, DollarSign, User } from "lucide-react";
 import { useState } from "react";
 import { getErrorMessage } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
+import { useConfirm } from "@/components/ui/confirm";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  ListRowSkeleton,
+  PageHeaderSkeleton,
+} from "@/components/ui/skeleton";
 
 export default function ContractsPage() {
   const user = useQuery(api.users.getCurrentUser);
@@ -17,10 +24,47 @@ export default function ContractsPage() {
   const [reviewingContract, setReviewingContract] = useState<Id<"contracts"> | null>(null);
   const [reviewData, setReviewData] = useState({ rating: 5, comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [updatingId, setUpdatingId] = useState<Id<"contracts"> | null>(null);
+  const toast = useToast();
+  const confirmDialog = useConfirm();
 
-  const handleUpdateStatus = async (contractId: Id<"contracts">, status: "active" | "disputed" | "finished") => {
-    if (!confirm(`Mark this contract as ${status}?`)) return;
-    await updateContractStatus({ contractId, status });
+  const handleUpdateStatus = async (
+    contractId: Id<"contracts">,
+    status: "active" | "disputed" | "finished"
+  ) => {
+    if (status === "finished") {
+      const confirmed = await confirmDialog({
+        title: "Mark contract as complete?",
+        message: "This signals the project is finished and enables reviews.",
+        confirmLabel: "Mark Complete",
+      });
+      if (!confirmed) return;
+    }
+    if (status === "disputed") {
+      const confirmed = await confirmDialog({
+        title: "Report an issue with this contract?",
+        message: "The contract will be marked as disputed while support reviews it.",
+        confirmLabel: "Report Issue",
+        destructive: true,
+      });
+      if (!confirmed) return;
+    }
+
+    setUpdatingId(contractId);
+    try {
+      await updateContractStatus({ contractId, status });
+      toast.success(
+        status === "finished" ? "Contract completed" : "Issue reported",
+        status === "finished"
+          ? "Nice work! You can now leave a review."
+          : "Support has been notified about this contract."
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update contract", getErrorMessage(err));
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -34,18 +78,32 @@ export default function ContractsPage() {
         rating: reviewData.rating,
         comment: reviewData.comment,
       });
+      toast.success("Review submitted", "Thanks for sharing your experience!");
       setReviewingContract(null);
       setReviewData({ rating: 5, comment: "" });
     } catch (err) {
       console.error(err);
-      alert(getErrorMessage(err, "Failed to submit review"));
+      toast.error("Failed to submit review", getErrorMessage(err));
     } finally {
       setSubmittingReview(false);
     }
   };
 
-  if (!myContracts) {
-    return <div className="p-8 text-white/60">Loading...</div>;
+  if (myContracts === undefined) {
+    return (
+      <div className="p-8">
+        <PageHeaderSkeleton />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <ListRowSkeleton />
+          <ListRowSkeleton />
+          <ListRowSkeleton />
+        </div>
+        <div className="space-y-4">
+          <ListRowSkeleton />
+          <ListRowSkeleton />
+        </div>
+      </div>
+    );
   }
 
   const activeContracts = myContracts.filter((c) => c.status === "active");
@@ -93,16 +151,25 @@ export default function ContractsPage() {
               <ContractCard
                 key={contract._id}
                 contract={contract}
-                onUpdateStatus={handleUpdateStatus}
+                updating={updatingId === contract._id}
                 onFinish={() => handleUpdateStatus(contract._id, "finished")}
                 onDispute={() => handleUpdateStatus(contract._id, "disputed")}
                 onReview={() => setReviewingContract(contract._id)}
-                canReview={user?._id !== contract.designerId && contract.status === "finished"}
+                canReview={
+                  user
+                    ? user._id !== contract.designerId &&
+                      contract.status === "finished"
+                    : false
+                }
               />
             ))
           ) : (
-            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center text-white/60">
-              No active contracts
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center animate-in fade-in duration-300">
+              <FileText className="w-12 h-12 text-white/20 mx-auto mb-3" />
+              <p className="text-white font-medium mb-1">No active contracts</p>
+              <p className="text-sm text-white/60">
+                Contracts appear here once a proposal is accepted
+              </p>
             </div>
           )}
         </div>
@@ -120,7 +187,6 @@ export default function ContractsPage() {
               <ContractCard
                 key={contract._id}
                 contract={contract}
-                onUpdateStatus={handleUpdateStatus}
                 canReview={false}
               />
             ))}
@@ -137,9 +203,9 @@ export default function ContractsPage() {
               <ContractCard
                 key={contract._id}
                 contract={contract}
-                onUpdateStatus={handleUpdateStatus}
+                updating={updatingId === contract._id}
                 onReview={() => setReviewingContract(contract._id)}
-                canReview={user?._id !== contract.designerId}
+                canReview={user ? user._id !== contract.designerId : false}
               />
             ))}
           </div>
@@ -148,12 +214,12 @@ export default function ContractsPage() {
 
       {/* Review Modal */}
       {reviewingContract && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setReviewingContract(null)}
           />
-          <div className="relative w-full max-w-lg bg-[#1a1610] border border-white/10 rounded-xl p-6">
+          <div className="relative w-full max-w-lg bg-[#1a1610] border border-white/10 rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200">
             <h3 className="text-xl font-bold text-white mb-4">Leave a Review</h3>
             <form onSubmit={handleSubmitReview} className="space-y-4">
               <div>
@@ -197,8 +263,9 @@ export default function ContractsPage() {
                 <button
                   type="submit"
                   disabled={submittingReview}
-                  className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
+                  {submittingReview && <Spinner className="w-5 h-5" />}
                   {submittingReview ? "Submitting..." : "Submit Review"}
                 </button>
                 <button
@@ -217,8 +284,6 @@ export default function ContractsPage() {
   );
 }
 
-type ContractStatus = "active" | "disputed" | "finished";
-
 type ContractWithDetails = Doc<"contracts"> & {
   jobTitle: string;
   counterpartyName: string;
@@ -227,14 +292,14 @@ type ContractWithDetails = Doc<"contracts"> & {
 
 function ContractCard({
   contract,
-  onUpdateStatus,
+  updating = false,
   onFinish,
   onDispute,
   onReview,
   canReview,
 }: {
   contract: ContractWithDetails;
-  onUpdateStatus: (id: Id<"contracts">, status: ContractStatus) => void;
+  updating?: boolean;
   onFinish?: () => void;
   onDispute?: () => void;
   onReview?: () => void;
@@ -274,25 +339,36 @@ function ContractCard({
           {onFinish && (
             <button
               onClick={onFinish}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-colors"
+              disabled={updating}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-colors disabled:opacity-50"
             >
-              <CheckCircle className="w-4 h-4" />
+              {updating ? (
+                <Spinner className="w-4 h-4" />
+              ) : (
+                <CheckCircle className="w-4 h-4" />
+              )}
               Mark Complete
             </button>
           )}
           {onDispute && (
             <button
               onClick={onDispute}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 transition-colors"
+              disabled={updating}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 transition-colors disabled:opacity-50"
             >
-              <Flag className="w-4 h-4" />
+              {updating ? (
+                <Spinner className="w-4 h-4" />
+              ) : (
+                <Flag className="w-4 h-4" />
+              )}
               Report Issue
             </button>
           )}
           {canReview && onReview && (
             <button
               onClick={onReview}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors"
+              disabled={updating}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors disabled:opacity-50"
             >
               <Star className="w-4 h-4" />
               Leave Review

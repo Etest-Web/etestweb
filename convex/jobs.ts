@@ -62,6 +62,11 @@ export const updateJob = mutation({
     const job = await ctx.db.get(args.jobId);
     if (!job) throw new Error("Job not found");
 
+    // Only an open job can be edited by its owner
+    if (job.status !== "open") {
+      throw new Error("Only open jobs can be edited");
+    }
+
     // Verify ownership
     const profile = await ctx.db
       .query("profiles")
@@ -79,13 +84,53 @@ export const updateJob = mutation({
       category: string;
       status: "open" | "in-progress" | "completed";
     }> = {};
-    if (args.title) updateData.title = args.title;
-    if (args.description) updateData.description = args.description;
-    if (args.budgetRange) updateData.budgetRange = args.budgetRange;
-    if (args.category) updateData.category = args.category;
-    if (args.status) updateData.status = args.status;
+    if (args.title !== undefined) updateData.title = args.title;
+    if (args.description !== undefined) updateData.description = args.description;
+    if (args.budgetRange !== undefined) updateData.budgetRange = args.budgetRange;
+    if (args.category !== undefined) updateData.category = args.category;
+    if (args.status !== undefined) updateData.status = args.status;
 
     await ctx.db.patch(args.jobId, updateData);
+  },
+});
+
+/**
+ * Close a job posting: marks it "completed" so it stops accepting
+ * new proposals and disappears from the designers' browse list.
+ * Owner + open-only.
+ */
+export const closeJob = mutation({
+  args: { jobId: v.id("jobs") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    const userId = identity?.subject;
+    if (!userId) throw new Error("Unauthorized");
+
+    const job = await ctx.db.get(args.jobId);
+    if (!job) throw new Error("Job not found");
+    if (job.status !== "open") throw new Error("Job is not open");
+
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .take(1);
+
+    if (profile.length === 0 || profile[0]._id !== job.clientId) {
+      throw new Error("Unauthorized to close this job");
+    }
+
+    await ctx.db.patch(args.jobId, { status: "completed" });
+
+    // Reject any still-pending proposals so designers are not left hanging
+    const pending = await ctx.db
+      .query("proposals")
+      .withIndex("by_job", (q) => q.eq("jobId", args.jobId))
+      .filter((q) => q.eq(q.field("status"), "pending"))
+      .collect();
+
+    await Promise.all(
+      pending.map((p) => ctx.db.patch(p._id, { status: "rejected" }))
+    );
   },
 });
 

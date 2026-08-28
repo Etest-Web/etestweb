@@ -4,22 +4,87 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { Plus, MessageSquare, CheckCircle, XCircle, Trash2, Briefcase, Clock, DollarSign } from "lucide-react";
+import { Plus, MessageSquare, CheckCircle, XCircle, Trash2, Briefcase, Clock, DollarSign, Pencil, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { getErrorMessage } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
+import { useConfirm } from "@/components/ui/confirm";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  JobCardSkeleton,
+  PageHeaderSkeleton,
+} from "@/components/ui/skeleton";
 
 export default function MyJobsPage() {
   const user = useQuery(api.users.getCurrentUser);
   const myJobs = useQuery(api.jobs.getMyJobs);
   const deleteJob = useMutation(api.jobs.deleteJob);
+  const closeJob = useMutation(api.jobs.closeJob);
   const [viewingJob, setViewingJob] = useState<{ _id: Id<"jobs">; title: string } | null>(null);
+  const [editingJob, setEditingJob] = useState<Doc<"jobs"> | null>(null);
+  const [deletingId, setDeletingId] = useState<Id<"jobs"> | null>(null);
+  const [closingId, setClosingId] = useState<Id<"jobs"> | null>(null);
+  const toast = useToast();
+  const confirmDialog = useConfirm();
 
   const handleDelete = async (jobId: Id<"jobs">) => {
-    if (!confirm("Are you sure you want to delete this job?")) return;
-    await deleteJob({ jobId });
+    const confirmed = await confirmDialog({
+      title: "Delete this job?",
+      message:
+        "The posting will be removed permanently along with its visibility to designers.",
+      confirmLabel: "Delete Job",
+      destructive: true,
+    });
+    if (!confirmed) return;
+
+    setDeletingId(jobId);
+    try {
+      await deleteJob({ jobId });
+      toast.success("Job deleted", "Your job posting has been removed.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete job", getErrorMessage(err));
+    } finally {
+      setDeletingId(null);
+    }
   };
 
-  if (user?.role !== "client") {
+  const handleClose = async (jobId: Id<"jobs">) => {
+    const confirmed = await confirmDialog({
+      title: "Close this job?",
+      message:
+        "The job will be marked completed, stop accepting new proposals, and be removed from designers' browse list. Any pending proposals will be rejected.",
+      confirmLabel: "Close Job",
+    });
+    if (!confirmed) return;
+
+    setClosingId(jobId);
+    try {
+      await closeJob({ jobId });
+      toast.success("Job closed", "The job is no longer accepting proposals.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to close job", getErrorMessage(err));
+    } finally {
+      setClosingId(null);
+    }
+  };
+
+  if (user === undefined || myJobs === undefined) {
+    return (
+      <div className="p-8">
+        <PageHeaderSkeleton />
+        <div className="space-y-4">
+          <JobCardSkeleton />
+          <JobCardSkeleton />
+          <JobCardSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== "client") {
     return (
       <div className="p-8">
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center">
@@ -50,17 +115,21 @@ export default function MyJobsPage() {
         <ProposalsList jobId={viewingJob._id} jobTitle={viewingJob.title} onBack={() => setViewingJob(null)} />
       ) : (
         <div className="space-y-4">
-          {myJobs && myJobs.length > 0 ? (
+          {myJobs.length > 0 ? (
             myJobs.map((job) => (
               <JobCard
                 key={job._id}
                 job={job}
+                deleting={deletingId === job._id}
+                closing={closingId === job._id}
                 onViewProposals={() => setViewingJob({ _id: job._id, title: job.title })}
                 onDelete={() => handleDelete(job._id)}
+                onEdit={() => setEditingJob(job)}
+                onClose={() => handleClose(job._id)}
               />
             ))
           ) : (
-            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center">
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center animate-in fade-in duration-300">
               <Briefcase className="w-16 h-16 text-white/20 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">No Jobs Posted</h3>
               <p className="text-white/60 mb-6">Start by posting your first job to find designers</p>
@@ -75,23 +144,39 @@ export default function MyJobsPage() {
           )}
         </div>
       )}
+
+      {editingJob && (
+        <EditJobModal
+          job={editingJob}
+          onClose={() => setEditingJob(null)}
+          onSaved={() => setEditingJob(null)}
+        />
+      )}
     </div>
   );
 }
 
 function JobCard({
   job,
+  deleting,
+  closing,
   onViewProposals,
   onDelete,
+  onEdit,
+  onClose,
 }: {
   job: Doc<"jobs">;
+  deleting: boolean;
+  closing: boolean;
   onViewProposals: () => void;
   onDelete: () => void;
+  onEdit: () => void;
+  onClose: () => void;
 }) {
   const proposalCount = useQuery(api.proposals.getProposalsForJob, { jobId: job._id })?.length ?? 0;
 
   return (
-    <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
+    <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 transition-opacity aria-busy:opacity-70" aria-busy={deleting || closing}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-3">
@@ -135,13 +220,39 @@ function JobCard({
             </button>
           )}
           {job.status === "open" && (
-            <button
-              onClick={onDelete}
-              className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
-              title="Delete job"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+            <>
+              <button
+                onClick={onEdit}
+                className="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
+                title="Edit job"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+              <button
+                onClick={onClose}
+                disabled={closing}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors disabled:opacity-50"
+                title="Close job"
+              >
+                {closing ? (
+                  <Spinner className="w-4 h-4" />
+                ) : (
+                  <Lock className="w-4 h-4" />
+                )}
+              </button>
+              <button
+                onClick={onDelete}
+                disabled={deleting}
+                className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                title="Delete job"
+              >
+                {deleting ? (
+                  <Spinner className="w-4 h-4" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -154,28 +265,67 @@ function ProposalsList({ jobId, jobTitle, onBack }: { jobId: Id<"jobs">; jobTitl
   const updateProposalStatus = useMutation(api.proposals.updateProposalStatus);
   const createContract = useMutation(api.contracts.createContract);
   const [acceptingId, setAcceptingId] = useState<Id<"proposals"> | null>(null);
+  const [rejectingId, setRejectingId] = useState<Id<"proposals"> | null>(null);
+  const toast = useToast();
+  const confirmDialog = useConfirm();
 
   const handleAccept = async (proposalId: Id<"proposals">, amount: number) => {
-    if (!confirm("Accept this proposal? A contract will be created.")) return;
+    const confirmed = await confirmDialog({
+      title: "Accept this proposal?",
+      message: `A contract will be created for $${amount.toLocaleString()} and the designer will be notified.`,
+      confirmLabel: "Accept & Create Contract",
+    });
+    if (!confirmed) return;
+
     setAcceptingId(proposalId);
     try {
       await updateProposalStatus({ proposalId, status: "accepted" });
       await createContract({ proposalId, totalPrice: amount });
+      toast.success("Proposal accepted", "A contract has been created. You can now message the designer.");
     } catch (err) {
       console.error(err);
-      alert("Failed to accept proposal");
+      toast.error("Failed to accept proposal", getErrorMessage(err));
     } finally {
       setAcceptingId(null);
     }
   };
 
   const handleReject = async (proposalId: Id<"proposals">) => {
-    if (!confirm("Reject this proposal?")) return;
-    await updateProposalStatus({ proposalId, status: "rejected" });
+    const confirmed = await confirmDialog({
+      title: "Reject this proposal?",
+      message: "The designer will be notified that their proposal was not accepted.",
+      confirmLabel: "Reject Proposal",
+      destructive: true,
+    });
+    if (!confirmed) return;
+
+    setRejectingId(proposalId);
+    try {
+      await updateProposalStatus({ proposalId, status: "rejected" });
+      toast.success("Proposal rejected");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to reject proposal", getErrorMessage(err));
+    } finally {
+      setRejectingId(null);
+    }
   };
 
   if (proposals === undefined) {
-    return <div className="text-white/60">Loading...</div>;
+    return (
+      <div className="space-y-6 animate-pulse">
+        <div className="h-6 w-32 bg-white/[0.07] rounded-lg" />
+        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 space-y-4">
+          {[0, 1].map((i) => (
+            <div key={i} className="border border-white/10 rounded-xl p-6 bg-white/5 space-y-4">
+              <div className="h-6 w-40 bg-white/[0.07] rounded-lg" />
+              <div className="h-16 w-full bg-white/[0.07] rounded-lg" />
+              <div className="h-10 w-64 bg-white/[0.07] rounded-lg" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   const pendingProposals = proposals.filter((p) => p.status === "pending");
@@ -203,7 +353,7 @@ function ProposalsList({ jobId, jobTitle, onBack }: { jobId: Id<"jobs">; jobTitl
         </div>
 
         {proposals.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-12 animate-in fade-in duration-300">
             <MessageSquare className="w-16 h-16 text-white/20 mx-auto mb-4" />
             <h3 className="text-lg font-bold text-white mb-2">No proposals yet</h3>
             <p className="text-white/60">Designers will see your job and can submit proposals</p>
@@ -284,18 +434,37 @@ function ProposalsList({ jobId, jobTitle, onBack }: { jobId: Id<"jobs">; jobTitl
                   <div className="flex gap-3">
                     <button
                       onClick={() => handleAccept(proposal._id, proposal.amount)}
-                      disabled={acceptingId === proposal._id}
+                      disabled={acceptingId === proposal._id || rejectingId === proposal._id}
                       className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium transition-colors disabled:opacity-50"
                     >
-                      <CheckCircle className="w-4 h-4" />
-                      {acceptingId === proposal._id ? "Accepting..." : "Accept & Create Contract"}
+                      {acceptingId === proposal._id ? (
+                        <>
+                          <Spinner className="w-4 h-4" />
+                          Accepting...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4" />
+                          Accept & Create Contract
+                        </>
+                      )}
                     </button>
                     <button
                       onClick={() => handleReject(proposal._id)}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 font-medium transition-colors"
+                      disabled={acceptingId === proposal._id || rejectingId === proposal._id}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 font-medium transition-colors disabled:opacity-50"
                     >
-                      <XCircle className="w-4 h-4" />
-                      Reject
+                      {rejectingId === proposal._id ? (
+                        <>
+                          <Spinner className="w-4 h-4" />
+                          Rejecting...
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-4 h-4" />
+                          Reject
+                        </>
+                      )}
                     </button>
                   </div>
                 )}
@@ -314,6 +483,111 @@ function ProposalsList({ jobId, jobTitle, onBack }: { jobId: Id<"jobs">; jobTitl
             ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function EditJobModal({
+  job,
+  onClose,
+  onSaved,
+}: {
+  job: Doc<"jobs">;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const updateJob = useMutation(api.jobs.updateJob);
+  const toast = useToast();
+  const [title, setTitle] = useState(job.title);
+  const [description, setDescription] = useState(job.description);
+  const [budgetRange, setBudgetRange] = useState(job.budgetRange);
+  const [category, setCategory] = useState(job.category);
+  const [saving, setSaving] = useState(false);
+
+  const canSubmit = title.trim() && description.trim() && budgetRange.trim() && category.trim();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    setSaving(true);
+    try {
+      await updateJob({
+        jobId: job._id,
+        title: title.trim(),
+        description: description.trim(),
+        budgetRange: budgetRange.trim(),
+        category: category.trim(),
+      });
+      toast.success("Job updated", "Your job posting has been saved.");
+      onSaved();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update job", getErrorMessage(err));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const inputCls =
+    "w-full h-12 px-4 rounded-lg bg-black/40 border border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:outline-none";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={onClose}>
+      <div
+        className="w-full max-w-lg bg-[#15120c] border border-white/10 rounded-2xl p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-xl font-bold text-white mb-1">Edit Job</h2>
+        <p className="text-sm text-white/60 mb-5">Only open jobs can be edited. Closing is done from the job card.</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-1.5">Job Title</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls} placeholder="e.g. Logo rebrand" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-1.5">Description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full min-h-[120px] px-4 py-3 rounded-lg bg-black/40 border border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:outline-none"
+              placeholder="Describe the project..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-1.5">Budget Range</label>
+            <input value={budgetRange} onChange={(e) => setBudgetRange(e.target.value)} className={inputCls} placeholder="e.g. $1,000 - $2,500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-white/80 mb-1.5">Category</label>
+            <input value={category} onChange={(e) => setCategory(e.target.value)} className={inputCls} placeholder="e.g. Branding" />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-11 px-5 rounded-lg bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!canSubmit || saving}
+              className="flex items-center gap-2 h-11 px-6 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              {saving ? (
+                <>
+                  <Spinner className="w-4 h-4" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

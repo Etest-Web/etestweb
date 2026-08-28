@@ -4,6 +4,8 @@ import { ConvexClientProvider } from "./ConvexClientProvider";
 import { Geist, Geist_Mono, Roboto, Montserrat } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "./ConditionalLayout";
+import { ToastProvider } from "@/components/ui/toast";
+import { ConfirmProvider } from "@/components/ui/confirm";
 
 const montser = Montserrat({
   variable: "--font-montserrat",
@@ -43,7 +45,11 @@ export default function RootLayout({
           className={`${geistSans.variable} ${montser.variable} ${roboto.variable} ${geistMono.variable} antialiased`}
         >
           <ConvexClientProvider>
-            <ConditionalLayout>{children}</ConditionalLayout>
+            <ToastProvider>
+              <ConfirmProvider>
+                <ConditionalLayout>{children}</ConditionalLayout>
+              </ConfirmProvider>
+            </ToastProvider>
           </ConvexClientProvider>
         </body>
       </html>

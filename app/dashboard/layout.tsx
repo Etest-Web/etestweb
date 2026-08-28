@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/dashboard/sidebar"
+import { DashboardGate } from "@/components/dashboard/dashboard-gate"
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
             <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
                 <Sidebar />
             </div>
-            {children}
+            <div className="md:ml-56 h-full">
+                <DashboardGate>{children}</DashboardGate>
+            </div>
         </div>
     )
 }

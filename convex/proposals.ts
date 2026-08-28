@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { createNotification } from "./notifications";
 
 /**
  * Submit a proposal for a job (Designer only)
@@ -52,6 +53,16 @@ export const submitProposal = mutation({
       status: "pending",
     });
 
+    // Notify the job's client that a new proposal arrived
+    await createNotification(ctx, {
+      recipientId: job.clientId,
+      type: "proposal_received",
+      title: "New proposal",
+      body: `${profile[0].name ?? "A designer"} submitted a proposal for "${job.title}".`,
+      jobId: job._id,
+      link: "/dashboard/jobs",
+    });
+
     return proposalId;
   },
 });
@@ -88,9 +99,44 @@ export const updateProposalStatus = mutation({
 
     await ctx.db.patch(args.proposalId, { status: args.status });
 
-    // If accepted, update job status to in-progress
+    // If accepted, update job status to in-progress and reject other pending proposals
     if (args.status === "accepted") {
       await ctx.db.patch(proposal.jobId, { status: "in-progress" });
+
+      const others = await ctx.db
+        .query("proposals")
+        .withIndex("by_job", (q) => q.eq("jobId", proposal.jobId))
+        .filter((q) =>
+          q.and(
+            q.neq(q.field("_id"), args.proposalId),
+            q.eq(q.field("status"), "pending")
+          )
+        )
+        .collect();
+
+      await Promise.all(
+        others.map((p) => ctx.db.patch(p._id, { status: "rejected" }))
+      );
+
+      // Notify the accepted designer
+      await createNotification(ctx, {
+        recipientId: proposal.designerId,
+        type: "proposal_accepted",
+        title: "Proposal accepted",
+        body: `Your proposal for "${job.title}" was accepted.`,
+        jobId: job._id,
+        link: "/dashboard/contracts",
+      });
+    } else {
+      // Notify the rejected designer
+      await createNotification(ctx, {
+        recipientId: proposal.designerId,
+        type: "proposal_rejected",
+        title: "Proposal not selected",
+        body: `Your proposal for "${job.title}" was not selected.`,
+        jobId: job._id,
+        link: "/dashboard/proposals",
+      });
     }
   },
 });

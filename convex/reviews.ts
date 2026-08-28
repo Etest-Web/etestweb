@@ -1,8 +1,11 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { createNotification } from "./notifications";
 
 /**
- * Submit a review for a completed contract
+ * Submit a review for a completed contract.
+ * Each party can review the other once per contract.
+ * Recomputes the reviewed user's averageRating afterwards.
  */
 export const submitReview = mutation({
   args: {
@@ -11,6 +14,10 @@ export const submitReview = mutation({
     comment: v.string(),
   },
   handler: async (ctx, args) => {
+    if (args.rating < 1 || args.rating > 5) {
+      throw new Error("Rating must be between 1 and 5");
+    }
+
     const identity = await ctx.auth.getUserIdentity();
     const userId = identity?.subject;
     if (!userId) throw new Error("Unauthorized");
@@ -28,33 +35,69 @@ export const submitReview = mutation({
       .take(1);
 
     if (profile.length === 0) throw new Error("Profile not found");
+    const reviewerId = profile[0]._id;
 
-    // Determine who is being reviewed (the other party)
-    const isClient = profile[0]._id === contract.clientId;
-    const reviewedUserId = isClient ? contract.designerId : contract.clientId;
+    // Reviewer must be a party of the contract
+    const isClient = reviewerId === contract.clientId;
+    const isDesigner = reviewerId === contract.designerId;
+    if (!isClient && !isDesigner) {
+      throw new Error("Unauthorized to review this contract");
+    }
 
-    // Check if review already exists (prevent duplicate reviews)
-    // Note: You might want to create a separate reviews table for production
-    // For now, we'll just update the average rating
+    const reviewedId = isClient ? contract.designerId : contract.clientId;
 
-    const reviewedProfile = await ctx.db.get(reviewedUserId);
-    if (!reviewedProfile) throw new Error("Reviewed user not found");
+    // Prevent duplicate reviews per (contract, reviewer)
+    const existing = await ctx.db
+      .query("reviews")
+      .withIndex("by_contract_and_reviewer", (q) =>
+        q.eq("contractId", args.contractId).eq("reviewerId", reviewerId)
+      )
+      .take(1);
 
-    // Calculate new average rating
-    const currentRating = reviewedProfile.averageRating ?? 0;
-    // const ratingCount = reviewedProfile.reviewCount ?? 1;
-    // const newAverage = ((currentRating * (ratingCount - 1)) + args.rating) / ratingCount;
+    if (existing.length > 0) {
+      throw new Error("You have already reviewed this contract");
+    }
 
-    // await ctx.db.patch(reviewedUserId, {
-    //   averageRating: Math.round(newAverage * 10) / 10, // Round to 1 decimal
-    // });
+    await ctx.db.insert("reviews", {
+      contractId: args.contractId,
+      reviewerId,
+      reviewedId,
+      rating: args.rating,
+      comment: args.comment,
+      createdAt: Date.now(),
+    });
 
-    // return { success: true, newRating: newAverage };
+    // Recompute the reviewed user's average rating from all their reviews
+    const allReviews = await ctx.db
+      .query("reviews")
+      .withIndex("by_reviewed", (q) => q.eq("reviewedId", reviewedId))
+      .collect();
+
+    const average =
+      allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+
+    await ctx.db.patch(reviewedId, {
+      averageRating: Math.round(average * 10) / 10,
+    });
+
+    // Notify the reviewed party
+    await createNotification(ctx, {
+      recipientId: reviewedId,
+      type: "review_received",
+      title: "New review",
+      body: `You received a ${args.rating}-star review.`,
+      contractId: args.contractId,
+      link: isClient
+        ? `/designers/${reviewedId}`
+        : "/dashboard/profile",
+    });
+
+    return { success: true, reviewCount: allReviews.length };
   },
 });
 
 /**
- * Get designer's rating and review count
+ * Get a designer's aggregate rating info
  */
 export const getDesignerRating = query({
   args: { designerId: v.id("profiles") },
@@ -62,9 +105,39 @@ export const getDesignerRating = query({
     const designer = await ctx.db.get(args.designerId);
     if (!designer) return null;
 
+    const reviews = await ctx.db
+      .query("reviews")
+      .withIndex("by_reviewed", (q) => q.eq("reviewedId", args.designerId))
+      .collect();
+
     return {
       averageRating: designer.averageRating,
+      reviewCount: reviews.length,
       name: designer.name,
     };
+  },
+});
+
+/**
+ * Get recent reviews for a profile, with reviewer names
+ */
+export const getReviewsForDesigner = query({
+  args: { designerId: v.id("profiles") },
+  handler: async (ctx, args) => {
+    const reviews = await ctx.db
+      .query("reviews")
+      .withIndex("by_reviewed", (q) => q.eq("reviewedId", args.designerId))
+      .order("desc")
+      .take(20);
+
+    return Promise.all(
+      reviews.map(async (review) => {
+        const reviewer = await ctx.db.get(review.reviewerId);
+        return {
+          ...review,
+          reviewerName: reviewer?.name ?? "Anonymous",
+        };
+      })
+    );
   },
 });

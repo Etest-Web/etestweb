@@ -5,12 +5,33 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { FileText, CheckCircle, XCircle, Clock, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import {
+  ListRowSkeleton,
+  PageHeaderSkeleton,
+} from "@/components/ui/skeleton";
 
 export default function MyProposalsPage() {
   const user = useQuery(api.users.getCurrentUser);
   const myProposals = useQuery(api.proposals.getMyProposals);
 
-  if (user?.role !== "designer") {
+  if (user === undefined) {
+    return (
+      <div className="p-8">
+        <PageHeaderSkeleton />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <StatBoxSkeleton />
+          <StatBoxSkeleton />
+          <StatBoxSkeleton />
+        </div>
+        <div className="space-y-4">
+          <ListRowSkeleton />
+          <ListRowSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== "designer") {
     return (
       <div className="p-8">
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center">
@@ -34,37 +55,53 @@ export default function MyProposalsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Clock className="w-5 h-5 text-yellow-400" />
-            <span className="text-white/60">Pending</span>
-          </div>
-          <p className="text-3xl font-bold text-white">{pendingCount}</p>
-        </div>
-        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <CheckCircle className="w-5 h-5 text-green-400" />
-            <span className="text-white/60">Accepted</span>
-          </div>
-          <p className="text-3xl font-bold text-white">{acceptedCount}</p>
-        </div>
-        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <XCircle className="w-5 h-5 text-red-400" />
-            <span className="text-white/60">Rejected</span>
-          </div>
-          <p className="text-3xl font-bold text-white">{rejectedCount}</p>
-        </div>
+        {myProposals === undefined ? (
+          <>
+            <StatBoxSkeleton />
+            <StatBoxSkeleton />
+            <StatBoxSkeleton />
+          </>
+        ) : (
+          <>
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 animate-in fade-in duration-300">
+              <div className="flex items-center gap-3 mb-2">
+                <Clock className="w-5 h-5 text-yellow-400" />
+                <span className="text-white/60">Pending</span>
+              </div>
+              <p className="text-3xl font-bold text-white">{pendingCount}</p>
+            </div>
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 animate-in fade-in duration-300">
+              <div className="flex items-center gap-3 mb-2">
+                <CheckCircle className="w-5 h-5 text-green-400" />
+                <span className="text-white/60">Accepted</span>
+              </div>
+              <p className="text-3xl font-bold text-white">{acceptedCount}</p>
+            </div>
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6 animate-in fade-in duration-300">
+              <div className="flex items-center gap-3 mb-2">
+                <XCircle className="w-5 h-5 text-red-400" />
+                <span className="text-white/60">Rejected</span>
+              </div>
+              <p className="text-3xl font-bold text-white">{rejectedCount}</p>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Proposals List */}
       <div className="space-y-4">
-        {myProposals && myProposals.length > 0 ? (
+        {myProposals === undefined ? (
+          <>
+            <ListRowSkeleton />
+            <ListRowSkeleton />
+            <ListRowSkeleton />
+          </>
+        ) : myProposals.length > 0 ? (
           myProposals.map((proposal) => (
             <ProposalCard key={proposal._id} proposal={proposal} />
           ))
         ) : (
-          <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center">
+          <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center animate-in fade-in duration-300">
             <FileText className="w-16 h-16 text-white/20 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">No Proposals Yet</h3>
             <p className="text-white/60 mb-6">
@@ -196,5 +233,17 @@ function BriefcaseIcon({ className }: { className?: string }) {
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
     </svg>
+  );
+}
+
+function StatBoxSkeleton() {
+  return (
+    <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="h-5 w-5 rounded bg-white/[0.07]" />
+        <div className="h-4 w-20 rounded bg-white/[0.07]" />
+      </div>
+      <div className="h-9 w-12 rounded bg-white/[0.07]" />
+    </div>
   );
 }

@@ -6,9 +6,14 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { User, MapPin, Briefcase, Plus, X, Upload, Link as LinkIcon, Trash2, Grid3X3 } from "lucide-react";
-import Image from "next/image";
 import { ImageUploadModal } from "@/components/reusable/ImageUpload";
 import { getErrorMessage } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  ListRowSkeleton,
+  PageHeaderSkeleton,
+} from "@/components/ui/skeleton";
 
 const SKILL_CATEGORIES = [
   "UI/UX Design",
@@ -49,6 +54,10 @@ export default function ProfilePage() {
   const [newSkill, setNewSkill] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addingSkill, setAddingSkill] = useState(false);
+  const [removingSkill, setRemovingSkill] = useState<string | null>(null);
+  const [removingItemId, setRemovingItemId] = useState<Id<"portfolioItems"> | null>(null);
+  const toast = useToast();
 
   // Geolocation state
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -109,6 +118,7 @@ export default function ProfilePage() {
         lat: location.lat,
         lng: location.lng,
       });
+      toast.success("Profile saved", "Your changes are now live.");
       setIsEditing(false);
     } catch (err) {
       console.error(err);
@@ -120,16 +130,54 @@ export default function ProfilePage() {
 
   const handleAddSkill = async () => {
     if (!newSkill.trim()) return;
-    await addSkill({ skill: newSkill.trim() });
-    setNewSkill("");
+    setAddingSkill(true);
+    try {
+      await addSkill({ skill: newSkill.trim() });
+      setNewSkill("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add skill", getErrorMessage(err));
+    } finally {
+      setAddingSkill(false);
+    }
   };
 
   const handleRemoveSkill = async (skill: string) => {
-    await removeSkill({ skill });
+    setRemovingSkill(skill);
+    try {
+      await removeSkill({ skill });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to remove skill", getErrorMessage(err));
+    } finally {
+      setRemovingSkill(null);
+    }
   };
 
-  if (!user) {
-    return <div className="p-8 text-white/60">Loading...</div>;
+  if (user === undefined) {
+    return (
+      <div className="p-8">
+        <PageHeaderSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <ListRowSkeleton />
+            <ListRowSkeleton />
+          </div>
+          <ListRowSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (user === null) {
+    return (
+      <div className="p-8">
+        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Sign in required</h2>
+          <p className="text-white/60">Please sign in to manage your profile.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -309,9 +357,15 @@ export default function ProfilePage() {
                       {isEditing && (
                         <button
                           onClick={() => handleRemoveSkill(skill)}
-                          className="hover:text-white"
+                          disabled={removingSkill === skill}
+                          className="hover:text-white disabled:opacity-50"
+                          aria-label={`Remove ${skill}`}
                         >
-                          <X className="w-3 h-3" />
+                          {removingSkill === skill ? (
+                            <Spinner className="w-3 h-3" />
+                          ) : (
+                            <X className="w-3 h-3" />
+                          )}
                         </button>
                       )}
                     </span>
@@ -337,10 +391,14 @@ export default function ProfilePage() {
                   </select>
                   <button
                     onClick={handleAddSkill}
-                    disabled={!newSkill}
+                    disabled={!newSkill || addingSkill}
                     className="h-12 px-6 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
                   >
-                    <Plus className="w-5 h-5" />
+                    {addingSkill ? (
+                      <Spinner className="w-5 h-5" />
+                    ) : (
+                      <Plus className="w-5 h-5" />
+                    )}
                     Add
                   </button>
                 </div>
@@ -438,10 +496,25 @@ export default function ProfilePage() {
                     <p className="text-white text-sm font-medium truncate">{item.category}</p>
                   </div>
                   <button
-                    onClick={() => removePortfolioItem({ itemId: item._id as Id<"portfolioItems"> })}
-                    className="absolute top-2 right-2 p-2 rounded-lg bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                    onClick={async () => {
+                      setRemovingItemId(item._id as Id<"portfolioItems">);
+                      try {
+                        await removePortfolioItem({ itemId: item._id as Id<"portfolioItems"> });
+                      } catch (err) {
+                        console.error(err);
+                        toast.error("Failed to remove item", getErrorMessage(err));
+                      } finally {
+                        setRemovingItemId(null);
+                      }
+                    }}
+                    className="absolute top-2 right-2 p-2 rounded-lg bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 disabled:opacity-50"
+                    aria-label="Remove portfolio item"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    {removingItemId === item._id ? (
+                      <Spinner className="w-4 h-4" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               ))}
@@ -468,7 +541,14 @@ export default function ProfilePage() {
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
         onUpload={async (imageUrl, category) => {
-          await addPortfolioItem({ imageUrl, category });
+          try {
+            await addPortfolioItem({ imageUrl, category });
+            toast.success("Portfolio updated", "Your new work is now visible to clients.");
+          } catch (err) {
+            console.error(err);
+            toast.error("Failed to add portfolio item", getErrorMessage(err));
+            throw err;
+          }
         }}
       />
     </div>

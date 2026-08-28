@@ -11,6 +11,7 @@
 import type * as contracts from "../contracts.js";
 import type * as jobs from "../jobs.js";
 import type * as messages from "../messages.js";
+import type * as notifications from "../notifications.js";
 import type * as portfolio from "../portfolio.js";
 import type * as profiles from "../profiles.js";
 import type * as proposals from "../proposals.js";
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   contracts: typeof contracts;
   jobs: typeof jobs;
   messages: typeof messages;
+  notifications: typeof notifications;
   portfolio: typeof portfolio;
   profiles: typeof profiles;
   proposals: typeof proposals;

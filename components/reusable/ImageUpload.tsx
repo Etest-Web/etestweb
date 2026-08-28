@@ -144,7 +144,7 @@ export function ImageUpload({
 interface ImageUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpload: (imageUrl: string, category: string) => void;
+  onUpload: (imageUrl: string, category: string) => Promise<void> | void;
 }
 
 export function ImageUploadModal({
@@ -154,6 +154,7 @@ export function ImageUploadModal({
 }: ImageUploadModalProps) {
   const [category, setCategory] = useState("");
   const [uploadedStorageId, setUploadedStorageId] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const generateUploadUrl = useMutation(api.portfolio.generateUploadUrl);
   const [uploading, setUploading] = useState(false);
@@ -185,12 +186,20 @@ export function ImageUploadModal({
     }
   };
 
-  const handleSubmit = () => {
-    if (uploadedStorageId && category) {
-      onUpload(uploadedStorageId, category);
+  const handleSubmit = async () => {
+    if (!uploadedStorageId || !category || submitting) return;
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      await onUpload(uploadedStorageId, category);
       setUploadedStorageId(null);
       setCategory("");
       onClose();
+    } catch {
+      // Failure already surfaced to the user; keep the modal open.
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -274,11 +283,14 @@ export function ImageUploadModal({
 
           <div className="flex gap-4">
             <button
-              onClick={handleSubmit}
-              disabled={!uploadedStorageId || !category}
-              className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+              onClick={() => void handleSubmit()}
+              disabled={!uploadedStorageId || !category || submitting}
+              className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              Add to Portfolio
+              {submitting && (
+                <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              )}
+              {submitting ? "Adding..." : "Add to Portfolio"}
             </button>
             <button
               onClick={() => {

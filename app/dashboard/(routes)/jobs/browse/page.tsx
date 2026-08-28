@@ -7,6 +7,12 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import { Search, Filter, Briefcase, MapPin, DollarSign, Clock } from "lucide-react";
 import Link from "next/link";
 import { getErrorMessage } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  JobCardSkeleton,
+  PageHeaderSkeleton,
+} from "@/components/ui/skeleton";
 
 const CATEGORIES = [
   "All",
@@ -35,6 +41,7 @@ export default function BrowseJobsPage() {
   const [proposalData, setProposalData] = useState({ amount: "", coverLetter: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   const filteredJobs = useMemo(() => {
     if (!allJobs) return [];
@@ -64,6 +71,10 @@ export default function BrowseJobsPage() {
         amount: parseFloat(proposalData.amount),
         coverLetter: proposalData.coverLetter,
       });
+      toast.success(
+        "Proposal submitted",
+        `Your proposal for "${selectedJob.title}" has been sent.`
+      );
       setSelectedJob(null);
       setProposalData({ amount: "", coverLetter: "" });
     } catch (err) {
@@ -71,9 +82,33 @@ export default function BrowseJobsPage() {
       setError(getErrorMessage(err, "Failed to submit proposal"));
       setSubmitting(false);
     }
-  };
+  }
 
-  if (user?.role !== "designer") {
+  if (user === undefined) {
+    return (
+      <div className="p-8">
+        <PageHeaderSkeleton />
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="h-12 flex-1 rounded-lg border border-white/10 bg-[#1a1610]" />
+          <div className="flex gap-2">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-10 w-28 rounded-lg bg-white/[0.07]"
+              />
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          <JobCardSkeleton />
+          <JobCardSkeleton />
+          <JobCardSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== "designer") {
     return (
       <div className="p-8">
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center">
@@ -97,7 +132,9 @@ export default function BrowseJobsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Browse Jobs</h1>
         <p className="text-white/60">
-          Find your next project from {filteredJobs.length} available jobs
+          {allJobs === undefined
+            ? "Finding available jobs for you..."
+            : `Find your next project from ${filteredJobs.length} available job${filteredJobs.length !== 1 ? "s" : ""}`}
         </p>
       </div>
 
@@ -133,14 +170,42 @@ export default function BrowseJobsPage() {
 
       {/* Jobs Grid */}
       <div className="grid grid-cols-1 gap-4">
-        {filteredJobs.length === 0 ? (
-          <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center">
-            <Briefcase className="w-16 h-16 text-white/20 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">No Jobs Found</h3>
-            <p className="text-white/60">
-              Try adjusting your search or filters to find more opportunities
-            </p>
-          </div>
+        {allJobs === undefined ? (
+          <>
+            <JobCardSkeleton />
+            <JobCardSkeleton />
+            <JobCardSkeleton />
+            <JobCardSkeleton />
+          </>
+        ) : filteredJobs.length === 0 ? (
+          searchQuery || selectedCategory !== "All" ? (
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center animate-in fade-in duration-300">
+              <Search className="w-16 h-16 text-white/20 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-white mb-2">No Jobs Found</h3>
+              <p className="text-white/60">
+                Try adjusting your search or filters to find more opportunities
+              </p>
+              {(searchQuery || selectedCategory !== "All") && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("All");
+                  }}
+                  className="mt-6 inline-flex items-center h-10 px-5 rounded-lg border border-white/10 text-sm font-medium text-white hover:bg-white/5 transition-colors"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center animate-in fade-in duration-300">
+              <Briefcase className="w-16 h-16 text-white/20 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-white mb-2">No Open Jobs Right Now</h3>
+              <p className="text-white/60">
+                New projects are posted regularly — check back soon
+              </p>
+            </div>
+          )
         ) : (
           filteredJobs.map((job) => (
             <JobCard
@@ -176,7 +241,7 @@ export default function BrowseJobsPage() {
 
             <div className="mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
               <h3 className="font-bold text-white mb-2">{selectedJob.title}</h3>
-              <div className="flex flex-wrap gap-4 text-sm text-white/60">
+              <div className="flex flex-wrap gap-4 text-sm text-white/60 mb-3">
                 <span className="flex items-center gap-1">
                   <DollarSign className="w-4 h-4" />
                   {selectedJob.budgetRange}
@@ -190,6 +255,9 @@ export default function BrowseJobsPage() {
                   Posted by {selectedJob.clientName}
                 </span>
               </div>
+              <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap border-t border-white/10 pt-3">
+                {selectedJob.description}
+              </p>
             </div>
 
             <form onSubmit={handleSubmitProposal} className="space-y-6">
@@ -239,8 +307,9 @@ export default function BrowseJobsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
+                  {submitting && <Spinner className="w-5 h-5" />}
                   {submitting ? "Submitting..." : "Submit Proposal"}
                 </button>
                 <button

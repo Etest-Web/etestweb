@@ -4,6 +4,12 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Briefcase, MessageSquare, DollarSign, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import {
+  Skeleton,
+  StatCardSkeleton,
+  ListRowSkeleton,
+  PageHeaderSkeleton,
+} from "@/components/ui/skeleton";
 
 export default function DashboardOverview() {
   const user = useQuery(api.users.getCurrentUser);
@@ -12,28 +18,35 @@ export default function DashboardOverview() {
   const myContracts = useQuery(api.contracts.getMyContracts);
   const unreadCount = useQuery(api.messages.getUnreadCount);
 
+  const isClient = user?.role === "client";
+
+  const finishedEarnings = myContracts
+    ?.filter((c) => c.status === "finished")
+    .reduce((sum, c) => sum + c.totalPrice, 0);
+
   const stats = [
     {
-      label: user?.role === "client" ? "Active Jobs" : "Active Contracts",
-      value: user?.role === "client" 
+      label: isClient ? "Active Jobs" : "Active Contracts",
+      value: isClient
         ? myJobs?.filter((j) => j.status === "open").length ?? 0
         : myContracts?.filter((c) => c.status === "active").length ?? 0,
+      loading: isClient ? myJobs === undefined : myContracts === undefined,
       icon: Briefcase,
       color: "text-blue-400",
       bgColor: "bg-blue-400/10",
     },
     {
-      label: user?.role === "client" ? "Proposals Received" : "Proposals Sent",
+      label: isClient ? "Proposals Received" : "Proposals Sent",
       value: myProposals?.length ?? 0,
+      loading: myProposals === undefined,
       icon: MessageSquare,
       color: "text-purple-400",
       bgColor: "bg-purple-400/10",
     },
     {
       label: "Total Earnings",
-      value: `$${myContracts
-        ?.filter((c) => c.status === "finished")
-        .reduce((sum, c) => sum + c.totalPrice, 0).toLocaleString() ?? 0}`,
+      value: `$${(finishedEarnings ?? 0).toLocaleString()}`,
+      loading: myContracts === undefined,
       icon: DollarSign,
       color: "text-green-400",
       bgColor: "bg-green-400/10",
@@ -41,22 +54,53 @@ export default function DashboardOverview() {
     {
       label: "Unread Messages",
       value: unreadCount ?? 0,
+      loading: unreadCount === undefined,
       icon: TrendingUp,
       color: "text-orange-400",
       bgColor: "bg-orange-400/10",
     },
   ];
 
-  const recentActivity = user?.role === "client" ? myJobs?.slice(0, 5) : myProposals?.slice(0, 5);
+  const recentActivity =
+    user?.role === "client" ? myJobs?.slice(0, 5) : myProposals?.slice(0, 5);
+
+  if (user === undefined) {
+    return (
+      <div className="p-8">
+        <PageHeaderSkeleton />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ListRowSkeleton />
+          <ListRowSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (user === null) {
+    return (
+      <div className="p-8">
+        <div className="bg-[#1a1610] border border-white/10 rounded-xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Sign in required</h2>
+          <p className="text-white/60">Please sign in to view your dashboard.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">
-          Welcome back, {user?.name ?? "User"}!
+          Welcome back, {user.name}!
         </h1>
         <p className="text-white/60">
-          Here&apos;s what&apos;s happening with your {user?.role === "client" ? "jobs" : "projects"} today.
+          Here&apos;s what&apos;s happening with your {isClient ? "jobs" : "projects"} today.
         </p>
       </div>
 
@@ -79,7 +123,11 @@ export default function DashboardOverview() {
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+              {stat.loading ? (
+                <Skeleton className="h-9 w-16 mb-1" />
+              ) : (
+                <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+              )}
               <p className="text-sm text-white/60">{stat.label}</p>
             </div>
           );
@@ -91,9 +139,14 @@ export default function DashboardOverview() {
         {/* Recent Activity */}
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
           <h2 className="text-xl font-bold text-white mb-4">
-            Recent {user?.role === "client" ? "Jobs" : "Proposals"}
+            Recent {isClient ? "Jobs" : "Proposals"}
           </h2>
-          {recentActivity && recentActivity.length > 0 ? (
+          {recentActivity === undefined ? (
+            <div className="space-y-3">
+              <ListRowSkeleton />
+              <ListRowSkeleton />
+            </div>
+          ) : recentActivity.length > 0 ? (
             <div className="space-y-3">
               {recentActivity.map((item) => (
                 <div
@@ -127,7 +180,27 @@ export default function DashboardOverview() {
               ))}
             </div>
           ) : (
-            <p className="text-white/60">No recent activity</p>
+            <div className="py-8 text-center">
+              <div className="w-14 h-14 rounded-full bg-white/5 mx-auto mb-3 flex items-center justify-center">
+                {isClient ? (
+                  <Briefcase className="w-7 h-7 text-white/30" />
+                ) : (
+                  <MessageSquare className="w-7 h-7 text-white/30" />
+                )}
+              </div>
+              <p className="font-medium text-white">Nothing here yet</p>
+              <p className="text-sm text-white/60 mt-1 mb-4">
+                {isClient
+                  ? "Post a job to start receiving proposals"
+                  : "Browse jobs and send your first proposal"}
+              </p>
+              <Link
+                href={isClient ? "/dashboard/jobs/post" : "/dashboard/jobs/browse"}
+                className="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors"
+              >
+                {isClient ? "Post a Job" : "Browse Jobs"}
+              </Link>
+            </div>
           )}
         </div>
 
@@ -135,7 +208,7 @@ export default function DashboardOverview() {
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
           <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
           <div className="space-y-3">
-            {user?.role === "client" ? (
+            {isClient ? (
               <>
                 <Link
                   href="/dashboard/jobs/post"
