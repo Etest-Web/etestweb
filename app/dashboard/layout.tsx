@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Dashboard',
 };
 
+// Dashboard pages require auth + live Convex data — never prerender at build time.
+export const dynamic = "force-dynamic";
+
 interface LayoutProps {
   children: React.ReactNode;
   params: Promise<{ [key: string]: string | string[] | undefined }>;

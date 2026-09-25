@@ -62,7 +62,7 @@
 ================================ */
 :root {
   --radius: 0.625rem;
-  --background-dark: #231e0f; /* EliteDesign Dark */
+  --background-dark: #231e0f; /* Glypha Dark */
   --background-light: #f8f8f5; /* lime-cream */
   /* Base */ /* lime-cream */ /* near-black */
   /* Surfaces */
@@ -71,12 +71,12 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   /* Brand */
-  --primary: #FAC638; /* EliteDesign Gold */
+  --primary: #FAC638; /* Glypha Gold */
   --primary-foreground: #231e0f;
   --secondary: oklch(0.97 0 0); /* bronze */
   --secondary-foreground: #231e0f;
   /* Accent */
-  --accent: #FAC638; /* EliteDesign Gold */
+  --accent: #FAC638; /* Glypha Gold */
   --accent-foreground: #231e0f;
   /* Muted */
   --muted: oklch(0.97 0 0);
@@ -108,13 +108,13 @@
    🌙 Dark Mode (Rich & Classy)
 ================================ */
 .dark {
-  --background: #231e0f; /* EliteDesign Dark */
+  --background: #231e0f; /* Glypha Dark */
   --foreground: #ffffff;
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: #FAC638; /* EliteDesign Gold */
+  --primary: #FAC638; /* Glypha Gold */
   --primary-foreground: #231e0f;
   --secondary: oklch(0.269 0 0); /* honey-bronze */
   --secondary-foreground: #ffffff;

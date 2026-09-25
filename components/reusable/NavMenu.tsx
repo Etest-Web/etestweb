@@ -43,8 +43,8 @@ export default function NavMenu() {
             <div className="text-primary h-full w-full">
               <Link href="/">
                 <Image
-                  src="/Etest-white.png"
-                  alt=""
+                  src="/Glypha-white.png"
+                  alt="Glypha"
                   width={100}
                   height={100}
                   className="object-cover w-full h-max"

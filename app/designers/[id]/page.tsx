@@ -619,7 +619,7 @@ export default function DesignerDetailPage() {
 
                 <div className="flex gap-2 p-3 bg-white/[0.02] border border-white/[0.04] rounded-xl text-[10px] text-stone-400">
                   <Info className="w-3.5 h-3.5 text-stone-400 flex-shrink-0 mt-0.5" />
-                  <span>Contracts are bound under Etest platform security. Work begins once a project milestones terms are signed.</span>
+                  <span>Contracts are bound under Glypha platform security. Work begins once a project milestones terms are signed.</span>
                 </div>
               </div>
             </div>

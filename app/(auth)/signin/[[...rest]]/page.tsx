@@ -17,7 +17,7 @@ const AVATARS = [
 
 export function LogoIcon({ className }: { className?: string }) {
   return (
-    <Image src={"/Etest-white.png"} className={className} width={100} height={100} alt="Etest Services"/>
+    <Image src={"/Glypha-white.png"} className={className} width={100} height={100} alt="Glypha Services"/>
   );
 }
 

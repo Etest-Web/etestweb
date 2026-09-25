@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
               </a>
             </div>
             <p className="text-slate-600 text-xs">
-              © 2024 EliteDesign Storytelling Agency. All rights reserved.
+              © {year} Glypha Storytelling Agency. All rights reserved.
             </p>
           </div>
         </div>

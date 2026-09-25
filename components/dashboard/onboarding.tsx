@@ -100,7 +100,7 @@ export function Onboarding() {
           </h1>
           <p className="text-white/60 mb-6 text-sm">
             {step === 1
-              ? "Tell us how you&apos;ll use Etest."
+              ? "Tell us how you&apos;ll use Glypha."
               : "A few details to get you started."}
           </p>
 

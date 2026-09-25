@@ -29,7 +29,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Etest - Premium Design Freelancing Platform",
+  title: "Glypha - Premium Design Freelancing Platform",
   description: "Bridge the gap between physical branding and digital innovations",
 };
 

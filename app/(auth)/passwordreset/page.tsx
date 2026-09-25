@@ -11,7 +11,7 @@ export default function PasswordResetPage() {
               <div className="size-6 flex items-center justify-center">
                 <span className="material-symbols-outlined text-3xl">grid_view</span>
               </div>
-              <h2 className="text-white text-xl font-bold leading-tight tracking-[-0.015em] font-display">EliteDesign</h2>
+              <h2 className="text-white text-xl font-bold leading-tight tracking-[-0.015em] font-display">Glypha</h2>
             </Link>
             <div className="flex items-center gap-4">
               <a className="text-white hover:text-primary transition-colors text-sm font-medium" href="#">Support</a>
@@ -43,7 +43,7 @@ export default function PasswordResetPage() {
                   </label>
                   <input
                     className="form-input flex w-full rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-neutral-muted bg-neutral-surface focus:border-primary h-14 placeholder:text-white/30 p-[15px] text-base font-normal"
-                    placeholder="e.g. alex@elitedesign.com"
+                    placeholder="e.g. alex@glypha.com"
                     required
                     type="email"
                   />
@@ -69,7 +69,7 @@ export default function PasswordResetPage() {
           {/* Footer Section */}
           <footer className="px-6 py-8 text-center">
             <p className="text-white/40 text-sm">
-              © 2024 EliteDesign Studio. All rights reserved.
+              © 2024 Glypha Studio. All rights reserved.
             </p>
           </footer>
         </div>

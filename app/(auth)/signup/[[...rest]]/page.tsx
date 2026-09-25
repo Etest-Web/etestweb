@@ -14,7 +14,7 @@ export default function SignupPage() {
           <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-neutral-border px-6 md:px-10 py-2 lg:mx-auto lg:w-full lg:max-w-[1200px]">
             <Link href="/" className="flex items-center gap-3 text-primary">
               <div className="size-8 flex items-center h-full w-full justify-center">
-                <Image src="/Etest-white.png" alt="Ettest" width={100} height={100} className="w-full h-max "/>
+                <Image src="/Glypha-white.png" alt="Glypha" width={100} height={100} className="w-full h-max "/>
               </div>
             </Link>
             <div className="flex items-center gap-4">
@@ -74,7 +74,7 @@ export default function SignupPage() {
           {/* Footer Section */}
           <footer className="px-6 py-8 text-center">
             <p className="text-white/40 text-sm">
-              © 2024 EliteDesign Studio. All rights reserved.
+              © 2024 Glypha Studio. All rights reserved.
             </p>
           </footer>
         </div>

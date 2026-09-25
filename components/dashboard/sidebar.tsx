@@ -72,8 +72,8 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
       <div className="p-6 border-b border-white/10">
         <Link href="/" className="flex items-center gap-3" onClick={onNavigate}>
           <Image
-            src="/Etest-white.png"
-            alt="Etest"
+            src="/Glypha-white.png"
+            alt="Glypha"
             width={120}
             height={40}
             className="object-contain"
