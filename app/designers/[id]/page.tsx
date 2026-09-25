@@ -120,6 +120,7 @@ export default function DesignerDetailPage() {
   const pricingPackages = useMemo(() => {
     return {
       basic: {
+        title: "Basic Package",
         price: basePrice,
         delivery: 3,
         revisions: "3 Revisions",
@@ -127,6 +128,7 @@ export default function DesignerDetailPage() {
         features: ["1 Design Concept", "Source File Included", "Commercial Use License", "High Resolution Output"]
       },
       standard: {
+        title: "Standard Package",
         price: Math.round(basePrice * 2.5),
         delivery: 5,
         revisions: "5 Revisions",
@@ -134,6 +136,7 @@ export default function DesignerDetailPage() {
         features: ["2 Design Concepts", "Source File Included", "Commercial Use License", "High Resolution Output", "Layered/Vector File", "Priority Delivery"]
       },
       premium: {
+        title: "Premium Package",
         price: Math.round(basePrice * 5),
         delivery: 7,
         revisions: "Unlimited Revisions",
