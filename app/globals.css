@@ -5,10 +5,18 @@
 
 /* ================================
    Tailwind Theme Tokens
-================================ */
+=============================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-bebas-neue);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-ink: var(--brand-ink);
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -33,120 +41,151 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Single-source radius scale, derived from --radius */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Legacy aliases kept so untouched pages keep rendering while the
+     hardcoded-colour sweep is still outstanding. Prefer the semantic
+     tokens above in new code. */
   --color-background-dark: var(--background-dark);
   --color-background-light: var(--background-light);
 }
 
 /* ================================
-   🌞 Light Mode (Warm / Premium)
-================================ */
+   🌞 Light Mode
+=============================== */
 :root {
+  /* ── Palette carried over verbatim from etestlearn ───────────────
+     purple #945DA3  →  oklch(56.556% 0.121 318.82)   brand / primary
+       · --brand is the mark itself: fills, buttons, rules, highlights
+       · --brand-ink is the deepened purple (#6C3C78, 8.22:1 on white) used
+         whenever the brand must read as text or an icon on a light surface
+       · --brand-foreground is what sits ON --brand (white, 4.82:1)
+     gold    #EABE5D  →  accent only: charts, badges, progress fills
+     Neutrals carry a very low-chroma cast at the purple hue (318.82) so the
+     greys sit in the same colour family as the mark.                      */
   --radius: 0.625rem;
-  --background-dark: #231e0f; /* Glypha Dark */
-  --background-light: #f8f8f5; /* lime-cream */
-  /* Base */ /* lime-cream */ /* near-black */
-  /* Surfaces */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  /* Brand */
-  --primary: #FAC638; /* Glypha Gold */
-  --primary-foreground: #231e0f;
-  --secondary: oklch(0.97 0 0); /* bronze */
-  --secondary-foreground: #231e0f;
-  /* Accent */
-  --accent: #FAC638; /* Glypha Gold */
-  --accent-foreground: #231e0f;
-  /* Muted */
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  /* Utility */
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  /* Status */
-  --destructive: oklch(0.577 0.245 27.325);
-  --background: #f8f8f5;
-  --foreground: #231e0f;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: oklch(100% 0.006 318.82);
+  --foreground: oklch(14.5% 0.012 318.82);
+  --brand: oklch(56.556% 0.121 318.82);
+  --brand-foreground: oklch(100% 0 0);
+  --brand-ink: oklch(44% 0.109 318.82);
+  --card: oklch(100% 0.006 318.82);
+  --card-foreground: oklch(14.5% 0.012 318.82);
+  --popover: oklch(100% 0.006 318.82);
+  --popover-foreground: oklch(14.5% 0.012 318.82);
+  --primary: oklch(56.556% 0.121 318.82);
+  --primary-foreground: oklch(100% 0 0);
+  --secondary: oklch(97% 0.008 318.82);
+  --secondary-foreground: oklch(20.5% 0.011 318.82);
+  --muted: oklch(97% 0.008 318.82);
+  --muted-foreground: oklch(55.6% 0.011 318.82);
+  --accent: oklch(95.5% 0.028 318.82);
+  --accent-foreground: oklch(20.5% 0.011 318.82);
+  --destructive: oklch(57.7% 0.245 27.325);
+  --border: oklch(92.2% 0.01 318.82);
+  --input: oklch(92.2% 0.01 318.82);
+  --ring: oklch(56.556% 0.121 318.82);
+  --chart-1: oklch(56.556% 0.121 318.82);
+  --chart-2: #eabe5d;
+  --chart-3: oklch(44% 0.109 318.82);
+  --chart-4: oklch(57% 0.108 84.92);
+  --chart-5: oklch(72% 0.102 318.82);
+  --sidebar: oklch(98.5% 0.007 318.82);
+  --sidebar-foreground: oklch(14.5% 0.012 318.82);
+  --sidebar-primary: oklch(56.556% 0.121 318.82);
+  --sidebar-primary-foreground: oklch(100% 0 0);
+  --sidebar-accent: oklch(96% 0.016 318.82);
+  --sidebar-accent-foreground: oklch(20.5% 0.011 318.82);
+  --sidebar-border: oklch(92.2% 0.01 318.82);
+  --sidebar-ring: oklch(56.556% 0.121 318.82);
+
+  /* Legacy aliases — now theme-aware instead of pinned hexes */
+  --background-dark: var(--background);
+  --background-light: var(--background);
 }
 
 /* ================================
-   🌙 Dark Mode (Rich & Classy)
-================================ */
+   🌙 Dark Mode
+=============================== */
 .dark {
-  --background: #231e0f; /* Glypha Dark */
-  --foreground: #ffffff;
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #FAC638; /* Glypha Gold */
-  --primary-foreground: #231e0f;
-  --secondary: oklch(0.269 0 0); /* honey-bronze */
-  --secondary-foreground: #ffffff;
-  --accent: #FAC638;
-  --accent-foreground: #231e0f;
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* On dark surfaces both --brand and the primary step up to
+     oklch(72% 0.102 318.82) (#C090CE): black text on it is 8.12:1, the
+     ink on --background ~7.5:1 and text-primary against --card 6.94:1,
+     versus only 2.59:1 for white on it — hence the dark
+     --brand-foreground / --primary-foreground. Gold stays legible on dark
+     (11.3:1 on --background), so it needs no step of its own. */
+  --background: oklch(14.5% 0.01 318.82);
+  --foreground: oklch(98.5% 0.006 318.82);
+  --brand: oklch(72% 0.102 318.82);
+  --brand-foreground: oklch(14.5% 0.012 318.82);
+  /* the lightened brand already reads as text on dark, so ink === brand */
+  --brand-ink: oklch(72% 0.102 318.82);
+  --card: oklch(20.5% 0.011 318.82);
+  --card-foreground: oklch(98.5% 0.006 318.82);
+  --popover: oklch(20.5% 0.011 318.82);
+  --popover-foreground: oklch(98.5% 0.006 318.82);
+  --primary: oklch(72% 0.102 318.82);
+  --primary-foreground: oklch(14.5% 0.012 318.82);
+  --secondary: oklch(26.9% 0.011 318.82);
+  --secondary-foreground: oklch(98.5% 0.006 318.82);
+  --muted: oklch(26.9% 0.011 318.82);
+  --muted-foreground: oklch(70.8% 0.012 318.82);
+  --accent: oklch(30% 0.03 318.82);
+  --accent-foreground: oklch(98.5% 0.006 318.82);
+  --destructive: oklch(70.4% 0.191 22.216);
+  --border: oklch(100% 0 0 / 10%);
+  --input: oklch(100% 0 0 / 15%);
+  --ring: oklch(72% 0.102 318.82);
+  --chart-1: oklch(56.556% 0.121 318.82);
+  --chart-2: #eabe5d;
+  --chart-3: oklch(44% 0.109 318.82);
+  --chart-4: oklch(57% 0.108 84.92);
+  --chart-5: oklch(72% 0.102 318.82);
+  --sidebar: oklch(20.5% 0.011 318.82);
+  --sidebar-foreground: oklch(98.5% 0.006 318.82);
+  --sidebar-primary: oklch(72% 0.102 318.82);
+  --sidebar-primary-foreground: oklch(14.5% 0.012 318.82);
+  --sidebar-accent: oklch(28% 0.025 318.82);
+  --sidebar-accent-foreground: oklch(98.5% 0.006 318.82);
+  --sidebar-border: oklch(100% 0 0 / 10%);
+  --sidebar-ring: oklch(72% 0.102 318.82);
+
+  --background-dark: var(--background);
+  --background-light: var(--background);
 }
 
 /* ================================
    Base Styles
-================================ */
+=============================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
   }
 
   body {
@@ -154,24 +193,20 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 /* ================================
    Home Page Utilities
-================================ */
+=============================== */
+/* Hero scrim. Deliberately NOT built from --brand/--brand-ink: those step
+   UP to a light purple in dark mode, which would wash out the backdrop
+   image and drop the white headline below contrast. The hero art is a
+   photo with light text on it, so the scrim stays deep purple-black in
+   both themes. */
 .hero-gradient {
   background: linear-gradient(
     to bottom,
-    rgba(35, 30, 15, 0.55) 0%,
-    rgba(35, 30, 15, 0.72) 55%,
-    #231e0f 100%
+    oklch(18% 0.03 318.82 / 0.55) 0%,
+    oklch(15% 0.035 318.82 / 0.72) 55%,
+    oklch(14.5% 0.01 318.82) 100%
   );
 }
 
@@ -185,8 +220,8 @@
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(250, 198, 56, 0.35) 15%,
-    rgba(250, 198, 56, 0.35) 85%,
+    color-mix(in oklab, var(--brand) 35%, transparent) 15%,
+    color-mix(in oklab, var(--brand) 35%, transparent) 85%,
     transparent
   );
 }
@@ -197,7 +232,7 @@
   inset: 0 -3px;
   background: radial-gradient(
     circle at center,
-    rgba(250, 198, 56, 0.25),
+    color-mix(in oklab, var(--brand) 25%, transparent),
     transparent 70%
   );
   filter: blur(4px);

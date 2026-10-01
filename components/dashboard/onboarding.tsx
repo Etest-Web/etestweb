@@ -89,16 +89,16 @@ export function Onboarding() {
   };
 
   const inputClass =
-    "w-full rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder:text-white/40 outline-none focus:border-primary/60 focus:bg-white/[0.06] transition-colors";
+    "w-full rounded-md border border-input bg-transparent px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-ring";
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-xl animate-in fade-in zoom-in-95 duration-300">
-        <div className="bg-[#1a1610] border border-white/10 rounded-2xl p-8 shadow-2xl shadow-black/40">
-          <h1 className="text-2xl font-bold text-white mb-1">
+        <div className="rounded-lg border border-border bg-card p-8 text-card-foreground shadow-lg">
+          <h1 className="mb-1 text-2xl font-bold">
             Let&apos;s set up your profile
           </h1>
-          <p className="text-white/60 mb-6 text-sm">
+          <p className="mb-6 text-sm text-muted-foreground">
             {step === 1
               ? "Tell us how you&apos;ll use Glypha."
               : "A few details to get you started."}
@@ -128,7 +128,7 @@ export function Onboarding() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1.5">
+                <label className="mb-1.5 block text-sm font-medium text-muted-foreground">
                   Full name
                 </label>
                 <input
@@ -142,7 +142,7 @@ export function Onboarding() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                  <label className="mb-1.5 block text-sm font-medium text-muted-foreground">
                     City
                   </label>
                   <input
@@ -154,7 +154,7 @@ export function Onboarding() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-1.5">
+                  <label className="mb-1.5 block text-sm font-medium text-muted-foreground">
                     Country
                   </label>
                   <input
@@ -170,7 +170,7 @@ export function Onboarding() {
               {role === "designer" && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    <label className="mb-1.5 block text-sm font-medium text-muted-foreground">
                       Skills
                     </label>
                     <div className="flex flex-wrap gap-2 mb-2">
@@ -182,10 +182,10 @@ export function Onboarding() {
                             key={s}
                             onClick={() => toggleSkill(s)}
                             className={cn(
-                              "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
+                              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                               active
-                                ? "bg-primary text-black border-primary"
-                                : "border-white/15 text-white/70 hover:border-white/30 hover:text-white"
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                             )}
                           >
                             {active ? "✓ " : ""}
@@ -210,7 +210,7 @@ export function Onboarding() {
                       <button
                         type="button"
                         onClick={addCustomSkill}
-                        className="shrink-0 px-4 rounded-lg border border-white/10 text-white/70 hover:bg-white/5 hover:text-white transition-colors text-sm"
+                        className="shrink-0 rounded-md border border-border px-4 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                       >
                         Add
                       </button>
@@ -220,14 +220,14 @@ export function Onboarding() {
                         {skills.map((s) => (
                           <span
                             key={s}
-                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary text-xs font-medium"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-medium text-primary"
                           >
                             {s}
                             <button
                               type="button"
                               onClick={() => toggleSkill(s)}
                               aria-label={`Remove ${s}`}
-                              className="hover:text-white transition-colors"
+                              className="transition-colors hover:text-primary/70"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -238,7 +238,7 @@ export function Onboarding() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-1.5">
+                    <label className="mb-1.5 block text-sm font-medium text-muted-foreground">
                       Bio
                     </label>
                     <textarea
@@ -254,7 +254,7 @@ export function Onboarding() {
               <button
                 type="submit"
                 disabled={!canSubmit || submitting}
-                className="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-black transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? (
                   <>
@@ -265,7 +265,7 @@ export function Onboarding() {
                 )}
               </button>
               {role === "designer" && skills.length === 0 && (
-                <p className="text-xs text-white/50 text-center">
+                <p className="text-center text-xs text-muted-foreground">
                   Add at least one skill to continue.
                 </p>
               )}
@@ -295,24 +295,26 @@ function RoleOption({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-4 rounded-xl border p-4 text-left transition-all",
+        "flex w-full items-center gap-4 rounded-md border p-4 text-left transition-colors",
         selected
           ? "border-primary bg-primary/10"
-          : "border-white/10 hover:border-white/25 hover:bg-white/[0.03]"
+          : "border-border hover:bg-accent"
       )}
     >
-      <span className="text-2xl flex-shrink-0">{icon}</span>
+      <span className="flex-shrink-0 text-2xl">{icon}</span>
       <span className="flex-1">
-        <span className="block font-semibold text-white">{title}</span>
-        <span className="block text-sm text-white/60">{subtitle}</span>
+        <span className="block font-semibold">{title}</span>
+        <span className="block text-sm text-muted-foreground">{subtitle}</span>
       </span>
       <span
         className={cn(
-          "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
-          selected ? "border-primary bg-primary" : "border-white/25"
+          "flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+          selected ? "border-primary bg-primary" : "border-border"
         )}
       >
-        {selected && <Check className="w-3.5 h-3.5 text-black" />}
+        {selected && (
+          <Check className="h-3.5 w-3.5 text-primary-foreground" />
+        )}
       </span>
     </button>
   );
@@ -321,13 +323,13 @@ function RoleOption({
 function StepBadge({ role, onBack }: { role: Role; onBack: () => void }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium capitalize">
+      <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary">
         {role === "designer" ? "🎨 Designer" : "🛠️ Client"}
       </span>
       <button
         type="button"
         onClick={onBack}
-        className="text-xs text-white/50 hover:text-white transition-colors"
+        className="text-xs text-muted-foreground transition-colors hover:text-foreground"
       >
         Change role
       </button>

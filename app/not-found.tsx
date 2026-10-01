@@ -1,33 +1,30 @@
 import Link from "next/link";
 import { Compass } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 export default function NotFound() {
   return (
-    <main className="bg-slate-950 text-white min-h-[70vh] flex items-center justify-center px-5">
-      <div className="text-center max-w-md">
-        <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-6 flex items-center justify-center">
-          <Compass className="w-10 h-10 text-primary" />
+    <main className="flex min-h-[70vh] items-center justify-center bg-background px-5 text-foreground">
+      <div className="max-w-md text-center">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+          <Compass className="h-10 w-10 text-primary" />
         </div>
-        <p className="text-primary font-bold tracking-widest uppercase text-sm mb-2">
+        <p className="mb-2 text-sm font-bold uppercase tracking-widest text-brand-ink dark:text-brand">
           404
         </p>
-        <h1 className="text-3xl font-bold mb-3">Page not found</h1>
-        <p className="text-white/60 mb-8">
-          The page you&apos;re looking for doesn&apos;t exist or may have been moved.
+        <h1 className="mb-3 text-3xl font-bold">Page not found</h1>
+        <p className="mb-8 text-muted-foreground">
+          The page you&apos;re looking for doesn&apos;t exist or may have been
+          moved.
         </p>
         <div className="flex items-center justify-center gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center h-11 px-6 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors"
-          >
-            Back Home
-          </Link>
-          <Link
-            href="/designers"
-            className="inline-flex items-center h-11 px-6 rounded-lg border border-white/10 font-medium hover:bg-white/5 transition-colors"
-          >
-            Explore Designers
-          </Link>
+          <Button asChild size="lg">
+            <Link href="/">Back Home</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/designers">Explore Designers</Link>
+          </Button>
         </div>
       </div>
     </main>

@@ -43,7 +43,7 @@ export function DesignerCard({ designer }: { designer: Designer }) {
             alt={designer.name}
           />
           {/* Pulsing Online Indicator */}
-          <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white">
+          <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-card">
             <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75"></span>
           </span>
         </div>

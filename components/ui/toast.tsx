@@ -34,8 +34,8 @@ const VARIANT_CONFIG: Record<
   ToastVariant,
   { icon: React.ElementType; iconClass: string }
 > = {
-  success: { icon: CheckCircle2, iconClass: "text-green-400" },
-  error: { icon: XCircle, iconClass: "text-red-400" },
+  success: { icon: CheckCircle2, iconClass: "text-emerald-500" },
+  error: { icon: XCircle, iconClass: "text-destructive" },
   info: { icon: Info, iconClass: "text-primary" },
 };
 
@@ -81,13 +81,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             <div
               key={t.id}
               role="status"
-              className="pointer-events-auto flex items-start gap-3 rounded-xl border border-white/10 bg-[#1a1610] p-4 shadow-2xl shadow-black/50 animate-in fade-in slide-in-from-bottom-4 duration-300"
+              className="pointer-events-auto flex items-start gap-3 rounded-lg border border-border bg-card p-4 text-card-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-300"
             >
               <Icon className={cn("h-5 w-5 flex-shrink-0", iconClass)} />
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-white">{t.title}</p>
+                <p className="font-semibold">{t.title}</p>
                 {t.description && (
-                  <p className="mt-1 text-sm leading-relaxed text-white/60">
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                     {t.description}
                   </p>
                 )}
@@ -95,7 +95,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => dismiss(t.id)}
                 aria-label="Dismiss notification"
-                className="rounded-md p-1 text-white/40 transition-colors hover:bg-white/5 hover:text-white"
+                className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 <X className="h-4 w-4" />
               </button>

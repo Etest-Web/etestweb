@@ -12,7 +12,7 @@ export default function ConditionalLayout({ children }: { children: ReactNode })
   const isDashboardPage = pathname.startsWith("/dashboard");
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       {!isAuthPage && !isDashboardPage && <NavMenu />}
       <main className="flex-1">{children}</main>
       {!isAuthPage && !isDashboardPage && <Footer />}

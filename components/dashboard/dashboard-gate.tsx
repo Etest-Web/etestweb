@@ -14,20 +14,20 @@ export function DashboardGate({
   if (currentUser === undefined) {
     return (
       <div className="p-8">
-        <div className="h-8 w-56 rounded bg-white/[0.06] animate-pulse mb-6" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="mb-6 h-8 w-56 animate-pulse rounded-md bg-muted" />
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-[#1a1610] border border-white/10 rounded-xl p-6 h-32 animate-pulse"
+              className="h-32 animate-pulse rounded-lg border border-border bg-card p-6"
             />
           ))}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {[0, 1].map((i) => (
             <div
               key={i}
-              className="bg-[#1a1610] border border-white/10 rounded-xl h-40 animate-pulse"
+              className="h-40 animate-pulse rounded-lg border border-border bg-card"
             />
           ))}
         </div>

@@ -1,8 +1,9 @@
 "use client";
 
 import { SignIn } from "@clerk/nextjs";
-import Image from "next/image";
 import Link from "next/link";
+
+import { Logo } from "@/components/ui/logo";
 
 const HERO_IMAGE =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuA31_3cQEuEI7dc6VRX6is3-IgLa2c3KwLspw0GNUsQn-kw2SAcwU51BbLHDowI2icvAwtRpzx8TNiqamgc8b1stSALLuwQacpvF-kkkfYPbTKAZSnTIM7soWmutn0fRb1GtdKj4oUNrl-4vaCK6IWH78m_kXoGnUj8fPR1DYdo0oPm218sfKMnUo5IlpjswLKPy5osCOjh-6LxMqTkZ3UrAMsGX0rShpf6UILgrYcR-i4lRssIUuKM02f3XXlJmo7XbyBDtGUXhkua";
@@ -16,9 +17,7 @@ const AVATARS = [
 
 
 export function LogoIcon({ className }: { className?: string }) {
-  return (
-    <Image src={"/Glypha-white.png"} className={className} width={100} height={100} alt="Glypha Services"/>
-  );
+  return <Logo plate className={className} />;
 }
 
 export default function SignInPage() {
@@ -34,10 +33,8 @@ export default function SignInPage() {
         <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
 
         <div className="relative z-10 w-full">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex size-50 items-center justify-center rounded">
-              <LogoIcon className="h-max w-full object-cover" />
-            </div>
+          <Link href="/" className="flex items-center">
+            <Logo plate className="w-48" priority />
           </Link>
         </div>
 
@@ -74,10 +71,8 @@ export default function SignInPage() {
       <div className="flex w-full flex-col items-center justify-center bg-background px-6 lg:w-1/2 lg:px-24">
         <div className="w-full max-w-[440px]">
           {/* Mobile logo */}
-          <Link href="/" className="mb-12 flex items-center gap-3 lg:hidden">
-            <div className="flex size-50 items-center justify-center rounded bg-primary">
-              <LogoIcon className="h-max w-full text-primary-foreground" />
-            </div>
+          <Link href="/" className="mb-12 flex items-center lg:hidden">
+            <Logo className="w-40" />
           </Link>
 
           <div className="mb-10">
@@ -96,15 +91,17 @@ export default function SignInPage() {
               signUpFallbackRedirectUrl="/"
               appearance={{
                 elements: {
-                  formButtonPrimary: "bg-primary text-black hover:bg-primary/90",
+                  formButtonPrimary:
+                    "bg-primary text-primary-foreground hover:bg-primary/80",
                   card: "bg-transparent shadow-none w-full",
                   headerTitle: "hidden",
                   headerSubtitle: "hidden",
-                  socialButtonsBlockButton: "border-white/10 bg-white/5 hover:bg-white/10 text-white",
-                  formFieldInput: "bg-white/5 border-white/10 text-white",
-                  formFieldLabel: "text-white/80",
-                  dividerText: "text-white/40",
-                  dividerLine: "bg-white/10",
+                  socialButtonsBlockButton:
+                    "border-border bg-secondary text-secondary-foreground hover:bg-accent",
+                  formFieldInput: "bg-card border-input text-foreground",
+                  formFieldLabel: "text-foreground",
+                  dividerText: "text-muted-foreground",
+                  dividerLine: "bg-border",
                   footer: "hidden",
                 }
               }}

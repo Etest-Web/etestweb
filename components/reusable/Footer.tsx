@@ -1,5 +1,6 @@
 import React from "react";
-import { LogoIcon } from "@/app/(auth)/signin/[[...rest]]/page";
+
+import { Logo } from "@/components/ui/logo";
 
 /**
  * Footer component used across the application.
@@ -11,17 +12,12 @@ import { LogoIcon } from "@/app/(auth)/signin/[[...rest]]/page";
 const Footer: React.FC = () => {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-white/5 bg-background-dark py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex flex-col items-center md:items-start gap-6">
-            <div className="flex items-center gap-3">
-              <div className="text-primary h-max w-full">
-                <LogoIcon className="h-max w-full object-cover" />
-              </div>
-              
-            </div>
-            <p className="text-slate-500 text-sm max-w-xs text-center md:text-left">
+    <footer className="border-t border-border bg-background py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-between gap-12 md:flex-row">
+          <div className="flex flex-col items-center gap-6 md:items-start">
+            <Logo plate className="w-40" />
+            <p className="max-w-xs text-center text-sm text-muted-foreground md:text-left">
               We are the architects of digital narrative, helping visionary
               brands unleash their full potential.
             </p>
@@ -29,25 +25,25 @@ const Footer: React.FC = () => {
           <div className="flex flex-col items-center gap-8">
             <div className="flex gap-10">
               <a
-                className="text-slate-400 hover:text-primary transition-colors"
+                className="text-muted-foreground transition-colors hover:text-brand-ink"
                 href="#"
               >
                 Twitter
               </a>
               <a
-                className="text-slate-400 hover:text-primary transition-colors"
+                className="text-muted-foreground transition-colors hover:text-brand-ink"
                 href="#"
               >
                 LinkedIn
               </a>
               <a
-                className="text-slate-400 hover:text-primary transition-colors"
+                className="text-muted-foreground transition-colors hover:text-brand-ink"
                 href="#"
               >
                 Dribbble
               </a>
             </div>
-            <p className="text-slate-600 text-xs">
+            <p className="text-xs text-muted-foreground/60">
               © {year} Glypha Storytelling Agency. All rights reserved.
             </p>
           </div>

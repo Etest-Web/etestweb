@@ -7,7 +7,7 @@ function Skeleton({
   return (
     <div
       aria-hidden
-      className={cn("animate-pulse rounded-lg bg-white/[0.07]", className)}
+      className={cn("animate-pulse rounded-md bg-muted", className)}
       {...props}
     />
   )
@@ -15,9 +15,9 @@ function Skeleton({
 
 function StatCardSkeleton() {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1a1610] p-6">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between">
-        <Skeleton className="h-12 w-12 rounded-lg" />
+        <Skeleton className="h-12 w-12 rounded-md" />
         <Skeleton className="h-6 w-8 rounded-full" />
       </div>
       <Skeleton className="mb-2 h-9 w-20" />
@@ -28,7 +28,7 @@ function StatCardSkeleton() {
 
 function JobCardSkeleton() {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1a1610] p-6">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-center gap-3 pb-4">
         <Skeleton className="h-7 w-48" />
         <Skeleton className="h-6 w-24 rounded-full" />
@@ -48,7 +48,7 @@ function JobCardSkeleton() {
 
 function DesignerCardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-[#1a1610]">
+    <div className="overflow-hidden rounded-lg border border-border bg-card">
       <div className="flex items-center gap-3 p-4">
         <Skeleton className="h-12 w-12 rounded-full" />
         <div className="min-w-0 flex-1 space-y-2">
@@ -63,7 +63,7 @@ function DesignerCardSkeleton() {
           <Skeleton className="h-5 w-16 rounded" />
           <Skeleton className="h-5 w-20 rounded" />
         </div>
-        <Skeleton className="h-10 w-full rounded-lg" />
+        <Skeleton className="h-10 w-full rounded-md" />
       </div>
     </div>
   )
@@ -71,7 +71,7 @@ function DesignerCardSkeleton() {
 
 function ListRowSkeleton() {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1a1610] p-6">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
           <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ function ListRowSkeleton() {
             <Skeleton className="h-5 w-24" />
           </div>
         </div>
-        <Skeleton className="h-10 w-32 rounded-lg" />
+        <Skeleton className="h-10 w-32 rounded-md" />
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Upload, X } from "lucide-react";
 import { getErrorMessage } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ImageUploadProps {
   onUploadComplete: (storageId: string, url: string) => void;
@@ -89,10 +90,8 @@ export function ImageUpload({
   return (
     <div className="w-full">
       <label
-        className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
-          dragOver
-            ? "border-primary bg-primary/5"
-            : "border-white/10 hover:border-white/20 bg-white/5"
+        className={`relative flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors ${
+          dragOver ? "border-primary bg-primary/5" : "border-border bg-muted/40 hover:border-muted-foreground/30"
         }`}
         onDragOver={(e) => {
           e.preventDefault();
@@ -111,19 +110,19 @@ export function ImageUpload({
 
         {uploading ? (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="text-white/60 text-sm">Uploading...</p>
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <p className="text-sm text-muted-foreground">Uploading...</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="p-4 rounded-full bg-primary/10">
-              <Upload className="w-8 h-8 text-primary" />
+            <div className="rounded-full bg-primary/10 p-4">
+              <Upload className="h-8 w-8 text-primary" />
             </div>
             <div className="text-center">
-              <p className="text-white font-medium">
+              <p className="font-medium text-foreground">
                 Drop your image here or click to browse
               </p>
-              <p className="text-white/60 text-sm mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 JPG, PNG, or WebP up to {maxSize / 1024 / 1024}MB
               </p>
             </div>
@@ -132,9 +131,9 @@ export function ImageUpload({
       </label>
 
       {error && (
-        <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-2">
-          <X className="w-4 h-4 text-red-400 flex-shrink-0" />
-          <p className="text-red-400 text-sm">{error}</p>
+        <div className="mt-3 flex items-center gap-2 rounded-md border border-destructive/20 bg-destructive/10 p-3">
+          <X className="h-4 w-4 flex-shrink-0 text-destructive" />
+          <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
     </div>
@@ -208,20 +207,20 @@ export function ImageUploadModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-[#1a1610] border border-white/10 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-white">Add Portfolio Item</h3>
+      <div className="relative w-full max-w-lg rounded-lg border border-border bg-popover p-6 text-popover-foreground">
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="text-xl font-bold">Add Portfolio Item</h3>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
-            <X className="w-5 h-5 text-white/60" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         <div className="space-y-4">
           {!uploadedStorageId ? (
-            <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/10 rounded-xl cursor-pointer hover:border-primary/50 transition-colors bg-white/5">
+            <label className="flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/40 transition-colors hover:border-primary/50">
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
@@ -231,43 +230,43 @@ export function ImageUploadModal({
               />
               {uploading ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <p className="text-white/60 text-sm">Uploading...</p>
+                  <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  <p className="text-sm text-muted-foreground">Uploading...</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="p-4 rounded-full bg-primary/10">
-                    <Upload className="w-8 h-8 text-primary" />
+                  <div className="rounded-full bg-primary/10 p-4">
+                    <Upload className="h-8 w-8 text-primary" />
                   </div>
                   <div className="text-center">
-                    <p className="text-white font-medium">Click to upload image</p>
-                    <p className="text-white/60 text-sm mt-1">JPG, PNG, or WebP up to 10MB</p>
+                    <p className="font-medium text-foreground">Click to upload image</p>
+                    <p className="mt-1 text-sm text-muted-foreground">JPG, PNG, or WebP up to 10MB</p>
                   </div>
                 </div>
               )}
             </label>
           ) : (
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-white/5">
+            <div className="relative aspect-video overflow-hidden rounded-md bg-muted/40">
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white/60 text-sm">Image uploaded successfully</p>
+                <p className="text-sm text-muted-foreground">Image uploaded successfully</p>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-              <p className="text-red-400 text-sm">{error}</p>
+            <div className="rounded-md border border-destructive/20 bg-destructive/10 p-3">
+              <p className="text-sm text-destructive">{error}</p>
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-white/80 mb-2">
+            <label className="mb-2 block text-sm font-medium text-muted-foreground">
               Category
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full h-12 rounded-lg border border-white/10 bg-white/5 px-4 text-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="h-12 w-full rounded-md border border-input bg-transparent px-4 text-foreground outline-none focus:border-ring focus:ring-[3px] focus:ring-ring/50"
               required
             >
               <option value="">Select a category</option>
@@ -282,24 +281,25 @@ export function ImageUploadModal({
           </div>
 
           <div className="flex gap-4">
-            <button
+            <Button
               onClick={() => void handleSubmit()}
               disabled={!uploadedStorageId || !category || submitting}
-              className="flex-1 h-12 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="h-12 flex-1"
             >
               {submitting && (
-                <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
               )}
               {submitting ? "Adding..." : "Add to Portfolio"}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 px-6"
               onClick={() => {
                 setUploadedStorageId(null);
               }}
-              className="px-6 h-12 rounded-lg border border-white/10 text-white font-medium hover:bg-white/5 transition-colors"
             >
               Remove
-            </button>
+            </Button>
           </div>
         </div>
       </div>

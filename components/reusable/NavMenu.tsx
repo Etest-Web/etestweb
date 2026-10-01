@@ -1,9 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import {  Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 const navLinks = [
   { name: "The Journey", href: "#process" },
@@ -35,31 +38,24 @@ export default function NavMenu() {
   }, [open]);
 
   return (
-    <header className="fixed top-0 z-50 w-dvw border-b border-white/10 bg-background-dark/30 backdrop-blur-xl rounded-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="text-primary h-full w-full">
-              <Link href="/">
-                <Image
-                  src="/Glypha-white.png"
-                  alt="Glypha"
-                  width={100}
-                  height={100}
-                  className="object-cover w-full h-max"
-                />
-              </Link>
-            </div>
-          </div>
+    /* Kept `fixed` (not `sticky`) so the header still overlays the
+       full-height hero exactly as before — switching this would push the
+       hero down by 5rem. */
+    <header className="fixed top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-20 items-center justify-between">
+          {/* Logo — the purple wordmark needs a light plate on dark themes */}
+          <Link href="/" className="flex items-center">
+            <Logo plate className="w-32" priority />
+          </Link>
 
           {/* Desktop Links */}
-          <nav className="hidden md:flex items-center gap-10">
+          <nav className="hidden items-center gap-10 md:flex">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-white/80 hover:text-primary transition-colors"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.name}
               </a>
@@ -67,13 +63,12 @@ export default function NavMenu() {
           </nav>
 
           {/* Desktop CTA + Auth */}
-          <div className="flex items-center gap-4">
-           <Show when="signed-out">
+          <div className="flex items-center gap-3">
+            <ModeToggle />
+            <Show when="signed-out">
               <SignInButton />
               <SignUpButton>
-                <button className="bg-primary text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                  Sign Up
-                </button>
+                <Button size="lg">Sign Up</Button>
               </SignUpButton>
             </Show>
             <Show when="signed-in">
@@ -84,7 +79,7 @@ export default function NavMenu() {
             <button
               aria-label="Toggle menu"
               onClick={() => setOpen(!open)}
-              className="md:hidden inline-flex items-center justify-center rounded-lg border border-white/10 p-2 text-zinc-300 hover:bg-white/10"
+              className="inline-flex items-center justify-center rounded-md border border-border p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground md:hidden"
             >
               <svg
                 className="h-5 w-5"
@@ -116,16 +111,16 @@ export default function NavMenu() {
       {open && (
         <div
           ref={menuRef}
-          className="md:hidden border-t border-white/10 bg-black/50 backdrop-blur-xl"
+          className="border-b border-border bg-background/95 backdrop-blur-xl md:hidden"
         >
-          <div className="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-            <ul className="space-y-4 text-sm text-white/80">
+          <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+            <ul className="space-y-4 text-sm text-muted-foreground">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="block transition hover:text-primary"
+                    className="block transition hover:text-foreground"
                   >
                     {link.name}
                   </a>
@@ -133,17 +128,17 @@ export default function NavMenu() {
               ))}
             </ul>
 
-            <Show when="signed-out">
-              <SignInButton />
-              <SignUpButton>
-                <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                  Sign Up
-                </button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
+            <div className="flex items-center gap-3">
+              <Show when="signed-out">
+                <SignInButton />
+                <SignUpButton>
+                  <Button size="lg">Sign Up</Button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </div>
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ConfirmOptions {
   title: string;
@@ -69,56 +70,48 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => close(false)}
           />
-          <div className="relative w-full max-w-md rounded-xl border border-white/10 bg-[#1a1610] p-6 shadow-2xl shadow-black/50 animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 rounded-lg border border-border bg-popover p-6 text-popover-foreground shadow-lg duration-200">
             <div className="mb-4 flex items-start gap-3">
               <div
                 className={cn(
                   "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full",
                   pending.destructive
-                    ? "bg-red-500/15"
+                    ? "bg-destructive/15"
                     : "bg-primary/15"
                 )}
               >
                 <AlertTriangle
                   className={cn(
                     "h-5 w-5",
-                    pending.destructive ? "text-red-400" : "text-primary"
+                    pending.destructive ? "text-destructive" : "text-primary"
                   )}
                 />
               </div>
               <div>
-                <h3
-                  id="confirm-title"
-                  className="text-lg font-bold text-white"
-                >
+                <h3 id="confirm-title" className="text-lg font-bold">
                   {pending.title}
                 </h3>
-                <p className="mt-1 text-sm leading-relaxed text-white/60">
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                   {pending.message}
                 </p>
               </div>
             </div>
             <div className="flex justify-end gap-3">
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => close(false)}
-                className="h-10 rounded-lg border border-white/10 px-5 font-medium text-white transition-colors hover:bg-white/5"
               >
                 {pending.cancelLabel ?? "Cancel"}
-              </button>
-              <button
+              </Button>
+              <Button
                 ref={confirmButtonRef}
                 type="button"
+                variant={pending.destructive ? "destructive" : "default"}
                 onClick={() => close(true)}
-                className={cn(
-                  "flex h-10 items-center gap-2 rounded-lg px-5 font-bold transition-colors",
-                  pending.destructive
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-primary text-black hover:bg-primary/90"
-                )}
               >
                 {pending.confirmLabel ?? "Confirm"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
