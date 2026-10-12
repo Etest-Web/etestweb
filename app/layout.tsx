@@ -1,48 +1,25 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ConvexClientProvider } from "./ConvexClientProvider";
-import {
-  Geist,
-  Geist_Mono,
-  Roboto,
-  Montserrat,
-  Outfit,
-  Bebas_Neue,
-  Poppins,
-} from "next/font/google";
+import { Fraunces, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "./ConditionalLayout";
 import { ToastProvider } from "@/components/ui/toast";
 import { ConfirmProvider } from "@/components/ui/confirm";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
-const montser = Montserrat({
-  variable: "--font-montserrat",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"]
-})
-
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets:["latin"]
-})
-
-/* Display faces carried over from etestlearn. --font-outfit is the app
-   sans (wired to --font-sans in globals.css) and --font-bebas-neue backs
-   the `font-display` utility. */
-const outfit = Outfit({
-  variable: "--font-outfit",
+/* Editorial pairing: Fraunces carries every display setting (variable
+   optical size + WONK axis, so the headlines read as drawn rather than
+   typeset); Plus Jakarta Sans handles all interface copy. Geist Mono is
+   retained for numeric/technical surfaces. */
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
 });
 
-const bebasNeue = Bebas_Neue({
-  weight: "400",
-  variable: "--font-bebas-neue",
-  subsets: ["latin"],
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
 });
 
@@ -51,15 +28,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Glypha - Premium Design Freelancing Platform",
-  description: "Bridge the gap between physical branding and digital innovations",
+  title: "Glypha — Premium Design Freelancing Platform",
+  description:
+    "A curated marketplace of certified designers. Browse the work, pick a defined tier, pay on delivery.",
 };
 
 export default function RootLayout({
@@ -73,12 +45,16 @@ export default function RootLayout({
           paint; the class is written before React hydrates. */}
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${montser.variable} ${roboto.variable} ${geistMono.variable} ${outfit.variable} ${bebasNeue.variable} ${poppins.variable} font-outfit antialiased`}
+          className={`${fraunces.variable} ${jakarta.variable} ${geistMono.variable} font-sans antialiased`}
         >
+          {/* Film grain. Fixed and pointer-events-none so it never sits in
+              the scroll path — see the grain-layer utility in globals.css. */}
+          <div className="grain-layer" aria-hidden />
+
           <ConvexClientProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="dark"
+              defaultTheme="light"
               enableSystem
               disableTransitionOnChange
             >

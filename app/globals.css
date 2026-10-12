@@ -5,14 +5,15 @@
 
 /* ================================
    Tailwind Theme Tokens
-=============================== */
+   =============================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --font-sans: var(--font-outfit);
+  --font-sans: var(--font-jakarta);
+  --font-serif: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-bebas-neue);
+  --font-display: var(--font-fraunces);
 
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
@@ -56,70 +57,82 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Single-source radius scale, derived from --radius */
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Editorial paper + espresso surfaces */
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-sage: var(--sage);
+  --color-clay: var(--clay);
+  --color-gold: var(--gold);
 
-  /* Legacy aliases kept so untouched pages keep rendering while the
-     hardcoded-colour sweep is still outstanding. Prefer the semantic
-     tokens above in new code. */
-  --color-background-dark: var(--background-dark);
-  --color-background-light: var(--background-light);
+  /* Single-source radius scale, derived from --radius */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.3);
+  --radius-2xl: calc(var(--radius) * 1.7);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.8);
+
+  /* Motion — every transition in the system uses this spring */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-swift: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ================================
-   🌞 Light Mode
-=============================== */
+   📄 Paper — Editorial Luxury
+   =============================== */
 :root {
-  /* ── Palette carried over verbatim from etestlearn ───────────────
-     purple #945DA3  →  oklch(56.556% 0.121 318.82)   brand / primary
-       · --brand is the mark itself: fills, buttons, rules, highlights
-       · --brand-ink is the deepened purple (#6C3C78, 8.22:1 on white) used
-         whenever the brand must read as text or an icon on a light surface
-       · --brand-foreground is what sits ON --brand (white, 4.82:1)
-     gold    #EABE5D  →  accent only: charts, badges, progress fills
-     Neutrals carry a very low-chroma cast at the purple hue (318.82) so the
-     greys sit in the same colour family as the mark.                      */
-  --radius: 0.625rem;
-  --background: oklch(100% 0.006 318.82);
-  --foreground: oklch(14.5% 0.012 318.82);
-  --brand: oklch(56.556% 0.121 318.82);
-  --brand-foreground: oklch(100% 0 0);
+  /* Warm cream stock. The whole surface stack is paper: --paper is the
+     page, --paper-raised the inner "core" that sits inside every shell. */
+  --radius: 1.25rem;
+  --paper: oklch(98.4% 0.006 84);
+  --paper-raised: oklch(99.6% 0.003 84);
+  --ink: oklch(23% 0.018 62);
+  --ink-soft: oklch(44% 0.016 62);
+  --sage: oklch(53% 0.062 152);
+  --clay: oklch(56% 0.104 38);
+  /* Deepened from #eabe5d so gold stays legible as *text* on cream (3.8:1)
+     instead of vanishing the way it did on white. */
+  --gold: oklch(58% 0.086 78);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --brand: oklch(50% 0.109 318.82);
+  --brand-foreground: oklch(99.6% 0.003 84);
   --brand-ink: oklch(44% 0.109 318.82);
-  --card: oklch(100% 0.006 318.82);
-  --card-foreground: oklch(14.5% 0.012 318.82);
-  --popover: oklch(100% 0.006 318.82);
-  --popover-foreground: oklch(14.5% 0.012 318.82);
-  --primary: oklch(56.556% 0.121 318.82);
-  --primary-foreground: oklch(100% 0 0);
-  --secondary: oklch(97% 0.008 318.82);
-  --secondary-foreground: oklch(20.5% 0.011 318.82);
-  --muted: oklch(97% 0.008 318.82);
-  --muted-foreground: oklch(55.6% 0.011 318.82);
-  --accent: oklch(95.5% 0.028 318.82);
-  --accent-foreground: oklch(20.5% 0.011 318.82);
-  --destructive: oklch(57.7% 0.245 27.325);
-  --border: oklch(92.2% 0.01 318.82);
-  --input: oklch(92.2% 0.01 318.82);
-  --ring: oklch(56.556% 0.121 318.82);
-  --chart-1: oklch(56.556% 0.121 318.82);
-  --chart-2: #eabe5d;
-  --chart-3: oklch(44% 0.109 318.82);
-  --chart-4: oklch(57% 0.108 84.92);
-  --chart-5: oklch(72% 0.102 318.82);
-  --sidebar: oklch(98.5% 0.007 318.82);
-  --sidebar-foreground: oklch(14.5% 0.012 318.82);
-  --sidebar-primary: oklch(56.556% 0.121 318.82);
-  --sidebar-primary-foreground: oklch(100% 0 0);
-  --sidebar-accent: oklch(96% 0.016 318.82);
-  --sidebar-accent-foreground: oklch(20.5% 0.011 318.82);
-  --sidebar-border: oklch(92.2% 0.01 318.82);
-  --sidebar-ring: oklch(56.556% 0.121 318.82);
+  --card: var(--paper-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper-raised);
+  --secondary: oklch(95.2% 0.009 84);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(95.2% 0.009 84);
+  --muted-foreground: oklch(48% 0.015 62);
+  --accent: oklch(93.6% 0.016 150);
+  --accent-foreground: oklch(38% 0.06 152);
+  --destructive: oklch(52% 0.19 27);
+  /* Hairlines are warm and *tinted*, never neutral gray — a 1px #00000040
+     on cream reads as dirt. */
+  --border: oklch(23% 0.018 62 / 0.11);
+  --input: oklch(23% 0.018 62 / 0.16);
+  --ring: oklch(50% 0.109 318.82);
+  --chart-1: oklch(50% 0.109 318.82);
+  --chart-2: oklch(58% 0.086 78);
+  --chart-3: oklch(53% 0.062 152);
+  --chart-4: oklch(56% 0.104 38);
+  --chart-5: oklch(44% 0.016 62);
+  --sidebar: oklch(96.6% 0.008 84);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: var(--paper-raised);
+  --sidebar-accent: oklch(93.6% 0.016 150);
+  --sidebar-accent-foreground: oklch(38% 0.06 152);
+  --sidebar-border: oklch(23% 0.018 62 / 0.11);
+  --sidebar-ring: var(--brand);
 
   /* Legacy aliases — now theme-aware instead of pinned hexes */
   --background-dark: var(--background);
@@ -127,50 +140,51 @@
 }
 
 /* ================================
-   🌙 Dark Mode
-=============================== */
+   🌙 Espresso — the inverted set
+   =============================== */
 .dark {
-  /* On dark surfaces both --brand and the primary step up to
-     oklch(72% 0.102 318.82) (#C090CE): black text on it is 8.12:1, the
-     ink on --background ~7.5:1 and text-primary against --card 6.94:1,
-     versus only 2.59:1 for white on it — hence the dark
-     --brand-foreground / --primary-foreground. Gold stays legible on dark
-     (11.3:1 on --background), so it needs no step of its own. */
-  --background: oklch(14.5% 0.01 318.82);
-  --foreground: oklch(98.5% 0.006 318.82);
-  --brand: oklch(72% 0.102 318.82);
-  --brand-foreground: oklch(14.5% 0.012 318.82);
-  /* the lightened brand already reads as text on dark, so ink === brand */
-  --brand-ink: oklch(72% 0.102 318.82);
-  --card: oklch(20.5% 0.011 318.82);
-  --card-foreground: oklch(98.5% 0.006 318.82);
-  --popover: oklch(20.5% 0.011 318.82);
-  --popover-foreground: oklch(98.5% 0.006 318.82);
-  --primary: oklch(72% 0.102 318.82);
-  --primary-foreground: oklch(14.5% 0.012 318.82);
-  --secondary: oklch(26.9% 0.011 318.82);
-  --secondary-foreground: oklch(98.5% 0.006 318.82);
-  --muted: oklch(26.9% 0.011 318.82);
-  --muted-foreground: oklch(70.8% 0.012 318.82);
-  --accent: oklch(30% 0.03 318.82);
-  --accent-foreground: oklch(98.5% 0.006 318.82);
-  --destructive: oklch(70.4% 0.191 22.216);
-  --border: oklch(100% 0 0 / 10%);
-  --input: oklch(100% 0 0 / 15%);
-  --ring: oklch(72% 0.102 318.82);
-  --chart-1: oklch(56.556% 0.121 318.82);
-  --chart-2: #eabe5d;
-  --chart-3: oklch(44% 0.109 318.82);
-  --chart-4: oklch(57% 0.108 84.92);
-  --chart-5: oklch(72% 0.102 318.82);
-  --sidebar: oklch(20.5% 0.011 318.82);
-  --sidebar-foreground: oklch(98.5% 0.006 318.82);
-  --sidebar-primary: oklch(72% 0.102 318.82);
-  --sidebar-primary-foreground: oklch(14.5% 0.012 318.82);
-  --sidebar-accent: oklch(28% 0.025 318.82);
-  --sidebar-accent-foreground: oklch(98.5% 0.006 318.82);
-  --sidebar-border: oklch(100% 0 0 / 10%);
-  --sidebar-ring: oklch(72% 0.102 318.82);
+  --paper: oklch(17% 0.014 62);
+  --paper-raised: oklch(21.5% 0.015 62);
+  --ink: oklch(95% 0.008 84);
+  --ink-soft: oklch(72% 0.012 62);
+  --sage: oklch(74% 0.07 152);
+  --clay: oklch(72% 0.09 38);
+  --gold: oklch(78% 0.09 78);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --brand: oklch(74% 0.104 318.82);
+  --brand-foreground: oklch(17% 0.014 62);
+  --brand-ink: oklch(78% 0.104 318.82);
+  --card: var(--paper-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: oklch(17% 0.014 62);
+  --secondary: oklch(27% 0.016 62);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(27% 0.016 62);
+  --muted-foreground: oklch(72% 0.012 62);
+  --accent: oklch(31% 0.03 152);
+  --accent-foreground: oklch(88% 0.06 152);
+  --destructive: oklch(66% 0.17 27);
+  --border: oklch(100% 0 0 / 0.11);
+  --input: oklch(100% 0 0 / 0.16);
+  --ring: oklch(74% 0.104 318.82);
+  --chart-1: oklch(74% 0.104 318.82);
+  --chart-2: oklch(78% 0.09 78);
+  --chart-3: oklch(74% 0.07 152);
+  --chart-4: oklch(72% 0.09 38);
+  --chart-5: oklch(72% 0.012 62);
+  --sidebar: oklch(21.5% 0.015 62);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: oklch(17% 0.014 62);
+  --sidebar-accent: oklch(31% 0.03 152);
+  --sidebar-accent-foreground: oklch(88% 0.06 152);
+  --sidebar-border: oklch(100% 0 0 / 0.11);
+  --sidebar-ring: var(--brand);
 
   --background-dark: var(--background);
   --background-light: var(--background);
@@ -178,7 +192,7 @@
 
 /* ================================
    Base Styles
-=============================== */
+   =============================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -186,261 +200,512 @@
 
   html {
     @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
   }
+
+  /* Serif display headings get optical sizing + a touch of "wonk" so the
+     letterforms read as drawn rather than typeset. */
+  h1,
+  h2,
+  .font-serif {
+    font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 144;
+    letter-spacing: -0.02em;
+  }
 }
 
-/* ================================
-   Home Page Utilities
-=============================== */
-/* Hero scrim. Deliberately NOT built from --brand/--brand-ink: those step
-   UP to a light purple in dark mode, which would wash out the backdrop
-   image and drop the white headline below contrast. The hero art is a
-   photo with light text on it, so the scrim stays deep purple-black in
-   both themes. */
-.hero-gradient {
-  background: linear-gradient(
-    to bottom,
-    oklch(18% 0.03 318.82 / 0.55) 0%,
-    oklch(15% 0.035 318.82 / 0.72) 55%,
-    oklch(14.5% 0.01 318.82) 100%
-  );
+/* Component classes live in the `components` layer so that Tailwind
+   utilities (which sit in the later `utilities` layer) can still override
+   them per-call-site — e.g. `lg:hidden` on .btn-secondary. Unlayered rules
+   would beat every utility in the cascade. */
+@layer components {
+  /* ================================
+     🎞 Texture — Film Grain
+     =============================== */
+  /* Fixed and pointer-events-none ONLY. Attaching grain to a scrolling
+     container forces a full repaint on every scroll frame.
+     Deliberately NO `mix-blend-mode`: blending a fixed layer against the
+     root stacking context forces the browser to re-composite the entire
+     page each frame, which is the precise failure mode Section 6 of the
+     design brief warns about. Plain low-opacity noise gets the paper
+     texture for free. */
+  .grain-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .dark .grain-layer {
+    opacity: 0.05;
+  }
+  /* Faint ruled-paper texture for large empty areas. */
+  .paper-tooth {
+    background-image:
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--ink) 3%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--ink) 2%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 100% 96px, 96px 100%;
+  }
+  /* ================================
+     🧱 Double-Bezel (Doppelrand)
+     =============================== */
+  /* Outer shell = the machined tray. Inner core = the glass plate sitting
+     in it. The two radii are concentric: 2rem outer − 0.375rem padding. */
+  .shell {
+    border-radius: var(--radius-4xl);
+    padding: 0.375rem;
+    background: color-mix(in oklab, var(--ink) 4%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent),
+      0 24px 60px -30px color-mix(in oklab, var(--ink) 40%, transparent);
+  }
+  .dark .shell {
+    background: color-mix(in oklab, #ffffff 5%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, #ffffff 8%, transparent),
+      0 24px 60px -30px oklch(0 0 0 / 0.7);
+  }
+  .shell__core {
+    border-radius: calc(var(--radius-4xl) - 0.375rem);
+    background: var(--paper-raised);
+    box-shadow: inset 0 1px 1px oklch(100% 0 0 / 0.9);
+  }
+  .dark .shell__core {
+    box-shadow: inset 0 1px 1px oklch(100% 0 0 / 0.06);
+  }
+  /* Shell that lifts on hover — used for gig cards and feature tiles. */
+  .shell--lift {
+    transition:
+      transform 700ms var(--ease-fluid),
+      box-shadow 700ms var(--ease-fluid);
+  }
+  .shell--lift:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent),
+      0 40px 80px -34px color-mix(in oklab, var(--ink) 46%, transparent);
+  }
+  .dark .shell--lift:hover {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, #ffffff 12%, transparent),
+      0 40px 80px -34px oklch(0 0 0 / 0.8);
+  }
+  /* ================================
+     🎬 Motion primitives
+     =============================== */
+  .fluid {
+    transition-timing-function: var(--ease-fluid);
+  }
+  .swift {
+    transition-timing-function: var(--ease-swift);
+  }
+  /* Scroll reveal. Starts displaced + blurred + transparent; a single
+     IntersectionObserver flips data-revealed and the element settles. Only
+     transform/opacity/blur animate — no layout properties. */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 4rem, 0);
+    filter: blur(12px);
+    transition:
+      opacity 1000ms var(--ease-fluid),
+      transform 1000ms var(--ease-fluid),
+      filter 1000ms var(--ease-fluid);
+  }
+  .reveal[data-revealed="true"] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+  /* Staggered mask reveal for the modal nav. Elements mount already
+     displaced and transparent, then lift into place on a per-item delay —
+     `both` fill mode so nothing flashes at the resting position first. */
+  .animate-mask {
+    animation: mask-reveal 900ms var(--ease-fluid) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-mask {
+      animation: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+  }
+  /* ================================
+     🏷 Editorial primitives
+     =============================== */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em];
+    background: color-mix(in oklab, var(--ink) 5%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
+    color: var(--ink-soft);
+  }
+  /* Pill CTA with the trailing icon nested in its own island.
+     NOTE: `group` is added at the call site, not here — Tailwind v4 cannot
+     @apply a marker class like `group`. */
+  .btn-pill {
+    @apply inline-flex items-center gap-3 rounded-full py-2 pl-7 pr-2 text-[15px] font-medium;
+    background: var(--ink);
+    color: var(--paper-raised);
+    transition:
+      transform 700ms var(--ease-fluid),
+      opacity 700ms var(--ease-fluid);
+  }
+  .btn-pill:hover {
+    transform: translateY(-2px);
+  }
+  .btn-pill:active {
+    transform: scale(0.98);
+  }
+  .btn-pill__island {
+    @apply flex h-9 w-9 items-center justify-center rounded-full;
+    background: color-mix(in oklab, #ffffff 16%, transparent);
+    transition: transform 700ms var(--ease-fluid);
+  }
+  .btn-pill:hover .btn-pill__island {
+    transform: translate(0.25rem, -1px) scale(1.05);
+  }
+  .btn-pill--ghost {
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent);
+  }
+  .btn-pill--ghost .btn-pill__island {
+    background: color-mix(in oklab, var(--ink) 6%, transparent);
+  }
+  .btn-pill--ghost:hover {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 24%, transparent);
+  }
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    transition: background-size 700ms var(--ease-fluid);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+  /* Horizontal rails scroll without a visible scrollbar (category pills,
+     trending shots). Keeps a scroll affordance via a fade mask instead. */
+  .rail {
+    @apply flex gap-3 overflow-x-auto pb-1;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  /* ================================
+     📦 Category Tags — editorial
+     =============================== */
+  .tag-chip {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
+    background: var(--tone-bg);
+    color: var(--tone-ink);
+  }
+  /* Each category sets the two tone variables; every surface that borrows
+     the palette (chips, cover artboards, rails) reads from here so a
+     category can never drift between two elements. */
+  .tag-web,
+  .tag-branding {
+    --tone-bg: color-mix(in oklab, var(--brand) 12%, transparent);
+    --tone-ink: var(--brand-ink);
+  }
+  .tag-illustration,
+  .tag-video {
+    --tone-bg: color-mix(in oklab, var(--clay) 14%, transparent);
+    --tone-ink: color-mix(in oklab, var(--clay) 86%, var(--ink));
+  }
+  .tag-motion,
+  .tag-packaging {
+    --tone-bg: color-mix(in oklab, var(--sage) 16%, transparent);
+    --tone-ink: color-mix(in oklab, var(--sage) 82%, var(--ink));
+  }
+  .tag-logo {
+    --tone-bg: color-mix(in oklab, var(--gold) 20%, transparent);
+    --tone-ink: color-mix(in oklab, var(--gold) 78%, var(--ink));
+  }
+  .tag-uiux {
+    --tone-bg: color-mix(in oklab, var(--ink) 9%, transparent);
+    --tone-ink: var(--ink-soft);
+  }
+  /* Covers carry the hue at full strength; chips stay translucent. */
+  .artboard {
+    background: color-mix(in oklab, var(--tone-ink) 22%, var(--paper-raised));
+    color: var(--tone-ink);
+  }
+  .dark .tag-chip,
+  .dark .artboard {
+    --tone-ink: oklch(93% 0.012 84);
+  }
+  /* Seller level chips — Fiverr's badge ladder, restyled editorial. */
+  .level-chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
+  }
+  .level-chip--beginner { color: color-mix(in oklab, var(--ink) 55%, transparent); }
+  .level-chip--intermediate { color: color-mix(in oklab, var(--sage) 80%, var(--ink)); }
+  .level-chip--advanced { color: var(--brand-ink); }
+  .level-chip--expert { color: color-mix(in oklab, var(--gold) 72%, var(--ink)); }
+  .dark .level-chip { color: oklch(90% 0.01 84); }
+  /* ================================
+     🖼 Shot Card — Dribbble masonry
+     =============================== */
+  .shot-card {
+    @apply relative overflow-hidden;
+    border-radius: var(--radius-2xl);
+    background: var(--paper-raised);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent),
+      0 18px 44px -28px color-mix(in oklab, var(--ink) 42%, transparent);
+    transition:
+      transform 700ms var(--ease-fluid),
+      box-shadow 700ms var(--ease-fluid);
+  }
+  .shot-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--ink) 12%, transparent),
+      0 40px 70px -34px color-mix(in oklab, var(--ink) 46%, transparent);
+  }
+  .shot-card__image {
+    @apply h-full w-full object-cover;
+    transition: transform 1100ms var(--ease-fluid);
+  }
+  .shot-card:hover .shot-card__image {
+    transform: scale(1.05);
+  }
+  .shot-card__overlay {
+    @apply absolute inset-0 flex items-end p-5;
+    background: linear-gradient(
+      to top,
+      oklch(16% 0.02 62 / 0.88) 0%,
+      oklch(16% 0.02 62 / 0.32) 46%,
+      transparent 78%
+    );
+    opacity: 0;
+    transition: opacity 700ms var(--ease-fluid);
+  }
+  .shot-card:hover .shot-card__overlay,
+  .shot-card:focus-visible .shot-card__overlay {
+    opacity: 1;
+  }
+  .shot-card__info {
+    @apply w-full text-left;
+    color: oklch(98% 0.006 84);
+    transform: translate3d(0, 1.25rem, 0);
+    transition: transform 900ms var(--ease-fluid);
+  }
+  .shot-card:hover .shot-card__info {
+    transform: translate3d(0, 0, 0);
+  }
+  .shot-card__name {
+    @apply text-lg font-medium;
+    font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 48;
+  }
+  .masonry-grid {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  @media (min-width: 1280px) {
+    .masonry-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 1279px) and (min-width: 1024px) {
+    .masonry-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 1023px) and (min-width: 768px) {
+    .masonry-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .masonry-grid { grid-template-columns: 1fr; }
+  }
+  /* ================================
+     💜 Pricing tiers — Fiverr gigs
+     =============================== */
+  .tier-strip {
+    @apply flex items-stretch overflow-hidden;
+    border-radius: calc(var(--radius-3xl) - 0.375rem);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 9%, transparent);
+  }
+  .tier-cell {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5 px-3 py-2.5;
+    transition: background-color 700ms var(--ease-fluid);
+  }
+  .tier-cell + .tier-cell {
+    box-shadow: inset 1px 0 0 color-mix(in oklab, var(--ink) 9%, transparent);
+  }
+  .tier-cell:hover,
+  .tier-cell[data-selected="true"] {
+    background: color-mix(in oklab, var(--ink) 5%, transparent);
+  }
+  .tier-cell__label {
+    @apply text-[9px] font-medium uppercase tracking-[0.16em];
+    color: color-mix(in oklab, var(--ink) 50%, transparent);
+  }
+  .tier-cell__price {
+    @apply text-[13px] font-medium tabular-nums;
+  }
+  /* ================================
+     🔘 Buttons
+     =============================== */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-[15px] font-medium;
+    background: var(--ink);
+    color: var(--paper-raised);
+    transition:
+      transform 700ms var(--ease-fluid),
+      box-shadow 700ms var(--ease-fluid);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -18px color-mix(in oklab, var(--ink) 60%, transparent);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-[15px] font-medium;
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent);
+    transition:
+      transform 700ms var(--ease-fluid),
+      box-shadow 700ms var(--ease-fluid);
+  }
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 26%, transparent);
+  }
+  .btn-secondary:active {
+    transform: scale(0.98);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
+    color: var(--ink-soft);
+    transition:
+      color 700ms var(--ease-fluid),
+      background-color 700ms var(--ease-fluid);
+  }
+  .btn-ghost:hover {
+    background: color-mix(in oklab, var(--ink) 6%, transparent);
+    color: var(--ink);
+  }
+  .category-tab {
+    @apply shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
+    color: var(--ink-soft);
+    transition:
+      background-color 700ms var(--ease-fluid),
+      color 700ms var(--ease-fluid),
+      box-shadow 700ms var(--ease-fluid);
+  }
+  .category-tab:hover {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 22%, transparent);
+    color: var(--ink);
+  }
+  .category-tab--active {
+    background: var(--ink);
+    color: var(--paper-raised);
+    box-shadow: none;
+  }
+  .category-tab--active:hover {
+    color: var(--paper-raised);
+  }
+  .search-input {
+    @apply w-full rounded-full py-3 pl-11 pr-5 text-[15px] text-foreground;
+    background: var(--paper-raised);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
+    transition: box-shadow 700ms var(--ease-fluid);
+  }
+  .search-input::placeholder {
+    color: color-mix(in oklab, var(--ink) 38%, transparent);
+  }
+  .search-input:focus {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--brand) 50%, transparent),
+      0 0 0 4px color-mix(in oklab, var(--brand) 10%, transparent);
+  }
+  /* ================================
+     ✳ Loading
+     =============================== */
+  .skeleton-shimmer {
+    @apply relative overflow-hidden;
+    background: color-mix(in oklab, var(--ink) 6%, transparent);
+  }
+  .skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--paper-raised) 70%, transparent),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+  .verified-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
+    background: color-mix(in oklab, var(--sage) 16%, transparent);
+    color: color-mix(in oklab, var(--sage) 78%, var(--ink));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sage) 24%, transparent);
+  }
+  .certificate-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
+    background: color-mix(in oklab, var(--gold) 18%, transparent);
+    color: color-mix(in oklab, var(--gold) 74%, var(--ink));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--gold) 28%, transparent);
+  }
+  .dark .verified-badge,
+  .dark .certificate-badge {
+    color: oklch(94% 0.01 84);
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      to right,
+      var(--brand),
+      color-mix(in oklab, var(--clay) 70%, var(--brand))
+    );
+  }
+  .gradient-text--brand {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, var(--brand), var(--gold));
+  }
 }
 
-/* ================================
-   Dribbble × Glypha Design System
-=============================== */
-
-/* Category Gradient Backgrounds */
-.gradient-web { background: linear-gradient(135deg, oklch(65% 0.18 260) 0%, oklch(55% 0.22 290) 100%); }
-.gradient-illustration { background: linear-gradient(135deg, oklch(70% 0.18 35) 0%, oklch(60% 0.22 330) 100%); }
-.gradient-motion { background: linear-gradient(135deg, oklch(60% 0.16 150) 0%, oklch(50% 0.20 180) 100%); }
-.gradient-branding { background: linear-gradient(135deg, oklch(58% 0.20 320) 0%, oklch(50% 0.24 350) 100%); }
-.gradient-uiux { background: linear-gradient(135deg, oklch(62% 0.16 200) 0%, oklch(52% 0.20 270) 100%); }
-.gradient-video { background: linear-gradient(135deg, oklch(58% 0.20 15) 0%, oklch(50% 0.22 35) 100%); }
-.gradient-logo { background: linear-gradient(135deg, oklch(58% 0.20 320) 0%, oklch(50% 0.24 350) 100%); }
-.gradient-packaging { background: linear-gradient(135deg, oklch(55% 0.18 45) 0%, oklch(48% 0.20 30) 100%); }
-
-/* Mesh gradient for hero backgrounds */
-.mesh-gradient {
-  background: 
-    radial-gradient(ellipse 80% 50% at 20% 20%, oklch(58% 0.20 320 / 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 80% 30%, oklch(65% 0.18 260 / 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 60% at 40% 80%, oklch(60% 0.16 150 / 0.10) 0%, transparent 50%),
-    var(--background);
-}
-
-/* Card System */
-.shot-card {
-  @apply relative overflow-hidden rounded-2xl bg-card border border-border transition-all duration-300;
-  box-shadow: 0 4px 20px -4px oklch(0 0 0 / 0.15);
-}
-.shot-card:hover {
-  @apply -translate-y-1;
-  box-shadow: 0 20px 40px -12px oklch(var(--primary) / 0.25), 0 8px 24px -8px oklch(0 0 0 / 0.2);
-}
-.shot-card__image {
-  @apply w-full h-[70%] object-cover transition-transform duration-500 ease-out;
-}
-.shot-card:hover .shot-card__image {
-  @apply scale-105;
-}
-.shot-card__overlay {
-  @apply absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4;
-}
-.shot-card:hover .shot-card__overlay {
-  @apply opacity-100;
-}
-.shot-card__info {
-  @apply w-full text-white transform translate-y-4 transition-transform duration-300;
-}
-.shot-card:hover .shot-card__info {
-  @apply translate-y-0;
-}
-.shot-card__category {
-  @apply inline-block px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-full mb-2 backdrop-blur-sm bg-white/10 border border-white/20;
-}
-.shot-card__name {
-  @apply font-bold text-lg mb-1;
-}
-.shot-card__meta {
-  @apply flex items-center gap-2 text-sm text-white/80;
-}
-.shot-card__rating {
-  @apply flex items-center gap-1;
-}
-.shot-card__verified {
-  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-semibold uppercase tracking-wider border border-emerald-500/30;
-}
-
-/* Category Tag Colors */
-.tag-web { @apply bg-blue-500/20 text-blue-400 border-blue-500/30; }
-.tag-illustration { @apply bg-orange-500/20 text-orange-400 border-orange-500/30; }
-.tag-motion { @apply bg-emerald-500/20 text-emerald-400 border-emerald-500/30; }
-.tag-branding { @apply bg-purple-500/20 text-purple-400 border-purple-500/30; }
-.tag-uiux { @apply bg-cyan-500/20 text-cyan-400 border-cyan-500/30; }
-.tag-video { @apply bg-red-500/20 text-red-400 border-red-500/30; }
-.tag-logo { @apply bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/30; }
-.tag-packaging { @apply bg-amber-500/20 text-amber-400 border-amber-500/30; }
-
-/* Category Tab Buttons */
-.category-tab {
-  @apply px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border;
-}
-.category-tab--active {
-  @apply bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20;
-}
-.category-tab--inactive {
-  @apply bg-muted text-muted-foreground border-border hover:border-primary/30 hover:text-primary hover:bg-primary/5;
-}
-
-/* Search Input */
-.search-input {
-  @apply w-full pl-10 pr-4 py-3 bg-background/50 backdrop-blur-sm border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-transparent text-base;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes scaleOnHover {
-  from { transform: scale(1); }
-  to { transform: scale(1.05); }
-}
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 20px -5px oklch(var(--primary) / 0.3); }
-  50% { box-shadow: 0 0 40px -5px oklch(var(--primary) / 0.5); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-.animate-pulse-glow {
-  animation: pulseGlow 2s ease-in-out infinite;
-}
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, oklch(100% 0 0 / 0.1), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-/* Stagger delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-.stagger-6 { animation-delay: 0.6s; }
-
-/* Masonry Grid */
-.masonry-grid {
-  @apply grid gap-6;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
-@media (min-width: 1280px) {
-  .masonry-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 1279px) and (min-width: 1024px) {
-  .masonry-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 1023px) and (min-width: 768px) {
-  .masonry-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 767px) {
-  .masonry-grid { grid-template-columns: 1fr; }
-}
-
-/* Verified Badge */
-.verified-badge {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/20 backdrop-blur-sm;
-}
-.verified-badge__icon { @apply w-3.5 h-3.5; }
-
-/* Certificate Badge */
-.certificate-badge {
-  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 text-primary border border-primary/20 text-sm font-semibold;
-}
-.certificate-badge__icon { @apply w-4 h-4; }
-
-/* Skill Level Badges */
-.skill-level {
-  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider;
-}
-.skill-level--beginner { @apply bg-blue-500/20 text-blue-400 border border-blue-500/30; }
-.skill-level--intermediate { @apply bg-amber-500/20 text-amber-400 border border-amber-500/30; }
-.skill-level--advanced { @apply bg-purple-500/20 text-purple-400 border border-purple-500/30; }
-.skill-level--expert { @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30; }
-
-/* Gradient Text */
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-400;
-}
-.gradient-text--brand {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-amber-400;
-}
-
-/* Button Variants */
-.btn-primary {
-  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 transition-all duration-200;
-}
-.btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-secondary text-secondary-foreground font-bold text-base hover:bg-secondary/80 transition-all duration-200 border border-border;
-}
-.btn-ghost {
-  @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200;
-}
-
-/* Skeleton Shimmer */
-.skeleton-shimmer {
-  @apply relative overflow-hidden bg-muted;
-  background: linear-gradient(90deg, var(--muted) 25%, var(--muted-foreground / 0.1) 50%, var(--muted) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.narrative-line {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in oklab, var(--brand) 35%, transparent) 15%,
-    color-mix(in oklab, var(--brand) 35%, transparent) 85%,
-    transparent
-  );
-}
-
-.narrative-line::before {
-  content: "";
-  position: absolute;
-  inset: 0 -3px;
-  background: radial-gradient(
-    circle at center,
-    color-mix(in oklab, var(--brand) 25%, transparent),
-    transparent 70%
-  );
-  filter: blur(4px);
-}
-
-@keyframes fadeIn {
+@keyframes mask-reveal {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translate3d(0, 3rem, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

@@ -1,21 +1,73 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
+import { ArrowUpRight } from "@/components/ui/icons";
+import { Reveal } from "@/components/ui/reveal";
+
 export default function CTA() {
+  const router = useRouter();
+
   return (
-    <section className="py-32 bg-background-dark relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] rounded-full bg-primary/10 blur-[120px] pointer-events-none"></div>
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-4xl md:text-6xl font-black mb-8 text-white">
-          Your story is waiting <br /> to be told.
-        </h2>
-        <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Ready to stop being just another name in the crowd? Let&apos;s
-          architect your brand&apos;s full potential together.
-        </p>
-        <div className="inline-flex p-1.5 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
-          <button className="bg-primary text-background-dark px-12 py-5 rounded-xl font-bold text-xl hover:bg-white transition-all">
-            Start Your Project
-          </button>
-        </div>
+    <section className="relative overflow-hidden py-32 md:py-40">
+      {/* Sits in normal flow *behind* the content by DOM order, not a
+          negative z-index — `-z-10` would drop the panel behind the body
+          background and vanish entirely. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-ink" />
+        <div
+          className="absolute left-1/2 top-0 h-[46rem] w-[46rem] -translate-x-1/2 -translate-y-1/3 rounded-full opacity-70"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in oklab, var(--gold) 30%, transparent) 0%, transparent 64%)",
+          }}
+        />
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-5 text-center md:px-8">
+        <Reveal>
+          <span className="eyebrow !bg-white/10 !text-white/70 !shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)]">
+            Open for briefs
+          </span>
+        </Reveal>
+
+        <Reveal delay={90}>
+          <h2 className="mt-8 font-serif text-[clamp(2.75rem,7vw,5.25rem)] font-light leading-[0.98] tracking-[-0.03em] text-white text-balance">
+            Your story is waiting to be <span className="italic text-gold">drawn</span>.
+          </h2>
+        </Reveal>
+
+        <Reveal delay={180}>
+          <p className="mx-auto mt-8 max-w-xl text-[17px] leading-relaxed text-white/60">
+            Post a brief, get scoped proposals with real prices attached, and
+            pay only when the work lands.
+          </p>
+        </Reveal>
+
+        <Reveal delay={270}>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/jobs/post")}
+              className="btn-pill group !bg-white !text-ink"
+            >
+              Start your project
+              <span className="btn-pill__island !bg-ink/10">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/designers")}
+              className="btn-pill group !bg-transparent !text-white !shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
+            >
+              Meet the designers
+              <span className="btn-pill__island !bg-white/10">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </button>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

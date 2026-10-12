@@ -1,202 +1,237 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
+
+import { ArrowUpRight, Search, ShieldCheck, Sparkle } from "@/components/ui/icons";
+import { Reveal } from "@/components/ui/reveal";
+import { CATEGORIES, fromPrice, reviewsFor } from "@/lib/gigs";
+
+const STATS = [
+  { value: "1,240", label: "Certified designers" },
+  { value: "4.9", label: "Average rating" },
+  { value: "98%", label: "Projects delivered" },
+  { value: "50", label: "Countries" },
+];
+
+const SHELF = [
+  { seed: "shelf-identity", skill: "Brand Identity", title: "Identity system for a Nordic bakery", rating: 4.9, tone: "tag-branding", mark: "N" },
+  { seed: "shelf-product", skill: "Product Design", title: "End-to-end fintech onboarding", rating: 4.8, tone: "tag-uiux", mark: "F" },
+  { seed: "shelf-motion", skill: "Motion Design", title: "Title sequence for a docu-series", rating: 5.0, tone: "tag-motion", mark: "R" },
+];
 
 export default function Hero() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("all");
 
-  const categories = [
-    { id: "all", label: "All", count: 1240 },
-    { id: "ui-ux-design", label: "UI/UX Design", count: 280 },
-    { id: "logo-design", label: "Logo Design", count: 195 },
-    { id: "brand-identity", label: "Brand Identity", count: 150 },
-    { id: "illustration", label: "Illustration", count: 180 },
-    { id: "motion-design", label: "Motion Design", count: 95 },
-    { id: "web-design", label: "Web Design", count: 140 },
-    { id: "video-editing", label: "Video Editing", count: 75 },
-  ];
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In real app, would trigger search
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("q", query.trim());
+    if (category !== "all") params.set("category", category);
+    router.push(`/designers${params.toString() ? `?${params}` : ""}`);
   };
 
   return (
-    <section className="relative min-h-[100dvh] bg-gradient-to-b from-[#231e0f] via-[#18140e] to-[#12100b] overflow-hidden py-20">
-      {/* Animated Mesh Gradient Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 mesh-gradient"></div>
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
-        <div className="absolute top-1/3 left-1/3 -translate-x-1/3 -translate-y-1/3 w-[400px] h-[400px] rounded-full bg-primary/10 blur-[80px]" />
-        <div className="absolute bottom-1/3 right-1/3 -translate-x-1/3 -translate-y-1/3 w-[300px] h-[300px] rounded-full bg-emerald-500/10 blur-[60px]" />
-        <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] rounded-full bg-purple-500/15 blur-[50px]" />
+    <section className="relative min-h-[100dvh] overflow-hidden pb-24 pt-32 md:pt-40">
+      {/* Warm light pooling from the top-left. No blur filter on a
+          scrolling container — these are painted gradients, so they cost
+          nothing per frame. Painted before the content, not behind it via
+          a negative z-index. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 paper-tooth opacity-70" />
+        <div
+          className="absolute -left-[20%] -top-[30%] h-[70vh] w-[70vh] rounded-full opacity-[0.55]"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in oklab, var(--clay) 22%, transparent) 0%, transparent 62%)",
+          }}
+        />
+        <div
+          className="absolute -right-[15%] top-[10%] h-[60vh] w-[60vh] rounded-full opacity-60"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in oklab, var(--sage) 24%, transparent) 0%, transparent 62%)",
+          }}
+        />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="max-w-4xl mx-auto mb-12">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-muted-foreground/50">🔍</span>
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search designers, skills, or portfolios..."
-              className="w-full pl-10 pr-4 py-3 bg-background/50 backdrop-blur-sm border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-transparent text-base"
-            />
-          </div>
-        </form>
-
-        {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2 mb-10">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`category-tab ${
-                activeCategory === category.id
-                  ? "category-tab--active"
-                  : "category-tab--inactive"
-              }`}
-            >
-              {category.label}
-              <span className="ml-1 text-xs text-muted-foreground/60">
-                ({category.count})
+      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
+        {/* ── Editorial Split ────────────────────────────────────── */}
+        <div className="grid items-center gap-16 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-6">
+            <Reveal>
+              <span className="eyebrow">
+                <Sparkle className="h-3 w-3" />
+                The certified design marketplace
               </span>
-            </button>
-          ))}
-        </div>
+            </Reveal>
 
-        {/* Hero Headline */}
-        <div className="max-w-3xl mx-auto text-center mb-8">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-none">
-            Discover <span className="gradient-text--brand">Exceptional Design Talent</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto">
-            Browse verified designers with certified skills from Glypha Learn. 
-            Find the perfect creative for your next project.
-          </p>
-        </div>
+            <Reveal delay={90}>
+              <h1 className="mt-7 font-serif text-[clamp(2.75rem,8vw,5.5rem)] font-light leading-[0.95] tracking-[-0.03em] text-balance">
+                Hire the hands behind the work{" "}
+                <span className="italic text-brand-ink">you can’t stop</span> looking at.
+              </h1>
+            </Reveal>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          <button
-            className="btn-primary"
-          >
-            Browse Designers
-          </button>
-          <button
-            className="btn-secondary"
-          >
-            Post a Job
-          </button>
-        </div>
+            <Reveal delay={180}>
+              <p className="mt-8 max-w-lg text-[17px] leading-relaxed text-muted-foreground">
+                Dribbble showed you the taste. Glypha gives you the paperwork.
+                Browse a curated bench of certified designers, then buy a
+                defined tier — price, deadline and revisions agreed before
+                a pixel moves.
+              </p>
+            </Reveal>
 
-        {/* Featured Shots Carousel */}
-        <div className="relative mb-12">
-          <h2 className="text-2xl font-bold text-white mb-6">
-            Trending This Week
-          </h2>
-          
-          {/* Carousel Navigation */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Most popular shots</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                className="p-2 rounded-full bg-muted hover:bg-primary/10"
-                disabled
-              >
-                <ArrowLeft className="w-4 h-4 text-muted-foreground/50" />
-              </button>
-              <span className="text-sm text-muted-foreground/60">1 / 8</span>
-              <button
-                className="p-2 rounded-full bg-muted hover:bg-primary/10"
-              >
-                <ArrowRight className="w-4 h-4 text-muted-foreground/50" />
-              </button>
-            </div>
+            <Reveal delay={270}>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => router.push("/designers")}
+                  className="btn-pill group"
+                >
+                  Explore designers
+                  <span className="btn-pill__island">
+                    <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard/jobs/post")}
+                  className="btn-pill btn-pill--ghost group"
+                >
+                  Post a job
+                  <span className="btn-pill__island">
+                    <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </button>
+              </div>
+            </Reveal>
+
+            <Reveal delay={360}>
+              <div className="mt-14 flex items-center gap-3 text-[13px] text-muted-foreground">
+                <ShieldCheck className="h-4 w-4 text-sage" />
+                Every seller is identity-verified and skill-certified by
+                Glypha Learn.
+              </div>
+            </Reveal>
           </div>
 
-          {/* Carousel Track */}
-          <div className="relative h-56 overflow-hidden">
-            <div className="flex gap-4" style={{ transform: "translateX(0)" }}>
-              {/* Sample cards - would be dynamic in real implementation */}
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="min-w-[280px] flex-shrink-0">
-                  <div className="shot-card">
-                    <div className="relative h-[70%] overflow-hidden bg-muted">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-                          <span className="text-xl font-bold text-primary">
-                            DS
-                          </span>
-                        </div>
+          {/* ── The shelf: real gig cards, floated and tilted ───────── */}
+          <div className="lg:col-span-6">
+            <div className="relative mx-auto flex max-w-md flex-col gap-5 lg:max-w-none">
+              {SHELF.map((item, index) => (
+                <Reveal
+                  key={item.seed}
+                  delay={160 + index * 120}
+                  // Rotation and overlap are desktop-only: below lg they
+                  // collapse into a plain vertical stack.
+                  className={
+                    index === 0
+                      ? "lg:ml-0 lg:rotate-[-1.5deg]"
+                      : index === 1
+                        ? "lg:ml-10 lg:rotate-[1deg]"
+                        : "lg:ml-4 lg:rotate-[-0.5deg]"
+                  }
+                >
+                  <article className="shell shell--lift">
+                    <div className="shell__core flex items-center gap-5 p-5">
+                      {/* Stand-in for the seller's shot: a tinted artboard
+                          carrying a serif monogram, not an empty frame. */}
+                      <div
+                        className={`relative h-28 w-24 shrink-0 overflow-hidden rounded-[1.25rem] ${item.tone}`}
+                      >
+                        <span className="absolute inset-0 paper-tooth opacity-50" />
+                        <span className="absolute inset-0 flex items-center justify-center font-serif text-4xl italic opacity-80">
+                          {item.mark}
+                        </span>
+                        <span className="absolute inset-x-0 bottom-0 flex items-center justify-center py-1.5 text-[9px] uppercase tracking-[0.18em] opacity-70 text-ink">
+                          Shot
+                        </span>
                       </div>
-                      <div className="shot-card__overlay">
-                        <div className="shot-card__info">
-                          <span className="shot-card__category tag-uiux">
-                            UI/UX Design
+                      <div className="min-w-0 flex-1">
+                        <span className={`tag-chip ${item.tone}`}>{item.skill}</span>
+                        <p className="mt-3 font-serif text-lg leading-snug">
+                          {item.title}
+                        </p>
+                        <div className="mt-3 flex items-center gap-3 text-[12px] text-muted-foreground">
+                          <span>
+                            ★ {item.rating.toFixed(1)} ({reviewsFor(item.seed)})
                           </span>
-                          <div className="shot-card__name">
-                            Design Studio
-                          </div>
-                          <div className="shot-card__meta flex items-center gap-1 text-xs">
-                            <MapPin className="w-3 h-3" />
-                            <span>New York, USA</span>
-                          </div>
+                          <span className="h-3 w-px bg-border" />
+                          <span>from ${fromPrice(item.seed, item.rating)}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-primary">
-                            DS
-                          </span>
-                        </div>
-                        <div className="min-w-0">
-                          <div className="font-semibold text-sm text-foreground truncate">
-                            Design Studio
-                          </div>
-                          <div className="text-[10px] text-muted-foreground truncate">
-                            New York, USA
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </article>
+                </Reveal>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center text-white/80">
-          <div>
-            <h3 className="text-2xl font-black text-white mb-2">1,240+</h3>
-            <p className="text-sm">Verified Designers</p>
+        {/* ── Fiverr search + category rail ─────────────────────── */}
+        <Reveal delay={200} className="mt-24 md:mt-32">
+          <form onSubmit={submit} className="shell">
+            <div className="shell__core flex flex-col gap-4 p-4 md:flex-row md:items-center md:p-5">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Try “brand identity for a coffee roaster”"
+                  aria-label="Search designers and skills"
+                  className="search-input"
+                />
+              </div>
+              <button type="submit" className="btn-pill group shrink-0 self-start md:self-auto">
+                Search
+                <span className="btn-pill__island">
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </button>
+            </div>
+          </form>
+
+          <div className="rail mt-6">
+            {CATEGORIES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setCategory(item.id);
+                  const params = new URLSearchParams();
+                  if (query.trim()) params.set("q", query.trim());
+                  if (item.id !== "all") params.set("category", item.id);
+                  router.push(`/designers${params.toString() ? `?${params}` : ""}`);
+                }}
+                className={`category-tab ${category === item.id ? "category-tab--active" : ""}`}
+              >
+                {item.label}
+                <span className="ml-1.5 text-[11px] opacity-60">{item.count}</span>
+              </button>
+            ))}
           </div>
-          <div>
-            <h3 className="text-2xl font-black text-white mb-2">4.9/5</h3>
-            <p className="text-sm">Avg. Rating</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-black text-white mb-2">98%</h3>
-            <p className="text-sm">Success Rate</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-black text-white mb-2">50+</h3>
-            <p className="text-sm">Countries</p>
-          </div>
-        </div>
+        </Reveal>
+
+        {/* ── Stats: a ruled editorial row, not a bootstrap grid ─── */}
+        <Reveal delay={120} className="mt-20">
+          <dl className="grid grid-cols-2 gap-y-8 border-t border-border pt-8 md:grid-cols-4 md:gap-y-0">
+            {STATS.map((stat, index) => (
+              <div
+                key={stat.label}
+                className={`md:px-8 ${index === 0 ? "md:pl-0" : ""} ${
+                  index > 0 ? "md:border-l md:border-border" : ""
+                }`}
+              >
+                <dt className="font-serif text-4xl font-light md:text-5xl">{stat.value}</dt>
+                <dd className="mt-2 text-[13px] text-muted-foreground">{stat.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
       </div>
     </section>
   );

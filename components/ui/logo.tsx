@@ -26,8 +26,10 @@ export function Logo({
         "inline-flex items-center",
         /* The wordmark is a fixed dark-purple-on-transparent asset, so the
            backing plate has to stay light in BOTH themes — bg-background
-           would go near-black in dark mode and swallow the mark. */
-        plate && "rounded-md bg-white p-1",
+           would go near-black in dark mode and swallow the mark. On the
+           cream stock the white plate reads as a crisp chip rather than a
+           patch. */
+        plate && "rounded-full bg-white px-2 py-1 shadow-[0_2px_10px_-6px_rgba(0,0,0,0.4)]",
         className,
       )}
     >
@@ -55,7 +57,7 @@ export function SmallLogo({
     <span
       className={cn(
         "inline-flex items-center",
-        plate && "rounded-md bg-white p-1",
+        plate && "rounded-full bg-white p-1.5",
         className,
       )}
     >

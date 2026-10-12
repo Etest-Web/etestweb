@@ -1,208 +1,271 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { Star, MapPin, Award } from "lucide-react"
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
-interface PortfolioItem {
-  imageUrl: string
-  category?: string
+import {
+  ArrowUpRight,
+  MapPin,
+  ShieldCheck,
+  Star,
+} from "@/components/ui/icons";
+import {
+  CATEGORY_TONES,
+  LEVEL_LABELS,
+  SKILL_LABELS,
+  levelFromRating,
+  reviewsFor,
+  tiersFor,
+  type SkillLevel,
+} from "@/lib/gigs";
+
+export interface GigDesigner {
+  _id: string;
+  name: string;
+  bio?: string;
+  image: string | null | undefined;
+  location: { city: string; country: string } | null;
+  skills: string[];
+  averageRating: number | null | undefined;
+  isOnline?: boolean;
+  isVerified?: boolean;
+  level?: SkillLevel;
+  /** Headline of the gig — Dribbble's "shot title". */
+  title?: string;
+  /** Portfolio shot used as the gig cover. */
+  cover?: string | null;
 }
 
-interface DesignerWithSamples {
-  _id: string
-  name: string
-  image: string | null | undefined
-  location: { city: string; country: string } | null
-  skills: string[]
-  averageRating: number | null | undefined
-  portfolioUrl: string | null | undefined
-  isVerified?: boolean
-  certificate?: string
-  skillLevel?: "beginner" | "intermediate" | "advanced" | "expert"
+/**
+ * Seller avatar with a hard fallback.
+ *
+ * Profile image URLs come from user-entered records and Convex storage, so
+ * a dead link is routine, not exceptional. A broken <Image> would leave a
+ * torn-image glyph in the card, so any load error demotes to the monogram.
+ */
+function Avatar({
+  src,
+  name,
+  className = "h-8 w-8",
+}: {
+  src: string | null | undefined;
+  name: string;
+  className?: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  const initials =
+    name
+      .split(/\s+/)
+      .map((part) => part.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "G";
+
+  if (!src || failed) {
+    return (
+      <span
+        aria-hidden
+        className={`flex shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-medium tracking-wide text-muted-foreground ${className}`}
+      >
+        {initials}
+      </span>
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt=""
+      width={64}
+      height={64}
+      onError={() => setFailed(true)}
+      className={`shrink-0 rounded-full object-cover ${className}`}
+    />
+  );
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  "ui-ux-design": "tag-uiux",
-  "logo-design": "tag-logo",
-  "brand-identity": "tag-branding",
-  "illustration": "tag-illustration",
-  "motion-design": "tag-motion",
-  "web-design": "tag-web",
-  "video-editing": "tag-video",
-  "packaging-design": "tag-packaging",
-  "product-design": "tag-uiux",
-  "design-systems": "tag-uiux",
-  "character-design": "tag-illustration",
-  "after-effects": "tag-motion",
-  "framer": "tag-web",
-  "webflow": "tag-web",
-  "landing-pages": "tag-web",
-}
-
-const SKILL_DISPLAY: Record<string, string> = {
-  "youtube-thumbnail": "YouTube Thumbnails",
-  "logo-design": "Logo Design",
-  "brand-identity": "Brand Identity",
-  "ui-ux-design": "UI/UX Design",
-  "product-design": "Product Design",
-  "design-systems": "Design Systems",
-  "illustration": "Illustration",
-  "character-design": "Character Design",
-  "motion-design": "Motion Design",
-  "video-editing": "Video Editing",
-  "after-effects": "After Effects",
-  "packaging-design": "Packaging Design",
-  "print-design": "Print Design",
-  "web-design": "Web Design",
-  "framer": "Framer",
-  "webflow": "Webflow",
-  "landing-pages": "Landing Pages",
-}
-
-const SKILL_LEVEL_LABELS = {
-  beginner: "Beginner",
-  intermediate: "Intermediate",
-  advanced: "Advanced",
-  expert: "Expert",
-}
-
-export function DesignerCard({ designer, style }: { designer: DesignerWithSamples; style?: React.CSSProperties }) {
-  const portfolioItems: PortfolioItem[] = []
-  const displaySkill =
-    designer.skills?.[0] && SKILL_DISPLAY[designer.skills[0]]
-      ? SKILL_DISPLAY[designer.skills[0]]
-      : "Designer"
-  const categoryTag = designer.skills?.[0]
-    ? CATEGORY_COLORS[designer.skills[0]] || "tag-branding"
-    : "tag-branding"
+/**
+ * The hybrid card.
+ *
+ * Dribbble gives us the shot — a tall, cropped piece of work you can feel.
+ * Fiverr gives us the commerce — a named tier ladder, a delivery window,
+ * a seller level, and a price you can act on. Wrapped in the double-bezel
+ * so it reads as a machined plate sitting in a tray rather than a
+ * rectangle floating on cream.
+ */
+export function DesignerCard({
+  designer,
+  cover,
+  title,
+  className = "",
+}: {
+  designer: GigDesigner;
+  cover?: string | null;
+  title?: string;
+  className?: string;
+}) {
+  const [coverFailed, setCoverFailed] = useState(false);
+  const skill = designer.skills?.[0];
+  const skillLabel = (skill && SKILL_LABELS[skill]) || "Design";
+  const tone = (skill && CATEGORY_TONES[skill]) || "tag-branding";
+  const level = designer.level ?? levelFromRating(designer.averageRating);
+  const tiers = tiersFor(designer._id, designer.averageRating);
+  const reviews = reviewsFor(designer._id);
+  const monogram = designer.name?.charAt(0)?.toUpperCase() ?? "G";
+  const heading = title ?? skillLabel;
+  const hasCover = Boolean(cover) && !coverFailed;
 
   return (
     <Link
       href={`/designers/${designer._id}`}
-      className="shot-card block group"
-      style={style}
+      className={`group block ${className}`}
+      aria-label={`${designer.name} — ${heading}, from $${tiers[0].price}`}
     >
-      {/* Portfolio Image */}
-      <div className="relative h-[70%] overflow-hidden bg-muted">
-        {portfolioItems.length > 0 ? (
-          <Image
-            src={portfolioItems[0]?.imageUrl || "/avatar-placeholder.png"}
-            alt={`${designer.name}'s portfolio`}
-            fill
-            className="shot-card__image rounded-2xl"
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-14 h-14 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <span className="text-2xl font-bold text-primary">
-                {designer.name?.charAt(0)?.toUpperCase() || "D"}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex gap-2">
-          {designer.isVerified && (
-            <span className="verified-badge">
-              <Award className="verified-badge__icon" />
-              Verified
-            </span>
-          )}
-          {designer.certificate && (
-            <span className="certificate-badge">
-              <Award className="certificate-badge__icon" />
-              {designer.certificate}
-            </span>
-          )}
-        </div>
-
-        {/* Overlay */}
-        <div className="shot-card__overlay">
-          <div className="shot-card__info">
-            <span className={`shot-card__category ${categoryTag}`}>
-              {displaySkill}
-            </span>
-            <div className="shot-card__name">{designer.name}</div>
-            <div className="shot-card__meta flex items-center gap-1.5 text-xs">
-              <MapPin className="w-3 h-3" />
-              <span>
-                {designer.location?.city}, {designer.location?.country}
-              </span>
-            </div>
-            {designer.averageRating && (
-              <div className="shot-card__rating items-center gap-1 mt-1.5">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                <span className="font-bold text-sm">
-                  {designer.averageRating.toFixed(1)}
-                </span>
-                <span className="text-xs text-white/70">(48)</span>
-              </div>
-            )}
-            {designer.skillLevel && (
-              <div className="mt-2">
+      <article className="shell shell--lift h-full">
+        <div className="shell__core flex h-full flex-col overflow-hidden">
+          {/* ── The shot ─────────────────────────────────────────── */}
+          <div className="relative aspect-[4/5] overflow-hidden">
+            {hasCover ? (
+              <Image
+                src={cover as string}
+                alt={`${designer.name} — ${heading}`}
+                fill
+                onError={() => setCoverFailed(true)}
+                className="shot-card__image"
+                sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw"
+              />
+            ) : (
+              // No portfolio shot yet: rather than an empty frame, paint an
+              // artboard in the seller's category tone.
+              <div className={`artboard absolute inset-0 ${tone}`}>
+                <span className="paper-tooth absolute inset-0 opacity-70" />
                 <span
-                  className={`skill-level skill-level--${designer.skillLevel}`}
+                  aria-hidden
+                  className="absolute inset-0 flex items-center justify-center font-serif text-[7rem] font-light leading-none opacity-25"
                 >
-                  {SKILL_LEVEL_LABELS[designer.skillLevel]}
+                  {monogram}
+                </span>
+                <span className="absolute inset-x-0 bottom-0 flex items-end justify-end p-5">
+                  <span className="text-[10px] uppercase tracking-[0.2em] opacity-50">
+                    Open slot
+                  </span>
                 </span>
               </div>
             )}
-          </div>
-        </div>
-      </div>
 
-      {/* Bottom Info (always visible) */}
-      <div className="p-3">
-        <div className="flex items-center gap-2">
-          {designer.image ? (
-            <Image
-              src={designer.image}
-              alt={designer.name}
-              width={24}
-              height={24}
-              className="w-6 h-6 rounded-full bg-primary/20 object-cover"
-            />
-          ) : (
-            <div className="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-primary">
-                {designer.name?.charAt(0)?.toUpperCase() || "D"}
+            {/* Category chip floats on the plate, never glued to the edge */}
+            <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-3">
+              <span className={`tag-chip ${tone} bg-background/90 shadow-sm`}>
+                {skillLabel}
+              </span>
+              {designer.isVerified ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-foreground shadow-sm">
+                  <ShieldCheck className="h-3 w-3 text-sage" />
+                  Verified
+                </span>
+              ) : null}
+            </div>
+
+            {/* Hover veil — the Dribbble tell */}
+            <div className="shot-card__overlay">
+              <div className="shot-card__info">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-white/60">
+                  {designer.location?.city ?? "Remote"} · {level}
+                </p>
+                <p className="mt-1 text-[15px] leading-snug text-white/90">
+                  {designer.bio?.slice(0, 92) ?? skillLabel}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ── The gig ──────────────────────────────────────────── */}
+          <div className="flex flex-1 flex-col gap-4 p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <Avatar src={designer.image} name={designer.name} />
+                <div className="min-w-0">
+                  <p className="truncate text-[13px] font-medium">{designer.name}</p>
+                  <p className="flex items-center gap-1 truncate text-[11px] text-muted-foreground">
+                    <MapPin className="h-3 w-3 shrink-0" />
+                    {designer.location?.country ?? "—"}
+                  </p>
+                </div>
+              </div>
+              <span className={`level-chip level-chip--${level} shrink-0`}>
+                {LEVEL_LABELS[level]}
               </span>
             </div>
-          )}
-          <div className="min-w-0">
-            <div className="font-semibold text-sm text-foreground truncate">
-              {designer.name}
+
+            <h3 className="font-serif text-[19px] leading-[1.25] text-balance">
+              {heading}
+            </h3>
+
+            <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+              <Star className="h-3.5 w-3.5 fill-gold text-gold" />
+              <span className="font-medium text-foreground">
+                {(designer.averageRating ?? 0).toFixed(1)}
+              </span>
+              <span>({reviews})</span>
+              {designer.isOnline ? (
+                <span className="ml-auto inline-flex items-center gap-1.5 text-sage">
+                  <span className="h-1.5 w-1.5 rounded-full bg-sage" />
+                  Online
+                </span>
+              ) : null}
             </div>
-            {designer.location && (
-              <div className="text-[10px] text-muted-foreground truncate">
-                {designer.location.city}, {designer.location.country}
-              </div>
-            )}
+
+            {/* Tier ladder — the Fiverr spine */}
+            <div className="tier-strip mt-auto">
+              {tiers.map((tier) => (
+                <div key={tier.name} className="tier-cell" data-selected={tier.name === "Standard"}>
+                  <span className="tier-cell__label">{tier.name}</span>
+                  <span className="tier-cell__price">${tier.price}</span>
+                  <span className="text-[10px] text-muted-foreground">{tier.delivery}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[12px] text-muted-foreground">
+                from <span className="text-[15px] font-medium text-foreground">${tiers[0].price}</span>
+              </span>
+              <span className="btn-pill group">
+                Hire now
+                <span className="btn-pill__island">
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </article>
     </Link>
-  )
+  );
 }
 
 export function DesignerCardSkeleton() {
   return (
-    <div className="shot-card bg-card/50">
-      <div className="relative h-[70%] overflow-hidden">
-        <div className="absolute inset-0 skeleton-shimmer rounded-2xl" />
-      </div>
-      <div className="p-3 space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-muted skeleton-shimmer" />
-          <div className="flex-1 space-y-1">
-            <div className="h-3 w-24 bg-muted skeleton-shimmer rounded" />
-            <div className="h-2.5 w-16 bg-muted skeleton-shimmer rounded" />
+    <div className="shell">
+      <div className="shell__core overflow-hidden">
+        <div className="skeleton-shimmer aspect-[4/5]" />
+        <div className="space-y-4 p-5">
+          <div className="flex items-center gap-2.5">
+            <div className="skeleton-shimmer h-8 w-8 rounded-full" />
+            <div className="flex-1 space-y-1.5">
+              <div className="skeleton-shimmer h-3 w-24 rounded" />
+              <div className="skeleton-shimmer h-2.5 w-16 rounded" />
+            </div>
+          </div>
+          <div className="skeleton-shimmer h-5 w-4/5 rounded" />
+          <div className="flex gap-2">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="skeleton-shimmer h-14 flex-1 rounded-xl" />
+            ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
