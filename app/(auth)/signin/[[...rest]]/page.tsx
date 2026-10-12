@@ -1,126 +1,315 @@
 "use client";
 
-import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
+import { useState } from "react";
+import { useSignIn } from "@clerk/nextjs";
 
-import { Logo } from "@/components/ui/logo";
+import { AuthHeading, AuthShell } from "@/components/auth/auth-shell";
+import {
+  Divider,
+  Field,
+  FieldError,
+  PasswordInput,
+  SocialButtons,
+  SubmitButton,
+  TextInput,
+} from "@/components/auth/auth-field";
+import { POST_AUTH_REDIRECT, useAuthRedirect } from "@/components/auth/redirect";
+import { useAction } from "@/components/auth/use-action";
 
-const HERO_IMAGE =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuA31_3cQEuEI7dc6VRX6is3-IgLa2c3KwLspw0GNUsQn-kw2SAcwU51BbLHDowI2icvAwtRpzx8TNiqamgc8b1stSALLuwQacpvF-kkkfYPbTKAZSnTIM7soWmutn0fRb1GtdKj4oUNrl-4vaCK6IWH78m_kXoGnUj8fPR1DYdo0oPm218sfKMnUo5IlpjswLKPy5osCOjh-6LxMqTkZ3UrAMsGX0rShpf6UILgrYcR-i4lRssIUuKM02f3XXlJmo7XbyBDtGUXhkua";
-
-const AVATARS = [
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBeyNnH0PLtT8UteHWOhI7vyln_fbpv4K4SpekxcrZdYWxIx8ZYEFfAHF5QAdWvMiJYUg4mOL31NNB8TCboO_7crpJvL-JNnMlUNWUU8q1dhK6_bvuxUOAQEOf2hZgMw4ysW-sns03OnLoIUVFr3x9Km79x2281IhwgCqqoM81U87fLRHx0FQlXQ1HbQRqGGgl53MfbADupaDh2kb4YhwpKF8wSHoshgUM6OUHhdIoQIb7q9qivgDkSqNahjsbXqoiEvJTkwdBjuapK",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuCMcp2R82H4jVy1iL-Jgpz_LcC-_yH4QO5veGIP4cLWwUz1Nb4G0xXiq0PvWXxS8aK2KAU2FVCuhgNmvgZ88152CjUgZbTHrjUnagSZbCXy5oTFRzBpW8bQ5xpYosKQ7rWGw2sxm60xMV0FXlLCbP39lV8eXZJzvsjNzCYYjsjeAxO8aEyKj0hl3rg6owRKGP-XswQ_qZUO8cpuvUnJpWskLRx4jE8O9yTVFPAE9aUmYn3N0c2FtDaeDiP-hWzQsvl76YH1Izbldh9F",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAD3HcITbx5yQYy7YnFg1GCgEDSCbbTmzUqG4y-S_lE54_uJJFO8Sc9F_YcW1frHmfms94SUrACrUApn0iSzPVB87LNz55uztvlu6z9mIDE3p6t11obH3_12GUXbukPkWAiFeJy2zN5fk7OLoPyCVxkhrP4ZfL8DcXd_hv5fxWnNkvolyznBp1wXFS9z0c9SwXcaTt4NYfbb7FFZUQhpcY2ETESyNnGcD3b0Gyb7Y9Vrv_Kucp7taF5n_S5-kAgc7O0b_FoTettZUUO",
-];
-
-
-
-export function LogoIcon({ className }: { className?: string }) {
-  return <Logo plate className={className} />;
-}
+type Mode = "credentials" | "second-factor";
 
 export default function SignInPage() {
+  const { signIn, errors, fetchStatus } = useSignIn();
+  const navigate = useAuthRedirect();
+  const { run, pending, error: transportError } = useAction();
+
+  const [mode, setMode] = useState<Mode>("credentials");
+  const [useBackupCode, setUseBackupCode] = useState(false);
+  const [mfaNotice, setMfaNotice] = useState<string | null>(null);
+  /** "trust" asks for an emailed/texted code; "mfa" for an authenticator one. */
+  const [verifyKind, setVerifyKind] = useState<"mfa" | "trust">("mfa");
+
+  const loading = fetchStatus === "fetching" || pending;
+
+  /**
+   * Clerk decides which second factors an account has. Push the code down
+   * whichever channel it actually supports rather than assuming SMS — an
+   * email-only account would silently never receive the message.
+   * `strategy` (not `type`) is the discriminant on these factor objects.
+   */
+  const supported = signIn.supportedSecondFactors.map((factor) => factor.strategy);
+  const usesEmailCode = supported.includes("email_code");
+  const usesPhoneCode = supported.includes("phone_code");
+  const hasPushableCode = usesEmailCode || usesPhoneCode;
+
+  /** Returns the Clerk error, if any, so the caller can surface it. */
+  async function sendMfaCode() {
+    setMfaNotice(null);
+
+    const { error } = usesPhoneCode
+      ? await signIn.mfa.sendPhoneCode()
+      : usesEmailCode
+        ? await signIn.mfa.sendEmailCode()
+        : { error: null };
+
+    return error;
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    await run(async () => {
+      if (mode === "credentials") {
+        const { error } = await signIn.password({
+          identifier: String(data.get("identifier") ?? ""),
+          password: String(data.get("password") ?? ""),
+        });
+
+        if (error) throw error;
+
+        // `needs_client_trust` — a correct password from an unrecognised device with
+        // no MFA enrolled — demands the same thing as `needs_second_factor`:
+        // one more factor before Clerk will mint a session. Treating only the
+        // latter leaves the other as a silent dead-end.
+        const isClientTrust = signIn.status === "needs_client_trust";
+
+        if (signIn.status === "needs_second_factor" || isClientTrust) {
+          setMode("second-factor");
+          setUseBackupCode(false);
+          setVerifyKind(isClientTrust ? "trust" : "mfa");
+
+          if (hasPushableCode) {
+            const sent = await sendMfaCode();
+            if (sent) throw sent;
+
+            setMfaNotice(
+              usesEmailCode
+                ? "We sent a code to the email on your account."
+                : "We texted a code to the number on your account.",
+            );
+          } else if (isClientTrust) {
+            // No code to send and nothing to read one from — the account has
+            // no verification channel at all, so the user is stuck.
+            throw new Error(
+              "This account has no email or phone on file to verify this device. Please sign in again from a device you've used before.",
+            );
+          } else {
+            setMfaNotice("Open your authenticator app for the current code.");
+          }
+          return;
+        }
+
+        if (signIn.status === "complete") {
+          await signIn.finalize({ navigate });
+          return;
+        }
+
+        // Any other status means Clerk accepted the factor but wants something
+        // this form does not know how to ask for (e.g. the instance has
+        // password auth disabled). Say so rather than returning to an
+        // unchanged form.
+        throw new Error(
+          "We couldn't finish signing you in. Please try again in a moment.",
+        );
+      }
+
+      const code = String(data.get("code") ?? "");
+      const { error } = useBackupCode
+        ? await signIn.mfa.verifyBackupCode({ code })
+        : await signIn.mfa.verifyTOTP({ code });
+
+      if (error) throw error;
+
+      if (signIn.status === "complete") {
+        await signIn.finalize({ navigate });
+        return;
+      }
+
+      throw new Error(
+        "We couldn't finish signing you in. Please try again in a moment.",
+      );
+    });
+  }
+
+  function signInWith(strategy: "oauth_google" | "oauth_github") {
+    return run(() =>
+      signIn.sso({
+        strategy,
+        redirectUrl: POST_AUTH_REDIRECT,
+        redirectCallbackUrl: "/signin",
+      })
+    );
+  }
+
+  const fieldError = (key: "identifier" | "password" | "code") =>
+    errors?.fields?.[key]?.longMessage ??
+    errors?.fields?.[key]?.message ??
+    null;
+
+  const globalError =
+    errors?.global?.[0]?.longMessage ?? errors?.global?.[0]?.message ?? null;
+
+  /** Transport failures outrank the hook's structured errors. */
+  const bannerError = transportError;
+
+  const backupLabel =
+    verifyKind === "trust"
+      ? "Verification code"
+      : useBackupCode
+        ? "Backup code"
+        : "Authenticator code";
+
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
-      {/* Left: Visual / branding */}
-      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden p-12 lg:flex">
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
-          style={{ backgroundImage: `url('${HERO_IMAGE}')` }}
-          aria-label="Modern high-end creative office with warm lighting"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
-
-        <div className="relative z-10 w-full">
-          <Link href="/" className="flex items-center">
-            <Logo plate className="w-48" priority />
+    <AuthShell
+      eyebrow="Welcome back"
+      headline={
+        <>
+          The bench is <span className="italic text-gold">already warm.</span>
+        </>
+      }
+      lede="Pick up your open briefs, read the proposals that came in overnight, and ship the work you were hired to do."
+      footer={
+        <>
+          New to Glypha?{" "}
+          <Link
+            href="/signup"
+            className="link-underline font-medium text-foreground"
+          >
+            Create an account
           </Link>
-        </div>
+        </>
+      }
+    >
+      <AuthHeading
+        title="Sign in"
+        sub="Your proposals, contracts and messages are where you left them."
+      />
 
-        <div className="relative z-10 max-w-md">
-          <span className="mb-4 inline-block rounded-full bg-primary/20 px-3 py-1 font-bold uppercase tracking-widest text-primary">
-            Elite Status
-          </span>
-          <h1 className="font-display text-4xl font-bold leading-tight mb-4">
-            The ultimate platform for creative drop-servicing.
-          </h1>
-          <p className="text-lg text-foreground/70">
-            Scale your agency with premium talent and automated workflows
-            designed for the modern era.
-          </p>
-          <div className="mt-8 flex items-center gap-4">
-            <div className="flex -space-x-3">
-              {AVATARS.map((src, i) => (
-                <div
-                  key={i}
-                  className="h-10 w-10 rounded-full border-2 border-background bg-muted bg-cover bg-center"
-                  style={{ backgroundImage: `url('${src}')` }}
-                  aria-label={`User avatar ${i + 1}`}
-                />
-              ))}
-            </div>
-            <p className="text-sm text-foreground/60">
-              Joined by 2,000+ elite designers
+      {mode === "second-factor" ? (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          {transportError ? <FieldError message={transportError} /> : null}
+
+          {mfaNotice ? (
+            <p className="rounded-2xl bg-accent px-4 py-3 text-[13px] leading-relaxed text-accent-foreground">
+              {mfaNotice}
             </p>
-          </div>
-        </div>
-      </div>
+          ) : null}
 
-      {/* Right: Login form */}
-      <div className="flex w-full flex-col items-center justify-center bg-background px-6 lg:w-1/2 lg:px-24">
-        <div className="w-full max-w-[440px]">
-          {/* Mobile logo */}
-          <Link href="/" className="mb-12 flex items-center lg:hidden">
-            <Logo className="w-40" />
-          </Link>
-
-          <div className="mb-10">
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
-              Welcome back
-            </h2>
-            <p className="text-foreground/60">
-              Manage your creative projects with ease.
-            </p>
-          </div>
-
-          <div className="flex w-full justify-center">
-            <SignIn
-              routing="hash"
-              fallbackRedirectUrl="/"
-              signUpFallbackRedirectUrl="/"
-              appearance={{
-                elements: {
-                  formButtonPrimary:
-                    "bg-primary text-primary-foreground hover:bg-primary/80",
-                  card: "bg-transparent shadow-none w-full",
-                  headerTitle: "hidden",
-                  headerSubtitle: "hidden",
-                  socialButtonsBlockButton:
-                    "border-border bg-secondary text-secondary-foreground hover:bg-accent",
-                  formFieldInput: "bg-card border-input text-foreground",
-                  formFieldLabel: "text-foreground",
-                  dividerText: "text-muted-foreground",
-                  dividerLine: "bg-border",
-                  footer: "hidden",
-                }
-              }}
+          <Field
+            label={backupLabel}
+            error={fieldError("code") || globalError || transportError}
+          >
+            <TextInput
+              name="code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              placeholder="000000"
+              required
+              autoFocus
+              invalid={Boolean(fieldError("code"))}
             />
-          </div>
-        </div>
+          </Field>
 
-        <div className="mt-auto flex gap-6 pb-10 text-xs uppercase tracking-widest text-foreground/30">
-          <Link href="#" className="transition-colors hover:text-foreground">
-            Privacy
-          </Link>
-          <Link href="#" className="transition-colors hover:text-foreground">
-            Terms
-          </Link>
-          <Link href="#" className="transition-colors hover:text-foreground">
-            Help
-          </Link>
-        </div>
-      </div>
-    </div>
+          {/* Backup codes only exist on MFA-enrolled accounts; a client-trust
+              challenge is always a delivered code. */}
+          {verifyKind === "mfa" ? (
+            <label className="flex items-center gap-2.5 text-[13px] text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={useBackupCode}
+                onChange={(event) => setUseBackupCode(event.target.checked)}
+                className="h-4 w-4 accent-ink"
+              />
+              I&apos;m using a backup code instead
+            </label>
+          ) : null}
+
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("credentials");
+                setMfaNotice(null);
+                signIn.reset();
+              }}
+              className="text-[13px] text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+            >
+              Use a password instead
+            </button>
+
+            {hasPushableCode ? (
+              <button
+                type="button"
+                onClick={() =>
+                  run(async () => {
+                    const error = await sendMfaCode();
+                    if (error) throw error;
+                    setMfaNotice("Sent a fresh code.");
+                  })
+                }
+                className="text-[13px] text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+              >
+                Resend code
+              </button>
+            ) : null}
+          </div>
+
+          <SubmitButton loading={loading}>Verify</SubmitButton>
+        </form>
+      ) : (
+        <>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            {(bannerError || (globalError && !errors?.fields)) ? (
+              <FieldError message={bannerError ?? globalError!} />
+            ) : null}
+
+            <Field label="Email" error={fieldError("identifier")}>
+              <TextInput
+                name="identifier"
+                type="email"
+                autoComplete="email"
+                placeholder="you@studio.com"
+                required
+                autoFocus
+                invalid={Boolean(fieldError("identifier"))}
+              />
+            </Field>
+
+            <Field label="Password" error={fieldError("password")}>
+              <PasswordInput
+                name="password"
+                autoComplete="current-password"
+                placeholder="Your password"
+                required
+                invalid={Boolean(fieldError("password"))}
+              />
+            </Field>
+
+            <div className="flex justify-end">
+              <Link
+                href="/passwordreset"
+                className="text-[12px] text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+
+            <SubmitButton loading={loading}>Sign in</SubmitButton>
+          </form>
+
+          <div className="my-7">
+            <Divider>or</Divider>
+          </div>
+
+          <SocialButtons
+            disabled={loading}
+            onGoogle={() => signInWith("oauth_google")}
+            onGitHub={() => signInWith("oauth_github")}
+          />
+        </>
+      )}
+    </AuthShell>
   );
 }

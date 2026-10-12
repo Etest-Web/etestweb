@@ -1,90 +1,288 @@
 "use client";
 
 import Link from "next/link";
-import { CircleUser, Mail, User, Lock, Folder, MoveLeft} from "lucide-react";
-import { SignUp } from "@clerk/nextjs";
+import { useState } from "react";
+import { useAuth, useSignUp } from "@clerk/nextjs";
 
-import { Logo } from "@/components/ui/logo";
+import { AuthHeading, AuthShell } from "@/components/auth/auth-shell";
+import {
+  Divider,
+  Field,
+  FieldError,
+  PasswordInput,
+  PasswordMeter,
+  SocialButtons,
+  SubmitButton,
+  TextInput,
+} from "@/components/auth/auth-field";
+import { POST_AUTH_REDIRECT, useAuthRedirect } from "@/components/auth/redirect";
+import { useAction } from "@/components/auth/use-action";
 
-export default function SignupPage() {
+export default function SignUpPage() {
+  const { signUp, errors, fetchStatus } = useSignUp();
+  const { isSignedIn } = useAuth();
+  const navigate = useAuthRedirect();
+  const { run, pending, error: transportError } = useAction();
+
+  const [password, setPassword] = useState("");
+  const [resent, setResent] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+
+  const loading = fetchStatus === "fetching" || pending;
+
+  /**
+   * Clerk reports the sign-up as `missing_requirements` when a required
+   * field (usually the email code) still has to be satisfied. Treat that as
+   * the verify step rather than letting the form dead-end.
+   */
+  const needsVerification =
+    signUp.status === "missing_requirements" &&
+    signUp.unverifiedFields.includes("email_address") &&
+    signUp.missingFields.length === 0;
+
+  async function handleSignUp(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    await run(async () => {
+      const { error } = await signUp.password({
+        emailAddress: String(data.get("email") ?? ""),
+        password: String(data.get("password") ?? ""),
+        firstName: String(data.get("firstName") ?? ""),
+        lastName: String(data.get("lastName") ?? ""),
+      });
+
+      if (error) throw error;
+
+      // The identifier already belongs to an account. Handing this off to the
+      // sign-in flow is a multi-resource transfer; until that is built, say
+      // so plainly instead of leaving the user on a form that cannot advance.
+      if (signUp.isTransferable) {
+        setAlreadyRegistered(true);
+        return;
+      }
+
+      // If the instance doesn't require email verification the resource is
+      // already complete and we can go straight to a session.
+      if (signUp.status === "complete") {
+        await signUp.finalize({ navigate });
+        return;
+      }
+
+      // Any other status needs something this form does not know how to ask
+      // for. Never return to an unchanged form without explanation.
+      throw new Error(
+        "We couldn't finish creating your account. Please try again in a moment.",
+      );
+    });
+  }
+
+  async function handleVerify(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    await run(async () => {
+      const { error } = await signUp.verifications.verifyEmailCode({
+        code: String(data.get("code") ?? ""),
+      });
+
+      if (error) throw error;
+
+      if (signUp.status === "complete") {
+        await signUp.finalize({ navigate });
+        return;
+      }
+
+      throw new Error(
+        "We couldn't finish creating your account. Please try again in a moment.",
+      );
+    });
+  }
+
+  function signUpWith(strategy: "oauth_google" | "oauth_github") {
+    return run(() =>
+      signUp.sso({
+        strategy,
+        redirectUrl: POST_AUTH_REDIRECT,
+        redirectCallbackUrl: "/signup",
+      })
+    );
+  }
+
+  const fieldError = (key: "emailAddress" | "password" | "code" | "firstName") =>
+    errors?.fields?.[key]?.longMessage ??
+    errors?.fields?.[key]?.message ??
+    null;
+
+  const globalError =
+    errors?.global?.[0]?.longMessage ?? errors?.global?.[0]?.message ?? null;
+
+  if (isSignedIn) return null;
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background">
-        <div className="layout-container flex h-full grow flex-col">
-          {/* Navbar Component */}
-          <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-6 md:px-10 py-3 lg:mx-auto lg:w-full lg:max-w-[1200px]">
-            <Link href="/" className="flex items-center">
-              <Logo className="w-28" priority />
-            </Link>
-            <div className="flex items-center gap-4">
-              <a className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#">Support</a>
-              <Link
-                href="/signin"
-                className="flex h-10 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-md bg-primary px-4 text-sm font-bold leading-normal tracking-[0.015em] text-primary-foreground transition-colors hover:bg-primary/80"
-              >
-                <span className="truncate">Login</span>
-              </Link>
-            </div>
-          </header>
-          {/* Main Content: Focused Card */}
-          <main className="flex-1 flex items-center justify-center px-4 py-12">
-            <div className="w-full max-w-[480px] rounded-lg border border-border bg-card p-8 text-card-foreground shadow-lg md:p-10">
-              <div className="flex flex-col items-center text-center mb-8">
-                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <CircleUser />
-                </div>
-                <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground mb-3 font-display">Create an Account</h1>
-                <p className="text-base font-normal leading-relaxed text-muted-foreground">
-                  Join the exclusive network of top-tier designers.
+    <AuthShell
+      eyebrow="Open for briefs"
+      headline={
+        <>
+          Sell the work you&apos;re <span className="italic text-gold">already proud of.</span>
+        </>
+      }
+      lede="Publish a shot, get scoped proposals with real prices attached, and keep the tier you agreed to. Escrow by default."
+      footer={
+        <>
+          Already have an account?{" "}
+          <Link
+            href="/signin"
+            className="link-underline font-medium text-foreground"
+          >
+            Sign in
+          </Link>
+        </>
+      }
+    >
+      {needsVerification ? (
+        <>
+          <AuthHeading
+            title="Check your inbox"
+            sub="We sent a six-digit code to your email. Paste it below to finish setting up your account."
+          />
+
+          <form onSubmit={handleVerify} className="flex flex-col gap-6">
+            {transportError ? <FieldError message={transportError} /> : null}
+
+            <Field
+              label="Verification code"
+              error={fieldError("code") || globalError}
+            >
+              <TextInput
+                name="code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="000000"
+                required
+                autoFocus
+                invalid={Boolean(fieldError("code"))}
+              />
+            </Field>
+
+            <SubmitButton loading={loading}>Verify and continue</SubmitButton>
+
+            <button
+              type="button"
+              onClick={async () => {
+                await run(async () => {
+                  const { error } = await signUp.verifications.sendEmailCode();
+                  if (error) throw error;
+                  setResent(true);
+                });
+              }}
+              className="text-center text-[12px] text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+            >
+              {resent ? "Sent again — check your inbox" : "Send the code again"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => signUp.reset()}
+              className="text-center text-[12px] text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+            >
+              Use a different email
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          <AuthHeading
+            title="Create an account"
+            sub="Free to join. You only need a name, an email and a password to start bidding."
+          />
+
+          <form onSubmit={handleSignUp} className="flex flex-col gap-5">
+            {alreadyRegistered ? (
+              <div className="rounded-2xl bg-accent px-4 py-4 text-[13px] leading-relaxed text-accent-foreground">
+                <p>
+                  That email already has a Glypha account. Sign in instead and
+                  we&apos;ll pick up where you left off.
                 </p>
-              </div>
-              <div className="flex w-full justify-center">
-                <SignUp
-                  routing="hash"
-                  fallbackRedirectUrl="/"
-                  signInFallbackRedirectUrl="/signin"
-                  appearance={{
-                    elements: {
-                      formButtonPrimary:
-                        "bg-primary text-primary-foreground hover:bg-primary/80",
-                      card: "bg-transparent shadow-none w-full",
-                      headerTitle: "hidden",
-                      headerSubtitle: "hidden",
-                      socialButtonsBlockButton:
-                        "border-border bg-secondary text-secondary-foreground hover:bg-accent",
-                      formFieldInput: "bg-card border-input text-foreground",
-                      formFieldLabel: "text-foreground",
-                      dividerText: "text-muted-foreground",
-                      dividerLine: "bg-border",
-                      footer: "hidden",
-                    }
-                  }}
-                />
-              </div>
-              <div className="mt-8 flex flex-col gap-4 items-center">
                 <Link
                   href="/signin"
-                  className="flex items-center gap-2 text-sm font-bold text-brand-ink transition-colors hover:text-brand dark:text-brand"
+                  className="link-underline mt-2 inline-block font-medium"
                 >
-                  <MoveLeft className="w-4 h-4 text-sm"/>
-                  Back to Login
+                  Go to sign in
                 </Link>
               </div>
+            ) : (transportError || (globalError && !errors?.fields)) ? (
+              <FieldError message={transportError ?? globalError!} />
+            ) : null}
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="First name" error={fieldError("firstName")}>
+                <TextInput
+                  name="firstName"
+                  autoComplete="given-name"
+                  placeholder="Ada"
+                  required
+                  autoFocus
+                />
+              </Field>
+              <Field label="Last name">
+                <TextInput
+                  name="lastName"
+                  autoComplete="family-name"
+                  placeholder="Okafor"
+                  required
+                />
+              </Field>
             </div>
-          </main>
-          {/* Footer Section */}
-          <footer className="px-6 py-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              © 2024 Glypha Studio. All rights reserved.
+
+            <Field label="Email" error={fieldError("emailAddress")}>
+              <TextInput
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@studio.com"
+                required
+                invalid={Boolean(fieldError("emailAddress"))}
+              />
+            </Field>
+
+            <Field label="Password" error={fieldError("password")}>
+              <PasswordInput
+                name="password"
+                autoComplete="new-password"
+                placeholder="At least 8 characters"
+                required
+                minLength={8}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                invalid={Boolean(fieldError("password"))}
+              />
+            </Field>
+
+            <PasswordMeter value={password} />
+
+            {/* Clerk's bot protection mounts into this node. */}
+            <div id="clerk-captcha" />
+
+            <SubmitButton loading={loading}>Create account</SubmitButton>
+
+            <p className="text-[11px] leading-relaxed text-muted-foreground/80">
+              By joining you agree to the Terms of Service and acknowledge the
+              Privacy Policy.
             </p>
-          </footer>
-        </div>
-      </div>
-      {/* Background Decorative Element */}
-      <div className="pointer-events-none fixed top-0 left-0 -z-10 h-full w-full opacity-20">
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] rounded-full bg-primary/40 blur-[100px]"></div>
-      </div>
-    </div>
+          </form>
+
+          <div className="my-7">
+            <Divider>or</Divider>
+          </div>
+
+          <SocialButtons
+            disabled={loading}
+            onGoogle={() => signUpWith("oauth_google")}
+            onGitHub={() => signUpWith("oauth_github")}
+          />
+        </>
+      )}
+    </AuthShell>
   );
 }
