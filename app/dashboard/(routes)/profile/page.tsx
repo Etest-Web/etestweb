@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { User, MapPin, Briefcase, Plus, X, Upload, Link as LinkIcon, Trash2, Grid3X3 } from "lucide-react";
+import { User, MapPin, Briefcase, Plus, X, UploadSimple, Link as LinkIcon, Trash, SquaresFour } from "@phosphor-icons/react/dist/ssr";
 import { ImageUploadModal } from "@/components/reusable/ImageUpload";
 import { getErrorMessage } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -467,7 +467,7 @@ export default function ProfilePage() {
         <div className="mt-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <Grid3X3 className="w-5 h-5 text-primary" />
+              <SquaresFour className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold text-white">Portfolio Gallery</h2>
             </div>
             <button
@@ -513,7 +513,7 @@ export default function ProfilePage() {
                     {removingItemId === item._id ? (
                       <Spinner className="w-4 h-4" />
                     ) : (
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     )}
                   </button>
                 </div>
@@ -521,14 +521,14 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center">
-              <Grid3X3 className="w-12 h-12 text-white/20 mx-auto mb-4" />
+              <SquaresFour className="w-12 h-12 text-white/20 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-white mb-2">No portfolio items yet</h3>
               <p className="text-white/60 mb-4">Showcase your best work to attract clients</p>
               <button
                 onClick={() => setShowUploadModal(true)}
                 className="inline-flex items-center gap-2 h-10 px-6 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors"
               >
-                <Upload className="w-4 h-4" />
+                <UploadSimple className="w-4 h-4" />
                 Add Your First Item
               </button>
             </div>
@@ -536,7 +536,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Upload Modal */}
+      {/* UploadSimple Modal */}
       <ImageUploadModal
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}

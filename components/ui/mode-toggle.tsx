@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "@phosphor-icons/react/dist/ssr";
 import { DropdownMenu } from "radix-ui";
 import { useTheme } from "next-themes";
 

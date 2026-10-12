@@ -166,7 +166,7 @@ export default function SignInPage() {
       eyebrow="Welcome back"
       headline={
         <>
-          The bench is <span className="italic text-gold">already warm.</span>
+          The bench is <span className="italic text-mark">already warm.</span>
         </>
       }
       lede="Pick up your open briefs, read the proposals that came in overnight, and ship the work you were hired to do."

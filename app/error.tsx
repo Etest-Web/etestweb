@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { AlertTriangle, RotateCw } from "lucide-react";
+import { Warning, ArrowClockwise } from "@phosphor-icons/react/dist/ssr";
 
 import { Button } from "@/components/ui/button";
 
@@ -20,7 +20,7 @@ export default function GlobalError({
     <main className="flex min-h-[70vh] items-center justify-center bg-background px-5 text-foreground">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10">
-          <AlertTriangle className="h-10 w-10 text-destructive" />
+          <Warning className="h-10 w-10 text-destructive" />
         </div>
         <h1 className="mb-3 text-3xl font-bold">Something went wrong</h1>
         <p className="mb-8 text-muted-foreground">
@@ -28,7 +28,7 @@ export default function GlobalError({
           persists, come back later.
         </p>
         <Button size="lg" onClick={reset}>
-          <RotateCw className="w-4 h-4" />
+          <ArrowClockwise className="w-4 h-4" />
           Try Again
         </Button>
       </div>

@@ -13,7 +13,6 @@ import {
   Search,
   Sliders,
   TrendingUp,
-  Users,
 } from "@/components/ui/icons";
 import { Reveal } from "@/components/ui/reveal";
 import {
@@ -349,7 +348,7 @@ function Marketplace() {
         >
           <span
             className={`flex h-5 w-5 items-center justify-center rounded-full transition-colors duration-500 ${
-              onlyOnline ? "bg-sage text-white" : "shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--ink)_18%,transparent)]"
+              onlyOnline ? "bg-tone-cool text-white" : "shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--ink)_18%,transparent)]"
             }`}
           >
             {onlyOnline ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
@@ -366,21 +365,10 @@ function Marketplace() {
       <section className="relative overflow-hidden pb-16 pt-36 md:pb-20 md:pt-44">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute inset-0 paper-tooth opacity-60" />
-          <div
-            className="absolute -right-[10%] -top-[40%] h-[55vh] w-[55vh] rounded-full opacity-60"
-            style={{
-              background:
-                "radial-gradient(circle, color-mix(in oklab, var(--sage) 26%, transparent) 0%, transparent 62%)",
-            }}
-          />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-5 md:px-8">
           <Reveal>
-            <span className="eyebrow">
-              <Users className="h-3 w-3" />
-              The marketplace
-            </span>
             <h1 className="mt-6 max-w-4xl font-serif text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1] tracking-[-0.03em] text-balance">
               Every seller here has a{" "}
               <span className="italic text-brand-ink">price on the card</span>.
@@ -498,7 +486,7 @@ function Marketplace() {
                   onChange={(event) => setSortBy(event.target.value as SortKey)}
                   className="cursor-pointer rounded-full bg-transparent py-2 pl-4 pr-8 text-[13px] text-foreground outline-none transition-colors hover:text-brand-ink"
                   style={{
-                    // Native select needs an explicit box on the cream stock.
+                    // Native select needs an explicit box on the porcelain stock.
                     backgroundImage:
                       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23787165' stroke-width='1'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
                     backgroundRepeat: "no-repeat",

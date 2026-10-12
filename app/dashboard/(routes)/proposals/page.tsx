@@ -3,7 +3,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { FileText, CheckCircle, XCircle, Clock, MessageSquare } from "lucide-react";
+import { FileText, CheckCircle, XCircle, Clock, ChatCircleDots } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import {
   ListRowSkeleton,
@@ -191,7 +191,7 @@ function ProposalCard({ proposal }: { proposal: ProposalWithJob }) {
 
           {proposal.status === "accepted" && (
             <div className="flex items-center gap-2 text-green-400">
-              <MessageSquare className="w-4 h-4" />
+              <ChatCircleDots className="w-4 h-4" />
               <span className="text-sm">
                 You can now message the client directly!
               </span>

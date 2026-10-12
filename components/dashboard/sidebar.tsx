@@ -5,44 +5,32 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  Briefcase,
-  FileText,
-  MessageSquare,
-  Bell,
-  Users,
-  Settings,
-  UserCircle,
-  Menu,
-  X,
-  LogOut,
-} from "lucide-react";
+import { SquaresFour, Briefcase, FileText, ChatCircleDots, Bell, Users, Gear, UserCircle, List, X, SignOut } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 
 import { Logo } from "@/components/ui/logo";
 
 const clientNavItems = [
-  { icon: LayoutDashboard, label: "Overview", href: "/dashboard" },
+  { icon: SquaresFour, label: "Overview", href: "/dashboard" },
   { icon: Briefcase, label: "Post a Job", href: "/dashboard/jobs/post" },
   { icon: FileText, label: "My Jobs", href: "/dashboard/jobs" },
-  { icon: MessageSquare, label: "Messages", href: "/dashboard/messages", badge: "messages" },
+  { icon: ChatCircleDots, label: "Messages", href: "/dashboard/messages", badge: "messages" },
   { icon: Bell, label: "Notifications", href: "/dashboard/notifications", badge: "notifications" },
   { icon: Users, label: "Contracts", href: "/dashboard/contracts" },
   { icon: UserCircle, label: "Profile", href: "/dashboard/profile" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+  { icon: Gear, label: "Gear", href: "/dashboard/settings" },
 ];
 
 const designerNavItems = [
-  { icon: LayoutDashboard, label: "Overview", href: "/dashboard" },
+  { icon: SquaresFour, label: "Overview", href: "/dashboard" },
   { icon: Briefcase, label: "Browse Jobs", href: "/dashboard/jobs/browse" },
   { icon: FileText, label: "My Proposals", href: "/dashboard/proposals" },
-  { icon: MessageSquare, label: "Messages", href: "/dashboard/messages", badge: "messages" },
+  { icon: ChatCircleDots, label: "Messages", href: "/dashboard/messages", badge: "messages" },
   { icon: Bell, label: "Notifications", href: "/dashboard/notifications", badge: "notifications" },
   { icon: Users, label: "Contracts", href: "/dashboard/contracts" },
   { icon: Users, label: "Find Designers", href: "/designers" },
   { icon: UserCircle, label: "Profile & Portfolio", href: "/dashboard/profile" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+  { icon: Gear, label: "Gear", href: "/dashboard/settings" },
 ];
 
 const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
@@ -176,7 +164,7 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
             }}
             className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
           >
-            <LogOut className="h-5 w-5" />
+            <SignOut className="h-5 w-5" />
             Sign Out
           </button>
         </div>
@@ -202,7 +190,7 @@ export const Sidebar = () => {
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           className="rounded-md border border-border bg-sidebar p-2 text-sidebar-foreground transition-colors hover:bg-accent"
         >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileOpen ? <X className="w-6 h-6" /> : <List className="w-6 h-6" />}
         </button>
       </div>
 

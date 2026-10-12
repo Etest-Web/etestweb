@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useClerk } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Bell, Shield, Palette, Globe, Trash2, LogOut } from "lucide-react";
+import { Bell, Shield, Palette, Globe, Trash, SignOut } from "@phosphor-icons/react/dist/ssr";
 import { useToast } from "@/components/ui/toast";
 
 export default function SettingsPage() {
@@ -14,7 +14,7 @@ export default function SettingsPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Gear</h1>
         <p className="text-white/60">Manage your account preferences and settings</p>
       </div>
 
@@ -71,7 +71,7 @@ export default function SettingsPage() {
               onClick={() => void signOut()}
               className="w-full flex items-center gap-3 px-4 py-3 text-left text-red-400 hover:bg-red-500/10 transition-colors"
             >
-              <LogOut className="w-5 h-5" />
+              <SignOut className="w-5 h-5" />
               Sign Out
             </button>
           </div>
@@ -199,7 +199,7 @@ function PrivacyTab() {
   return (
     <div className="space-y-6">
       <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-        <h2 className="text-xl font-bold text-white mb-1">Privacy Settings</h2>
+        <h2 className="text-xl font-bold text-white mb-1">Privacy Gear</h2>
         <p className="text-sm text-white/60 mb-4">These preferences are saved to your profile</p>
         <div className="space-y-4">
           <ToggleSetting
@@ -229,7 +229,7 @@ function PrivacyTab() {
           Once you delete your account, there is no going back. Please be certain.
         </p>
         <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 transition-colors">
-          <Trash2 className="w-4 h-4" />
+          <Trash className="w-4 h-4" />
           Delete Account
         </button>
       </div>
@@ -240,7 +240,7 @@ function PrivacyTab() {
 function AppearanceTab() {
   return (
     <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
-      <h2 className="text-xl font-bold text-white mb-6">Appearance Settings</h2>
+      <h2 className="text-xl font-bold text-white mb-6">Appearance Gear</h2>
       <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-white/80 mb-3">

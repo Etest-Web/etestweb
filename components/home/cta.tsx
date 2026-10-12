@@ -15,19 +15,12 @@ export default function CTA() {
           background and vanish entirely. */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-ink" />
-        <div
-          className="absolute left-1/2 top-0 h-[46rem] w-[46rem] -translate-x-1/2 -translate-y-1/3 rounded-full opacity-70"
-          style={{
-            background:
-              "radial-gradient(circle, color-mix(in oklab, var(--gold) 30%, transparent) 0%, transparent 64%)",
-          }}
-        />
       </div>
 
       <div className="relative mx-auto max-w-5xl px-5 text-center md:px-8">
         <Reveal>
           <h2 className="font-serif text-[clamp(2.75rem,7vw,5.25rem)] font-light leading-[0.98] tracking-[-0.03em] text-white text-balance">
-            Your story is waiting to be <span className="italic text-gold">drawn</span>.
+            Your story is waiting to be <span className="italic text-mark">drawn</span>.
           </h2>
         </Reveal>
 

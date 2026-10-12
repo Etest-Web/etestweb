@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { AlertTriangle } from "lucide-react";
+import { Warning } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -80,7 +80,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
                     : "bg-primary/15"
                 )}
               >
-                <AlertTriangle
+                <Warning
                   className={cn(
                     "h-5 w-5",
                     pending.destructive ? "text-destructive" : "text-primary"

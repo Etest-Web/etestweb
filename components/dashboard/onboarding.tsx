@@ -6,7 +6,8 @@ import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
-import { X, Check } from "lucide-react";
+import { X, Check } from "@phosphor-icons/react/dist/ssr";
+import { Briefcase, Palette, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 
 type Role = "client" | "designer";
@@ -109,14 +110,14 @@ export function Onboarding() {
               <RoleOption
                 title="I&apos;m a client"
                 subtitle="Post jobs and hire designers"
-                icon="🛠️"
+                Icon={Briefcase}
                 selected={role === "client"}
                 onClick={() => setRole("client")}
               />
               <RoleOption
                 title="I&apos;m a designer"
                 subtitle="Find work and grow your portfolio"
-                icon="🎨"
+                Icon={Palette}
                 selected={role === "designer"}
                 onClick={() => setRole("designer")}
               />
@@ -188,7 +189,7 @@ export function Onboarding() {
                                 : "border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                             )}
                           >
-                            {active ? "✓ " : ""}
+                            {active ? <CheckCircle className="mr-1.5 inline h-3.5 w-3.5" weight="fill" /> : null}
                             {s}
                           </button>
                         );
@@ -280,13 +281,13 @@ export function Onboarding() {
 function RoleOption({
   title,
   subtitle,
-  icon,
+  Icon,
   selected,
   onClick,
 }: {
   title: string;
   subtitle: string;
-  icon: string;
+  Icon: React.ComponentType<{ className?: string }>;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -301,7 +302,7 @@ function RoleOption({
           : "border-border hover:bg-accent"
       )}
     >
-      <span className="flex-shrink-0 text-2xl">{icon}</span>
+      <Icon className="h-6 w-6 flex-shrink-0" />
       <span className="flex-1">
         <span className="block font-semibold">{title}</span>
         <span className="block text-sm text-muted-foreground">{subtitle}</span>
@@ -324,7 +325,7 @@ function StepBadge({ role, onBack }: { role: Role; onBack: () => void }) {
   return (
     <div className="flex items-center justify-between">
       <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary">
-        {role === "designer" ? "🎨 Designer" : "🛠️ Client"}
+        {role === "designer" ? <><Palette className="h-3.5 w-3.5" /> Designer</> : <><Briefcase className="h-3.5 w-3.5" /> Client</>}
       </span>
       <button
         type="button"

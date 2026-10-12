@@ -5,16 +5,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Bell,
-  CheckCheck,
-  CircleX,
-  ClipboardCheck,
-  FileText,
-  HandCoins,
-  Star,
-  UserCheck,
-} from "lucide-react";
+import { Bell, Checks, XCircle, ClipboardText, FileText, HandCoins, Star, UserCheck } from "@phosphor-icons/react/dist/ssr";
 import { useToast } from "@/components/ui/toast";
 
 type Notification = Doc<"notifications">;
@@ -26,11 +17,11 @@ const typeIcon = (type: Notification["type"]) => {
     case "proposal_accepted":
       return { icon: UserCheck, tint: "bg-green-500/20 text-green-400" };
     case "proposal_rejected":
-      return { icon: CircleX, tint: "bg-red-500/20 text-red-400" };
+      return { icon: XCircle, tint: "bg-red-500/20 text-red-400" };
     case "contract_started":
       return { icon: FileText, tint: "bg-primary/20 text-primary" };
     case "contract_completed":
-      return { icon: ClipboardCheck, tint: "bg-green-500/20 text-green-400" };
+      return { icon: ClipboardText, tint: "bg-green-500/20 text-green-400" };
     case "contract_disputed":
       return { icon: HandCoins, tint: "bg-red-500/20 text-red-400" };
     case "review_received":
@@ -126,7 +117,7 @@ export default function NotificationsPage() {
           disabled={markingAll || unread.length === 0}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 text-sm font-medium text-white/80 hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <CheckCheck className="w-4 h-4" />
+          <Checks className="w-4 h-4" />
           Mark all as read
         </button>
       </div>

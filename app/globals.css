@@ -3,8 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ================================
-   Tailwind Theme Tokens
+/* Tailwind Theme Tokens
    =============================== */
 @theme inline {
   --color-background: var(--background);
@@ -57,16 +56,17 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Editorial paper + espresso surfaces */
+  /*Editorial paper + ink surfaces */
   --color-paper: var(--paper);
   --color-paper-raised: var(--paper-raised);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
-  --color-sage: var(--sage);
-  --color-clay: var(--clay);
-  --color-gold: var(--gold);
+  --color-mark: var(--mark);
+  --color-tone-cool: var(--tone-cool);
+  --color-tone-mid: var(--tone-mid);
+  --color-tone-soft: var(--tone-soft);
 
-  /* Single-source radius scale, derived from --radius */
+  /*Single-source radius scale, derived from --radius */
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
@@ -75,114 +75,138 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.8);
 
-  /* Motion — every transition in the system uses this spring */
+  /*Motion — every transition in the system uses this spring */
   --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-swift: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ================================
-   📄 Paper — Editorial Luxury
+/* Paper — Editorial Luxury
    =============================== */
 :root {
-  /* Warm cream stock. The whole surface stack is paper: --paper is the
+  /*Cool porcelain stock. The whole surface stack is paper: --paper is the
      page, --paper-raised the inner "core" that sits inside every shell. */
   --radius: 1.25rem;
-  --paper: oklch(98.4% 0.006 84);
-  --paper-raised: oklch(99.6% 0.003 84);
-  --ink: oklch(23% 0.018 62);
-  --ink-soft: oklch(44% 0.016 62);
-  --sage: oklch(53% 0.062 152);
-  --clay: oklch(56% 0.104 38);
-  /* Deepened from #eabe5d so gold stays legible as *text* on cream (3.8:1)
-     instead of vanishing the way it did on white. */
-  --gold: oklch(58% 0.086 78);
+
+  /* Surfaces are a cool porcelain, not cream. The warm cream + espresso
+     pairing is the single most recognisable AI-luxury palette, and it was
+     reading as generated rather than chosen. A cool neutral at very low
+     chroma keeps the same paper-like quality with none of the warmth. */
+  --paper: oklch(97.4% 0.004 285);
+  --paper-raised: oklch(99.2% 0.002 285);
+
+  /* Near-black is tinted toward the same cool hue as the paper. It is never
+     pure #000: a flat black kills the depth the surface stack depends on. */
+  --ink: oklch(21% 0.011 285);
+  --ink-soft: oklch(46% 0.011 285);
+
+  /* One accent, taken from the logo. The wordmark is #945da3, so the
+     interface now agrees with the brand mark instead of running a
+     near-magenta beside it. */
+  --brand: oklch(52% 0.104 336);
+  --brand-ink: oklch(43% 0.100 336);
+
+  /* The italic emphasis word in display headlines. Same hue as --brand,
+     lighter so it holds as text on the ink panel. */
+  --mark: oklch(66% 0.082 338);
+
+  /* Three category surfaces for the shot cards. These differ mainly in
+     lightness across a narrow cool arc rather than in hue. Chroma stays
+     low on purpose: high-chroma pastels per category is what makes a
+     marketplace read as a template. */
+  --tone-cool: oklch(54% 0.072 295);
+  --tone-mid: oklch(62% 0.062 245);
+  --tone-soft: oklch(68% 0.050 198);
 
   --background: var(--paper);
   --foreground: var(--ink);
-  --brand: oklch(50% 0.109 318.82);
-  --brand-foreground: oklch(99.6% 0.003 84);
-  --brand-ink: oklch(44% 0.109 318.82);
+  --brand: oklch(52% 0.104 336);
+  --brand-foreground: oklch(99.2% 0.002 285);
+  --brand-ink: oklch(43% 0.100 336);
   --card: var(--paper-raised);
   --card-foreground: var(--ink);
   --popover: var(--paper-raised);
   --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: var(--paper-raised);
-  --secondary: oklch(95.2% 0.009 84);
+  --secondary: oklch(94.6% 0.006 285);
   --secondary-foreground: var(--ink);
-  --muted: oklch(95.2% 0.009 84);
-  --muted-foreground: oklch(48% 0.015 62);
-  --accent: oklch(93.6% 0.016 150);
-  --accent-foreground: oklch(38% 0.06 152);
+  --muted: oklch(94.6% 0.006 285);
+  --muted-foreground: oklch(47% 0.010 285);
+  --accent: oklch(94% 0.016 330);
+  --accent-foreground: oklch(40% 0.070 336);
   --destructive: oklch(52% 0.19 27);
-  /* Hairlines are warm and *tinted*, never neutral gray — a 1px #00000040
-     on cream reads as dirt. */
-  --border: oklch(23% 0.018 62 / 0.11);
-  --input: oklch(23% 0.018 62 / 0.16);
-  --ring: oklch(50% 0.109 318.82);
-  --chart-1: oklch(50% 0.109 318.82);
-  --chart-2: oklch(58% 0.086 78);
-  --chart-3: oklch(53% 0.062 152);
-  --chart-4: oklch(56% 0.104 38);
-  --chart-5: oklch(44% 0.016 62);
-  --sidebar: oklch(96.6% 0.008 84);
+  /*Hairlines are cool and *tinted*, never neutral gray — a 1px #00000040
+     on porcelain reads as dirt. */
+  --border: oklch(21% 0.011 285 / 0.11);
+  --input: oklch(21% 0.011 285 / 0.16);
+  --ring: oklch(52% 0.104 336);
+  --chart-1: oklch(52% 0.104 336);
+  --chart-2: oklch(61% 0.040 248);
+  --chart-3: oklch(66% 0.034 204);
+  --chart-4: oklch(56% 0.045 292);
+  --chart-5: oklch(46% 0.011 285);
+  --sidebar: oklch(95.8% 0.005 285);
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--ink);
   --sidebar-primary-foreground: var(--paper-raised);
-  --sidebar-accent: oklch(93.6% 0.016 150);
-  --sidebar-accent-foreground: oklch(38% 0.06 152);
-  --sidebar-border: oklch(23% 0.018 62 / 0.11);
+  --sidebar-accent: oklch(94% 0.016 330);
+  --sidebar-accent-foreground: oklch(40% 0.070 336);
+  --sidebar-border: oklch(21% 0.011 285 / 0.11);
   --sidebar-ring: var(--brand);
 
-  /* Legacy aliases — now theme-aware instead of pinned hexes */
+  /*Legacy aliases — now theme-aware instead of pinned hexes */
   --background-dark: var(--background);
   --background-light: var(--background);
 }
 
-/* ================================
-   🌙 Espresso — the inverted set
+/* Cool ink — the inverted set
    =============================== */
 .dark {
-  --paper: oklch(17% 0.014 62);
-  --paper-raised: oklch(21.5% 0.015 62);
-  --ink: oklch(95% 0.008 84);
-  --ink-soft: oklch(72% 0.012 62);
-  --sage: oklch(74% 0.07 152);
-  --clay: oklch(72% 0.09 38);
-  --gold: oklch(78% 0.09 78);
+  --paper: oklch(16.5% 0.010 285);
+  --paper-raised: oklch(21% 0.011 285);
+  --ink: oklch(95% 0.004 285);
+  --ink-soft: oklch(72% 0.010 285);
+
+  --brand: oklch(70% 0.098 336);
+  --brand-ink: oklch(80% 0.084 338);
+  --mark: oklch(78% 0.090 338);
+
+  --tone-cool: oklch(66% 0.070 295);
+  --tone-mid: oklch(73% 0.060 245);
+  --tone-soft: oklch(78% 0.048 198);
 
   --background: var(--paper);
   --foreground: var(--ink);
-  --brand: oklch(74% 0.104 318.82);
-  --brand-foreground: oklch(17% 0.014 62);
-  --brand-ink: oklch(78% 0.104 318.82);
+  --brand: oklch(70% 0.098 336);
+  --brand-foreground: oklch(16.5% 0.010 285);
+  --brand-ink: oklch(80% 0.084 338);
   --card: var(--paper-raised);
   --card-foreground: var(--ink);
   --popover: var(--paper-raised);
   --popover-foreground: var(--ink);
   --primary: var(--ink);
-  --primary-foreground: oklch(17% 0.014 62);
-  --secondary: oklch(27% 0.016 62);
+  --primary-foreground: oklch(16.5% 0.010 285);
+  --secondary: oklch(26.5% 0.010 285);
   --secondary-foreground: var(--ink);
-  --muted: oklch(27% 0.016 62);
-  --muted-foreground: oklch(72% 0.012 62);
-  --accent: oklch(31% 0.03 152);
-  --accent-foreground: oklch(88% 0.06 152);
+  --muted: oklch(26.5% 0.010 285);
+  --muted-foreground: oklch(70% 0.010 285);
+  --accent: oklch(30% 0.028 330);
+  --accent-foreground: oklch(86% 0.055 336);
   --destructive: oklch(66% 0.17 27);
   --border: oklch(100% 0 0 / 0.11);
   --input: oklch(100% 0 0 / 0.16);
-  --ring: oklch(74% 0.104 318.82);
-  --chart-1: oklch(74% 0.104 318.82);
-  --chart-2: oklch(78% 0.09 78);
-  --chart-3: oklch(74% 0.07 152);
-  --chart-4: oklch(72% 0.09 38);
-  --chart-5: oklch(72% 0.012 62);
-  --sidebar: oklch(21.5% 0.015 62);
+  --ring: oklch(70% 0.098 336);
+  --chart-1: oklch(70% 0.098 336);
+  --chart-2: oklch(72% 0.040 248);
+  --chart-3: oklch(76% 0.034 204);
+  --chart-4: oklch(68% 0.045 292);
+  --chart-5: oklch(70% 0.010 285);
+  --sidebar: oklch(21% 0.011 285);
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--ink);
-  --sidebar-primary-foreground: oklch(17% 0.014 62);
-  --sidebar-accent: oklch(31% 0.03 152);
-  --sidebar-accent-foreground: oklch(88% 0.06 152);
+  --sidebar-primary-foreground: oklch(17% 0.014 285);
+  --sidebar-accent: oklch(30% 0.028 330);
+  --sidebar-accent-foreground: oklch(86% 0.055 336);
   --sidebar-border: oklch(100% 0 0 / 0.11);
   --sidebar-ring: var(--brand);
 
@@ -190,8 +214,7 @@
   --background-light: var(--background);
 }
 
-/* ================================
-   Base Styles
+/* Base Styles
    =============================== */
 @layer base {
   * {
@@ -208,7 +231,7 @@
     @apply bg-background text-foreground antialiased;
   }
 
-  /* Serif display headings get optical sizing + a touch of "wonk" so the
+  /*Serif display headings get optical sizing + a touch of "wonk" so the
      letterforms read as drawn rather than typeset. */
   h1,
   h2,
@@ -218,15 +241,14 @@
   }
 }
 
-/* Component classes live in the `components` layer so that Tailwind
+/*Component classes live in the `components` layer so that Tailwind
    utilities (which sit in the later `utilities` layer) can still override
    them per-call-site — e.g. `lg:hidden` on .btn-secondary. Unlayered rules
    would beat every utility in the cascade. */
 @layer components {
-  /* ================================
-     🎞 Texture — Film Grain
+  /* Texture — Film Grain
      =============================== */
-  /* Fixed and pointer-events-none ONLY. Attaching grain to a scrolling
+  /*Fixed and pointer-events-none ONLY. Attaching grain to a scrolling
      container forces a full repaint on every scroll frame.
      Deliberately NO `mix-blend-mode`: blending a fixed layer against the
      root stacking context forces the browser to re-composite the entire
@@ -244,7 +266,7 @@
   .dark .grain-layer {
     opacity: 0.05;
   }
-  /* Faint ruled-paper texture for large empty areas. */
+  /*Faint ruled-paper texture for large empty areas. */
   .paper-tooth {
     background-image:
       linear-gradient(
@@ -259,10 +281,9 @@
       );
     background-size: 100% 96px, 96px 100%;
   }
-  /* ================================
-     🧱 Double-Bezel (Doppelrand)
+  /* Double-Bezel (Doppelrand)
      =============================== */
-  /* Outer shell = the machined tray. Inner core = the glass plate sitting
+  /*Outer shell = the machined tray. Inner core = the glass plate sitting
      in it. The two radii are concentric: 2rem outer − 0.375rem padding. */
   .shell {
     border-radius: var(--radius-4xl);
@@ -286,7 +307,7 @@
   .dark .shell__core {
     box-shadow: inset 0 1px 1px oklch(100% 0 0 / 0.06);
   }
-  /* Shell that lifts on hover — used for gig cards and feature tiles. */
+  /*Shell that lifts on hover — used for gig cards and feature tiles. */
   .shell--lift {
     transition:
       transform 700ms var(--ease-fluid),
@@ -303,8 +324,7 @@
       inset 0 0 0 1px color-mix(in oklab, #ffffff 12%, transparent),
       0 40px 80px -34px oklch(0 0 0 / 0.8);
   }
-  /* ================================
-     🎬 Motion primitives
+  /* Motion primitives
      =============================== */
   .fluid {
     transition-timing-function: var(--ease-fluid);
@@ -312,7 +332,7 @@
   .swift {
     transition-timing-function: var(--ease-swift);
   }
-  /* Scroll reveal. Starts displaced + blurred + transparent; a single
+  /*Scroll reveal. Starts displaced + blurred + transparent; a single
      IntersectionObserver flips data-revealed and the element settles. Only
      transform/opacity/blur animate — no layout properties. */
   .reveal {
@@ -329,7 +349,7 @@
     transform: translate3d(0, 0, 0);
     filter: blur(0);
   }
-  /* Staggered mask reveal for the modal nav. Elements mount already
+  /*Staggered mask reveal for the modal nav. Elements mount already
      displaced and transparent, then lift into place on a per-item delay —
      `both` fill mode so nothing flashes at the resting position first. */
   .animate-mask {
@@ -348,8 +368,7 @@
       transition: none;
     }
   }
-  /* ================================
-     🏷 Editorial primitives
+  /* Editorial primitives
      =============================== */
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em];
@@ -357,7 +376,7 @@
     box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
     color: var(--ink-soft);
   }
-  /* Pill CTA with the trailing icon nested in its own island.
+  /*Pill CTA with the trailing icon nested in its own island.
      NOTE: `group` is added at the call site, not here — Tailwind v4 cannot
      @apply a marker class like `group`. */
   .btn-pill {
@@ -403,7 +422,7 @@
   .link-underline:hover {
     background-size: 100% 1px;
   }
-  /* Horizontal rails scroll without a visible scrollbar (category pills,
+  /*Horizontal rails scroll without a visible scrollbar (category pills,
      trending shots). Keeps a scroll affordance via a fade mask instead. */
   .rail {
     @apply flex gap-3 overflow-x-auto pb-1;
@@ -413,15 +432,14 @@
   .rail::-webkit-scrollbar {
     display: none;
   }
-  /* ================================
-     📦 Category Tags — editorial
+  /* Category Tags — editorial
      =============================== */
   .tag-chip {
     @apply inline-flex items-center rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
     background: var(--tone-bg);
     color: var(--tone-ink);
   }
-  /* Each category sets the two tone variables; every surface that borrows
+  /*Each category sets the two tone variables; every surface that borrows
      the palette (chips, cover artboards, rails) reads from here so a
      category can never drift between two elements. */
   .tag-web,
@@ -431,43 +449,42 @@
   }
   .tag-illustration,
   .tag-video {
-    --tone-bg: color-mix(in oklab, var(--clay) 14%, transparent);
-    --tone-ink: color-mix(in oklab, var(--clay) 86%, var(--ink));
+    --tone-bg: color-mix(in oklab, var(--tone-mid) 14%, transparent);
+    --tone-ink: color-mix(in oklab, var(--tone-mid) 86%, var(--ink));
   }
   .tag-motion,
   .tag-packaging {
-    --tone-bg: color-mix(in oklab, var(--sage) 16%, transparent);
-    --tone-ink: color-mix(in oklab, var(--sage) 82%, var(--ink));
+    --tone-bg: color-mix(in oklab, var(--tone-cool) 16%, transparent);
+    --tone-ink: color-mix(in oklab, var(--tone-cool) 82%, var(--ink));
   }
   .tag-logo {
-    --tone-bg: color-mix(in oklab, var(--gold) 20%, transparent);
-    --tone-ink: color-mix(in oklab, var(--gold) 78%, var(--ink));
+    --tone-bg: color-mix(in oklab, var(--mark) 20%, transparent);
+    --tone-ink: color-mix(in oklab, var(--mark) 78%, var(--ink));
   }
   .tag-uiux {
     --tone-bg: color-mix(in oklab, var(--ink) 9%, transparent);
     --tone-ink: var(--ink-soft);
   }
-  /* Covers carry the hue at full strength; chips stay translucent. */
+  /*Covers carry the hue at full strength; chips stay translucent. */
   .artboard {
     background: color-mix(in oklab, var(--tone-ink) 22%, var(--paper-raised));
     color: var(--tone-ink);
   }
   .dark .tag-chip,
   .dark .artboard {
-    --tone-ink: oklch(93% 0.012 84);
+    --tone-ink: oklch(93% 0.012 285);
   }
-  /* Seller level chips — Fiverr's badge ladder, restyled editorial. */
+  /*Seller level chips — Fiverr's badge ladder, restyled editorial. */
   .level-chip {
     @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
     box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
   }
   .level-chip--beginner { color: color-mix(in oklab, var(--ink) 55%, transparent); }
-  .level-chip--intermediate { color: color-mix(in oklab, var(--sage) 80%, var(--ink)); }
+  .level-chip--intermediate { color: color-mix(in oklab, var(--tone-cool) 80%, var(--ink)); }
   .level-chip--advanced { color: var(--brand-ink); }
-  .level-chip--expert { color: color-mix(in oklab, var(--gold) 72%, var(--ink)); }
-  .dark .level-chip { color: oklch(90% 0.01 84); }
-  /* ================================
-     🖼 Shot Card — Dribbble masonry
+  .level-chip--expert { color: color-mix(in oklab, var(--mark) 72%, var(--ink)); }
+  .dark .level-chip { color: oklch(90% 0.01 285); }
+  /* Shot Card — Dribbble masonry
      =============================== */
   .shot-card {
     @apply relative overflow-hidden;
@@ -497,8 +514,8 @@
     @apply absolute inset-0 flex items-end p-5;
     background: linear-gradient(
       to top,
-      oklch(16% 0.02 62 / 0.88) 0%,
-      oklch(16% 0.02 62 / 0.32) 46%,
+      oklch(16% 0.02 285 / 0.88) 0%,
+      oklch(16% 0.02 285 / 0.32) 46%,
       transparent 78%
     );
     opacity: 0;
@@ -510,7 +527,7 @@
   }
   .shot-card__info {
     @apply w-full text-left;
-    color: oklch(98% 0.006 84);
+    color: oklch(98% 0.006 285);
     transform: translate3d(0, 1.25rem, 0);
     transition: transform 900ms var(--ease-fluid);
   }
@@ -537,8 +554,7 @@
   @media (max-width: 767px) {
     .masonry-grid { grid-template-columns: 1fr; }
   }
-  /* ================================
-     💜 Pricing tiers — Fiverr gigs
+  /* Pricing tiers — Fiverr gigs
      =============================== */
   .tier-strip {
     @apply flex items-stretch overflow-hidden;
@@ -563,8 +579,7 @@
   .tier-cell__price {
     @apply text-[13px] font-medium tabular-nums;
   }
-  /* ================================
-     🔘 Buttons
+  /* Buttons
      =============================== */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-[15px] font-medium;
@@ -644,8 +659,7 @@
       inset 0 0 0 1px color-mix(in oklab, var(--brand) 50%, transparent),
       0 0 0 4px color-mix(in oklab, var(--brand) 10%, transparent);
   }
-  /* ================================
-     ✳ Loading
+  /* Loading
      =============================== */
   .skeleton-shimmer {
     @apply relative overflow-hidden;
@@ -666,31 +680,31 @@
   }
   .verified-badge {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
-    background: color-mix(in oklab, var(--sage) 16%, transparent);
-    color: color-mix(in oklab, var(--sage) 78%, var(--ink));
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sage) 24%, transparent);
+    background: color-mix(in oklab, var(--tone-cool) 16%, transparent);
+    color: color-mix(in oklab, var(--tone-cool) 78%, var(--ink));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tone-cool) 24%, transparent);
   }
   .certificate-badge {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em];
-    background: color-mix(in oklab, var(--gold) 18%, transparent);
-    color: color-mix(in oklab, var(--gold) 74%, var(--ink));
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--gold) 28%, transparent);
+    background: color-mix(in oklab, var(--mark) 18%, transparent);
+    color: color-mix(in oklab, var(--mark) 74%, var(--ink));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mark) 28%, transparent);
   }
   .dark .verified-badge,
   .dark .certificate-badge {
-    color: oklch(94% 0.01 84);
+    color: oklch(94% 0.01 285);
   }
   .gradient-text {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(
       to right,
       var(--brand),
-      color-mix(in oklab, var(--clay) 70%, var(--brand))
+      color-mix(in oklab, var(--tone-mid) 70%, var(--brand))
     );
   }
   .gradient-text--brand {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(to right, var(--brand), var(--gold));
+    background-image: linear-gradient(to right, var(--brand), var(--mark));
   }
 }
 

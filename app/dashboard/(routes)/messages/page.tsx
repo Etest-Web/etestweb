@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { Send, MessageSquare, ArrowLeft, Search, Briefcase } from "lucide-react";
+import { PaperPlaneTilt, ChatCircleDots, ArrowLeft, MagnifyingGlass, Briefcase } from "@phosphor-icons/react/dist/ssr";
 import { useToast } from "@/components/ui/toast";
 
 function ConversationRowSkeleton() {
@@ -66,12 +66,12 @@ export default function MessagesPage() {
         <div className="lg:col-span-1 bg-[#1a1610] border border-white/10 rounded-xl overflow-hidden flex flex-col">
           <div className="p-4 border-b border-white/10">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search conversations..."
+                placeholder="MagnifyingGlass conversations..."
                 className="w-full h-10 pl-10 pr-4 rounded-lg border border-white/10 bg-white/5 text-white text-sm placeholder:text-white/30 focus:border-primary focus:outline-none"
               />
             </div>
@@ -131,13 +131,13 @@ export default function MessagesPage() {
               </div>
             ) : searchQuery.trim() ? (
               <div className="p-8 text-center text-white/60">
-                <Search className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                <MagnifyingGlass className="w-12 h-12 mx-auto mb-3 opacity-20" />
                 <p className="font-medium">No conversations match &quot;{searchQuery.trim()}&quot;</p>
                 <p className="text-sm mt-2">Try a different name, job title, or status.</p>
               </div>
             ) : (
               <div className="p-8 text-center text-white/60">
-                <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                <ChatCircleDots className="w-12 h-12 mx-auto mb-3 opacity-20" />
                 <p className="font-medium">No conversations yet</p>
                 <p className="text-sm mt-2">
                   {user.role === "client"
@@ -163,7 +163,7 @@ export default function MessagesPage() {
             <div className="flex-1 flex items-center justify-center text-white/60">
               <div className="text-center p-8">
                 <div className="w-20 h-20 rounded-full bg-white/5 mx-auto mb-4 flex items-center justify-center">
-                  <MessageSquare className="w-10 h-10 opacity-30" />
+                  <ChatCircleDots className="w-10 h-10 opacity-30" />
                 </div>
                 <p className="text-lg font-medium">Select a conversation</p>
                 <p className="text-sm mt-2 text-white/40">
@@ -334,11 +334,11 @@ function ChatView({
         ) : (
           <div className="text-center text-white/60 py-12">
             <div className="w-16 h-16 rounded-full bg-white/5 mx-auto mb-4 flex items-center justify-center">
-              <MessageSquare className="w-8 h-8 opacity-30" />
+              <ChatCircleDots className="w-8 h-8 opacity-30" />
             </div>
             <p className="font-medium">Start the conversation</p>
             <p className="text-sm mt-2 text-white/40">
-              Send a message to begin chatting about this project
+              PaperPlaneTilt a message to begin chatting about this project
             </p>
           </div>
         )}
@@ -360,8 +360,8 @@ function ChatView({
             disabled={sending || !newMessage.trim()}
             className="h-12 px-6 rounded-lg bg-primary text-black font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
           >
-            <Send className="w-5 h-5" />
-            <span className="hidden sm:inline">Send</span>
+            <PaperPlaneTilt className="w-5 h-5" />
+            <span className="hidden sm:inline">PaperPlaneTilt</span>
           </button>
         </div>
       </form>

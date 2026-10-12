@@ -2,7 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Briefcase, MessageSquare, DollarSign, TrendingUp } from "lucide-react";
+import { Briefcase, ChatCircleDots, CurrencyDollar, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import {
   Skeleton,
@@ -39,7 +39,7 @@ export default function DashboardOverview() {
       label: isClient ? "Proposals Received" : "Proposals Sent",
       value: myProposals?.length ?? 0,
       loading: myProposals === undefined,
-      icon: MessageSquare,
+      icon: ChatCircleDots,
       color: "text-purple-400",
       bgColor: "bg-purple-400/10",
     },
@@ -47,7 +47,7 @@ export default function DashboardOverview() {
       label: "Total Earnings",
       value: `$${(finishedEarnings ?? 0).toLocaleString()}`,
       loading: myContracts === undefined,
-      icon: DollarSign,
+      icon: CurrencyDollar,
       color: "text-green-400",
       bgColor: "bg-green-400/10",
     },
@@ -55,7 +55,7 @@ export default function DashboardOverview() {
       label: "Unread Messages",
       value: unreadCount ?? 0,
       loading: unreadCount === undefined,
-      icon: TrendingUp,
+      icon: TrendUp,
       color: "text-orange-400",
       bgColor: "bg-orange-400/10",
     },
@@ -185,7 +185,7 @@ export default function DashboardOverview() {
                 {isClient ? (
                   <Briefcase className="w-7 h-7 text-white/30" />
                 ) : (
-                  <MessageSquare className="w-7 h-7 text-white/30" />
+                  <ChatCircleDots className="w-7 h-7 text-white/30" />
                 )}
               </div>
               <p className="font-medium text-white">Nothing here yet</p>
@@ -226,7 +226,7 @@ export default function DashboardOverview() {
                   href="/dashboard/jobs"
                   className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <MessageSquare className="w-5 h-5 text-white" />
+                  <ChatCircleDots className="w-5 h-5 text-white" />
                   <div>
                     <p className="text-white font-medium">View All Jobs</p>
                     <p className="text-sm text-white/60">
@@ -253,7 +253,7 @@ export default function DashboardOverview() {
                   href="/dashboard/profile"
                   className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <MessageSquare className="w-5 h-5 text-white" />
+                  <ChatCircleDots className="w-5 h-5 text-white" />
                   <div>
                     <p className="text-white font-medium">Update Portfolio</p>
                     <p className="text-sm text-white/60">

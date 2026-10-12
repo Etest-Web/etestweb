@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, Info, X, XCircle } from "lucide-react";
+import { CheckCircle, Info, X, XCircle } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 
 type ToastVariant = "success" | "error" | "info";
@@ -34,7 +34,7 @@ const VARIANT_CONFIG: Record<
   ToastVariant,
   { icon: React.ElementType; iconClass: string }
 > = {
-  success: { icon: CheckCircle2, iconClass: "text-emerald-500" },
+  success: { icon: CheckCircle, iconClass: "text-emerald-500" },
   error: { icon: XCircle, iconClass: "text-destructive" },
   info: { icon: Info, iconClass: "text-primary" },
 };

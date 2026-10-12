@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Compass } from "lucide-react";
+import { Compass } from "@phosphor-icons/react/dist/ssr";
 
 import { Button } from "@/components/ui/button";
 

@@ -92,7 +92,7 @@ function Avatar({
  * Fiverr gives us the commerce — a named tier ladder, a delivery window,
  * a seller level, and a price you can act on. Wrapped in the double-bezel
  * so it reads as a machined plate sitting in a tray rather than a
- * rectangle floating on cream.
+ * rectangle floating on porcelain.
  */
 export function DesignerCard({
   designer,
@@ -161,7 +161,7 @@ export function DesignerCard({
               </span>
               {designer.isVerified ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-foreground shadow-sm">
-                  <ShieldCheck className="h-3 w-3 text-sage" />
+                  <ShieldCheck className="h-3 w-3 text-tone-cool" />
                   Verified
                 </span>
               ) : null}
@@ -203,16 +203,13 @@ export function DesignerCard({
             </h3>
 
             <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-              <Star className="h-3.5 w-3.5 fill-gold text-gold" />
+              <Star className="h-3.5 w-3.5 fill-mark text-mark" />
               <span className="font-medium text-foreground">
                 {(designer.averageRating ?? 0).toFixed(1)}
               </span>
               <span>({reviews})</span>
               {designer.isOnline ? (
-                <span className="ml-auto inline-flex items-center gap-1.5 text-sage">
-                  <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-                  Online
-                </span>
+                <span className="ml-auto text-tone-cool">Online</span>
               ) : null}
             </div>
 

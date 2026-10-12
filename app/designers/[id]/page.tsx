@@ -8,22 +8,7 @@ import type { Doc } from "@/convex/_generated/dataModel"
 import { useParams, useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Link from "next/link"
-import { 
-  ArrowLeft, 
-  MapPin, 
-  Star, 
-  Briefcase, 
-  MessageSquare, 
-  ExternalLink,
-  Clock,
-  RotateCcw,
-  Check,
-  Globe,
-  Calendar,
-  Sparkles,
-  ShieldCheck,
-  Info
-} from "lucide-react"
+import { ArrowLeft, MapPin, Star, Briefcase, ChatCircleDots, ArrowSquareOut, Clock, ArrowCounterClockwise, Check, Globe, Calendar, Sparkle, ShieldCheck, Info } from "@phosphor-icons/react/dist/ssr";
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -310,7 +295,7 @@ export default function DesignerDetailPage() {
                             {/* Visual Overlay Zoom */}
                             <div className="absolute inset-0 bg-black/45 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                               <span className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-xl shadow-xl flex items-center gap-1.5">
-                                <Sparkles className="w-3.5 h-3.5 fill-black" />
+                                <Sparkle className="w-3.5 h-3.5 fill-black" />
                                 Click to View Fullscreen
                               </span>
                             </div>
@@ -582,7 +567,7 @@ export default function DesignerDetailPage() {
                     <span>{pricingPackages[activeTab].delivery} Days Delivery</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <RotateCcw className="w-4 h-4 text-stone-400" />
+                    <ArrowCounterClockwise className="w-4 h-4 text-stone-400" />
                     <span>{pricingPackages[activeTab].revisions}</span>
                   </div>
                 </div>
@@ -611,7 +596,7 @@ export default function DesignerDetailPage() {
                     variant="outline" 
                     className="w-full h-11 border-white/[0.08] hover:border-white/20 bg-transparent text-white font-bold text-xs rounded-xl cursor-pointer"
                   >
-                    <MessageSquare className="w-4 h-4 mr-2" />
+                    <ChatCircleDots className="w-4 h-4 mr-2" />
                     Contact Seller
                   </Button>
                 </div>
@@ -635,7 +620,7 @@ export default function DesignerDetailPage() {
                   <h4 className="font-bold text-white text-xs group-hover:text-primary transition-colors">Personal Portfolio Site</h4>
                   <p className="text-[10px] text-stone-400">Review full cases studies off-platform</p>
                 </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-primary transition-colors" />
+                <ArrowSquareOut className="w-4 h-4 text-stone-400 group-hover:text-primary transition-colors" />
               </a>
             )}
 

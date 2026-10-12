@@ -95,7 +95,7 @@ export default function PasswordResetPage() {
       eyebrow="Account recovery"
       headline={
         <>
-          It happens. <span className="italic text-gold">Back in you go.</span>
+          It happens. <span className="italic text-mark">Back in you go.</span>
         </>
       }
       lede="Reset your password with a one-time code. No support queue, no waiting on a human to unblock you."

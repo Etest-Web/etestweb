@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { ArrowLeft, Briefcase, DollarSign, Tag, FileText } from "lucide-react";
+import { ArrowLeft, Briefcase, CurrencyDollar, Tag, FileText } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { getErrorMessage } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -126,7 +126,7 @@ export default function PostJobPage() {
         {/* Budget */}
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <DollarSign className="w-5 h-5 text-primary" />
+            <CurrencyDollar className="w-5 h-5 text-primary" />
             <h2 className="text-xl font-bold text-white">Budget Range</h2>
           </div>
           <select

@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { Plus, MessageSquare, CheckCircle, XCircle, Trash2, Briefcase, Clock, DollarSign, Pencil, Lock } from "lucide-react";
+import { Plus, ChatCircleDots, CheckCircle, XCircle, Trash, Briefcase, Clock, CurrencyDollar, PencilSimple, Lock } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { useState } from "react";
 import { getErrorMessage } from "@/lib/utils";
@@ -196,7 +196,7 @@ function JobCard({
           <p className="text-white/60 mb-4 line-clamp-2">{job.description}</p>
           <div className="flex flex-wrap items-center gap-4 text-sm text-white/60">
             <span className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4" />
+              <CurrencyDollar className="w-4 h-4" />
               {job.budgetRange}
             </span>
             <span className="flex items-center gap-1">
@@ -204,7 +204,7 @@ function JobCard({
               {job.category}
             </span>
             <span className="flex items-center gap-1">
-              <MessageSquare className="w-4 h-4" />
+              <ChatCircleDots className="w-4 h-4" />
               {proposalCount} proposal{proposalCount !== 1 ? "s" : ""}
             </span>
           </div>
@@ -215,7 +215,7 @@ function JobCard({
               onClick={onViewProposals}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition-colors"
             >
-              <MessageSquare className="w-4 h-4" />
+              <ChatCircleDots className="w-4 h-4" />
               View Proposals
             </button>
           )}
@@ -226,7 +226,7 @@ function JobCard({
                 className="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
                 title="Edit job"
               >
-                <Pencil className="w-4 h-4" />
+                <PencilSimple className="w-4 h-4" />
               </button>
               <button
                 onClick={onClose}
@@ -249,7 +249,7 @@ function JobCard({
                 {deleting ? (
                   <Spinner className="w-4 h-4" />
                 ) : (
-                  <Trash2 className="w-4 h-4" />
+                  <Trash className="w-4 h-4" />
                 )}
               </button>
             </>
@@ -354,7 +354,7 @@ function ProposalsList({ jobId, jobTitle, onBack }: { jobId: Id<"jobs">; jobTitl
 
         {proposals.length === 0 ? (
           <div className="text-center py-12 animate-in fade-in duration-300">
-            <MessageSquare className="w-16 h-16 text-white/20 mx-auto mb-4" />
+            <ChatCircleDots className="w-16 h-16 text-white/20 mx-auto mb-4" />
             <h3 className="text-lg font-bold text-white mb-2">No proposals yet</h3>
             <p className="text-white/60">Designers will see your job and can submit proposals</p>
           </div>

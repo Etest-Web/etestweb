@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { Search, Filter, Briefcase, MapPin, DollarSign, Clock } from "lucide-react";
+import { MagnifyingGlass, Funnel, Briefcase, MapPin, CurrencyDollar, Clock } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { getErrorMessage } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -138,20 +138,20 @@ export default function BrowseJobsPage() {
         </p>
       </div>
 
-      {/* Search & Filter */}
+      {/* MagnifyingGlass & Funnel */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+          <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search jobs by title or description..."
+            placeholder="MagnifyingGlass jobs by title or description..."
             className="w-full h-12 pl-12 pr-4 rounded-lg border border-white/10 bg-[#1a1610] text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-          <Filter className="w-5 h-5 text-white/40 flex-shrink-0" />
+          <Funnel className="w-5 h-5 text-white/40 flex-shrink-0" />
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -180,7 +180,7 @@ export default function BrowseJobsPage() {
         ) : filteredJobs.length === 0 ? (
           searchQuery || selectedCategory !== "All" ? (
             <div className="bg-[#1a1610] border border-white/10 rounded-xl p-12 text-center animate-in fade-in duration-300">
-              <Search className="w-16 h-16 text-white/20 mx-auto mb-4" />
+              <MagnifyingGlass className="w-16 h-16 text-white/20 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">No Jobs Found</h3>
               <p className="text-white/60">
                 Try adjusting your search or filters to find more opportunities
@@ -243,7 +243,7 @@ export default function BrowseJobsPage() {
               <h3 className="font-bold text-white mb-2">{selectedJob.title}</h3>
               <div className="flex flex-wrap gap-4 text-sm text-white/60 mb-3">
                 <span className="flex items-center gap-1">
-                  <DollarSign className="w-4 h-4" />
+                  <CurrencyDollar className="w-4 h-4" />
                   {selectedJob.budgetRange}
                 </span>
                 <span className="flex items-center gap-1">
@@ -337,7 +337,7 @@ function JobCard({ job, onApply }: { job: AvailableJob; onApply: () => void }) {
           <p className="text-white/60 mb-4 line-clamp-2">{job.description}</p>
           <div className="flex flex-wrap gap-4 text-sm text-white/60">
             <span className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4" />
+              <CurrencyDollar className="w-4 h-4" />
               {job.budgetRange}
             </span>
             <span className="flex items-center gap-1">

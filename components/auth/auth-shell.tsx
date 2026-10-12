@@ -9,17 +9,11 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 /**
  * Shared chrome for every custom auth route.
  *
- * An editorial split: an espresso manifesto panel carrying the argument,
- * and the actual form on cream inside a double-bezel plate. The split
+ * An editorial split: an ink manifesto panel carrying the argument,
+ * and the actual form on porcelain inside a double-bezel plate. The split
  * collapses to a single column below `lg`, where the manifesto is dropped
  * entirely rather than stacked above the fold.
  */
-
-const PROOF = [
-  { value: "1,247", label: "Certified designers" },
-  { value: "4.8", label: "Average rating" },
-  { value: "97.4%", label: "Delivered on time" },
-];
 
 export function AuthShell({
   eyebrow,
@@ -38,22 +32,6 @@ export function AuthShell({
     <div className="grid min-h-[100dvh] lg:grid-cols-2">
       {/* ── Manifesto panel ─────────────────────────────────────── */}
       <aside className="relative hidden overflow-hidden bg-ink p-12 lg:flex lg:flex-col lg:justify-between">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div
-            className="absolute -right-[30%] -top-[20%] h-[40rem] w-[40rem] rounded-full opacity-60"
-            style={{
-              background:
-                "radial-gradient(circle, color-mix(in oklab, var(--gold) 26%, transparent) 0%, transparent 62%)",
-            }}
-          />
-          <div
-            className="absolute -bottom-[25%] -left-[20%] h-[32rem] w-[32rem] rounded-full opacity-50"
-            style={{
-              background:
-                "radial-gradient(circle, color-mix(in oklab, var(--sage) 24%, transparent) 0%, transparent 62%)",
-            }}
-          />
-        </div>
 
         <div className="relative">
           <Link href="/" className="inline-flex items-center">
@@ -72,15 +50,6 @@ export function AuthShell({
             {lede}
           </p>
         </div>
-
-        <dl className="relative flex gap-10 border-t border-white/10 pt-8">
-          {PROOF.map((item) => (
-            <div key={item.label}>
-              <dt className="font-serif text-3xl font-light text-white">{item.value}</dt>
-              <dd className="mt-1 text-[12px] text-white/45">{item.label}</dd>
-            </div>
-          ))}
-        </dl>
       </aside>
 
       {/* ── Form panel ─────────────────────────────────────────── */}

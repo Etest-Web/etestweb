@@ -124,7 +124,7 @@ export default function SignUpPage() {
       eyebrow="Open for briefs"
       headline={
         <>
-          Sell the work you&apos;re <span className="italic text-gold">already proud of.</span>
+          Sell the work you&apos;re <span className="italic text-mark">already proud of.</span>
         </>
       }
       lede="Publish a shot, get scoped proposals with real prices attached, and keep the tier you agreed to. Escrow by default."

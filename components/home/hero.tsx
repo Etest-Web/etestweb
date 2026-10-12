@@ -3,16 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { ArrowUpRight, Search, ShieldCheck, Sparkle } from "@/components/ui/icons";
+import { ArrowUpRight, Search, ShieldCheck, Sparkle, Star } from "@/components/ui/icons";
 import { Reveal } from "@/components/ui/reveal";
 import { CATEGORIES, fromPrice, reviewsFor } from "@/lib/gigs";
-
-const STATS = [
-  { value: "1,247", label: "Certified designers" },
-  { value: "4.8", label: "Average rating" },
-  { value: "97.4%", label: "Projects delivered" },
-  { value: "52", label: "Countries" },
-];
 
 const SHELF = [
   { seed: "shelf-identity", skill: "Brand Identity", title: "Identity system for a Nordic bakery", rating: 4.9, tone: "tag-branding", mark: "N" },
@@ -35,26 +28,8 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden pb-24 pt-32 md:pt-40">
-      {/* Warm light pooling from the top-left. No blur filter on a
-          scrolling container — these are painted gradients, so they cost
-          nothing per frame. Painted before the content, not behind it via
-          a negative z-index. */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 paper-tooth opacity-70" />
-        <div
-          className="absolute -left-[20%] -top-[30%] h-[70vh] w-[70vh] rounded-full opacity-[0.55]"
-          style={{
-            background:
-              "radial-gradient(circle, color-mix(in oklab, var(--clay) 22%, transparent) 0%, transparent 62%)",
-          }}
-        />
-        <div
-          className="absolute -right-[15%] top-[10%] h-[60vh] w-[60vh] rounded-full opacity-60"
-          style={{
-            background:
-              "radial-gradient(circle, color-mix(in oklab, var(--sage) 24%, transparent) 0%, transparent 62%)",
-          }}
-        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
@@ -111,7 +86,7 @@ export default function Hero() {
 
             <Reveal delay={360}>
               <div className="mt-14 flex items-center gap-3 text-[13px] text-muted-foreground">
-                <ShieldCheck className="h-4 w-4 text-sage" />
+                <ShieldCheck className="h-4 w-4 text-tone-cool" />
                 Every seller is identity-verified and skill-certified by
                 Glypha Learn.
               </div>
@@ -156,8 +131,12 @@ export default function Hero() {
                           {item.title}
                         </p>
                         <div className="mt-3 flex items-center gap-3 text-[12px] text-muted-foreground">
-                          <span>
-                            ★ {item.rating.toFixed(1)} ({reviewsFor(item.seed)})
+                          <span className="inline-flex items-center gap-1.5">
+                            <Star className="h-3.5 w-3.5" weight="fill" aria-hidden />
+                            {item.rating.toFixed(1)}
+                            <span className="text-muted-foreground/70">
+                              ({reviewsFor(item.seed)})
+                            </span>
                           </span>
                           <span className="h-3 w-px bg-border" />
                           <span>from ${fromPrice(item.seed, item.rating)}</span>
@@ -214,23 +193,6 @@ export default function Hero() {
               </button>
             ))}
           </div>
-        </Reveal>
-
-        {/* ── Stats: a ruled editorial row, not a bootstrap grid ─── */}
-        <Reveal delay={120} className="mt-20">
-          <dl className="grid grid-cols-2 gap-y-8 border-t border-border pt-8 md:grid-cols-4 md:gap-y-0">
-            {STATS.map((stat, index) => (
-              <div
-                key={stat.label}
-                className={`md:px-8 ${index === 0 ? "md:pl-0" : ""} ${
-                  index > 0 ? "md:border-l md:border-border" : ""
-                }`}
-              >
-                <dt className="font-serif text-4xl font-light md:text-5xl">{stat.value}</dt>
-                <dd className="mt-2 text-[13px] text-muted-foreground">{stat.label}</dd>
-              </div>
-            ))}
-          </dl>
         </Reveal>
       </div>
     </section>

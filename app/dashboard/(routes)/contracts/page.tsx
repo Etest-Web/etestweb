@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { FileText, CheckCircle, AlertTriangle, Flag, Star, DollarSign, User } from "lucide-react";
+import { FileText, CheckCircle, Warning, Flag, Star, CurrencyDollar, User } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 import { getErrorMessage } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
@@ -128,7 +128,7 @@ export default function ContractsPage() {
         </div>
         <div className="bg-[#1a1610] border border-white/10 rounded-xl p-6">
           <div className="flex items-center gap-3 mb-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <Warning className="w-5 h-5 text-red-400" />
             <span className="text-white/60">Disputed</span>
           </div>
           <p className="text-3xl font-bold text-white">{disputedContracts.length}</p>
@@ -179,7 +179,7 @@ export default function ContractsPage() {
       {disputedContracts.length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <Warning className="w-5 h-5 text-red-400" />
             Disputed Contracts
           </h2>
           <div className="space-y-4">
@@ -316,7 +316,7 @@ function ContractCard({
               {contract.counterpartyName} ({contract.counterpartyRole})
             </span>
             <span className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4" />
+              <CurrencyDollar className="w-4 h-4" />
               ${contract.totalPrice.toLocaleString()}
             </span>
           </div>

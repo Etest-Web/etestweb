@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Upload, X } from "lucide-react";
+import { UploadSimple, X } from "@phosphor-icons/react/dist/ssr";
 import { getErrorMessage } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -52,14 +52,14 @@ export function ImageUpload({
         });
 
         if (!response.ok) {
-          throw new Error("Upload failed");
+          throw new Error("UploadSimple failed");
         }
 
         const { storageId } = await response.json();
 
         onUploadComplete(storageId, storageId);
       } catch (err) {
-        console.error("Upload error:", err);
+        console.error("UploadSimple error:", err);
         setError(getErrorMessage(err, "Failed to upload image"));
       } finally {
         setUploading(false);
@@ -116,7 +116,7 @@ export function ImageUpload({
         ) : (
           <div className="flex flex-col items-center gap-3">
             <div className="rounded-full bg-primary/10 p-4">
-              <Upload className="h-8 w-8 text-primary" />
+              <UploadSimple className="h-8 w-8 text-primary" />
             </div>
             <div className="text-center">
               <p className="font-medium text-foreground">
@@ -174,7 +174,7 @@ export function ImageUploadModal({
         headers: { "Content-Type": file.type },
       });
 
-      if (!response.ok) throw new Error("Upload failed");
+      if (!response.ok) throw new Error("UploadSimple failed");
 
       const { storageId } = await response.json();
       setUploadedStorageId(storageId);
@@ -236,7 +236,7 @@ export function ImageUploadModal({
               ) : (
                 <div className="flex flex-col items-center gap-3">
                   <div className="rounded-full bg-primary/10 p-4">
-                    <Upload className="h-8 w-8 text-primary" />
+                    <UploadSimple className="h-8 w-8 text-primary" />
                   </div>
                   <div className="text-center">
                     <p className="font-medium text-foreground">Click to upload image</p>
