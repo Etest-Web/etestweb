@@ -210,6 +210,202 @@
   );
 }
 
+/* ================================
+   Dribbble × Glypha Design System
+=============================== */
+
+/* Category Gradient Backgrounds */
+.gradient-web { background: linear-gradient(135deg, oklch(65% 0.18 260) 0%, oklch(55% 0.22 290) 100%); }
+.gradient-illustration { background: linear-gradient(135deg, oklch(70% 0.18 35) 0%, oklch(60% 0.22 330) 100%); }
+.gradient-motion { background: linear-gradient(135deg, oklch(60% 0.16 150) 0%, oklch(50% 0.20 180) 100%); }
+.gradient-branding { background: linear-gradient(135deg, oklch(58% 0.20 320) 0%, oklch(50% 0.24 350) 100%); }
+.gradient-uiux { background: linear-gradient(135deg, oklch(62% 0.16 200) 0%, oklch(52% 0.20 270) 100%); }
+.gradient-video { background: linear-gradient(135deg, oklch(58% 0.20 15) 0%, oklch(50% 0.22 35) 100%); }
+.gradient-logo { background: linear-gradient(135deg, oklch(58% 0.20 320) 0%, oklch(50% 0.24 350) 100%); }
+.gradient-packaging { background: linear-gradient(135deg, oklch(55% 0.18 45) 0%, oklch(48% 0.20 30) 100%); }
+
+/* Mesh gradient for hero backgrounds */
+.mesh-gradient {
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 20%, oklch(58% 0.20 320 / 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 30%, oklch(65% 0.18 260 / 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 40% 80%, oklch(60% 0.16 150 / 0.10) 0%, transparent 50%),
+    var(--background);
+}
+
+/* Card System */
+.shot-card {
+  @apply relative overflow-hidden rounded-2xl bg-card border border-border transition-all duration-300;
+  box-shadow: 0 4px 20px -4px oklch(0 0 0 / 0.15);
+}
+.shot-card:hover {
+  @apply -translate-y-1;
+  box-shadow: 0 20px 40px -12px oklch(var(--primary) / 0.25), 0 8px 24px -8px oklch(0 0 0 / 0.2);
+}
+.shot-card__image {
+  @apply w-full h-[70%] object-cover transition-transform duration-500 ease-out;
+}
+.shot-card:hover .shot-card__image {
+  @apply scale-105;
+}
+.shot-card__overlay {
+  @apply absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 flex items-end p-4;
+}
+.shot-card:hover .shot-card__overlay {
+  @apply opacity-100;
+}
+.shot-card__info {
+  @apply w-full text-white transform translate-y-4 transition-transform duration-300;
+}
+.shot-card:hover .shot-card__info {
+  @apply translate-y-0;
+}
+.shot-card__category {
+  @apply inline-block px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-full mb-2 backdrop-blur-sm bg-white/10 border border-white/20;
+}
+.shot-card__name {
+  @apply font-bold text-lg mb-1;
+}
+.shot-card__meta {
+  @apply flex items-center gap-2 text-sm text-white/80;
+}
+.shot-card__rating {
+  @apply flex items-center gap-1;
+}
+.shot-card__verified {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-semibold uppercase tracking-wider border border-emerald-500/30;
+}
+
+/* Category Tag Colors */
+.tag-web { @apply bg-blue-500/20 text-blue-400 border-blue-500/30; }
+.tag-illustration { @apply bg-orange-500/20 text-orange-400 border-orange-500/30; }
+.tag-motion { @apply bg-emerald-500/20 text-emerald-400 border-emerald-500/30; }
+.tag-branding { @apply bg-purple-500/20 text-purple-400 border-purple-500/30; }
+.tag-uiux { @apply bg-cyan-500/20 text-cyan-400 border-cyan-500/30; }
+.tag-video { @apply bg-red-500/20 text-red-400 border-red-500/30; }
+.tag-logo { @apply bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/30; }
+.tag-packaging { @apply bg-amber-500/20 text-amber-400 border-amber-500/30; }
+
+/* Category Tab Buttons */
+.category-tab {
+  @apply px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border;
+}
+.category-tab--active {
+  @apply bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20;
+}
+.category-tab--inactive {
+  @apply bg-muted text-muted-foreground border-border hover:border-primary/30 hover:text-primary hover:bg-primary/5;
+}
+
+/* Search Input */
+.search-input {
+  @apply w-full pl-10 pr-4 py-3 bg-background/50 backdrop-blur-sm border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-transparent text-base;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleOnHover {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px -5px oklch(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 40px -5px oklch(var(--primary) / 0.5); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, oklch(100% 0 0 / 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Stagger delays */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* Masonry Grid */
+.masonry-grid {
+  @apply grid gap-6;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+@media (min-width: 1280px) {
+  .masonry-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .masonry-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 1023px) and (min-width: 768px) {
+  .masonry-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 767px) {
+  .masonry-grid { grid-template-columns: 1fr; }
+}
+
+/* Verified Badge */
+.verified-badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/20 backdrop-blur-sm;
+}
+.verified-badge__icon { @apply w-3.5 h-3.5; }
+
+/* Certificate Badge */
+.certificate-badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 text-primary border border-primary/20 text-sm font-semibold;
+}
+.certificate-badge__icon { @apply w-4 h-4; }
+
+/* Skill Level Badges */
+.skill-level {
+  @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider;
+}
+.skill-level--beginner { @apply bg-blue-500/20 text-blue-400 border border-blue-500/30; }
+.skill-level--intermediate { @apply bg-amber-500/20 text-amber-400 border border-amber-500/30; }
+.skill-level--advanced { @apply bg-purple-500/20 text-purple-400 border border-purple-500/30; }
+.skill-level--expert { @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30; }
+
+/* Gradient Text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-400;
+}
+.gradient-text--brand {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-amber-400;
+}
+
+/* Button Variants */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 transition-all duration-200;
+}
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-secondary text-secondary-foreground font-bold text-base hover:bg-secondary/80 transition-all duration-200 border border-border;
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200;
+}
+
+/* Skeleton Shimmer */
+.skeleton-shimmer {
+  @apply relative overflow-hidden bg-muted;
+  background: linear-gradient(90deg, var(--muted) 25%, var(--muted-foreground / 0.1) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
 .narrative-line {
   position: absolute;
   left: 50%;

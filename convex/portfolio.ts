@@ -112,6 +112,29 @@ export const getDesignerPortfolio = query({
 });
 
 /**
+ * List recent portfolio items across all designers
+ */
+export const listPortfolioItems = query({
+  args: { limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const limit = args?.limit ?? 20
+    const items = await ctx.db
+      .query("portfolioItems")
+      .take(limit);
+
+    // Resolve image URLs
+    const itemsWithUrls = await Promise.all(
+      items.map(async (item) => ({
+        ...item,
+        imageUrl: await resolveImageUrl(ctx, item.imageUrl),
+      }))
+    );
+
+    return itemsWithUrls;
+  },
+});
+
+/**
  * Get current user's portfolio items (with resolved image URLs)
  */
 export const getMyPortfolio = query({

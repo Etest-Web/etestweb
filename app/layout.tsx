@@ -8,6 +8,7 @@ import {
   Montserrat,
   Outfit,
   Bebas_Neue,
+  Poppins,
 } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "./ConditionalLayout";
@@ -50,6 +51,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const poppins = Poppins({
+  variable: "--font-poppins",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Glypha - Premium Design Freelancing Platform",
   description: "Bridge the gap between physical branding and digital innovations",
@@ -66,7 +73,7 @@ export default function RootLayout({
           paint; the class is written before React hydrates. */}
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${montser.variable} ${roboto.variable} ${geistMono.variable} ${outfit.variable} ${bebasNeue.variable} font-outfit antialiased`}
+          className={`${geistSans.variable} ${montser.variable} ${roboto.variable} ${geistMono.variable} ${outfit.variable} ${bebasNeue.variable} ${poppins.variable} font-outfit antialiased`}
         >
           <ConvexClientProvider>
             <ThemeProvider
