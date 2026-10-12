@@ -16,9 +16,9 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
  */
 
 const PROOF = [
-  { value: "1,240", label: "Certified designers" },
-  { value: "4.9", label: "Average rating" },
-  { value: "98%", label: "Delivered on time" },
+  { value: "1,247", label: "Certified designers" },
+  { value: "4.8", label: "Average rating" },
+  { value: "97.4%", label: "Delivered on time" },
 ];
 
 export function AuthShell({

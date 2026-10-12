@@ -202,7 +202,7 @@ export default function BrowseJobsPage() {
               <Briefcase className="w-16 h-16 text-white/20 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">No Open Jobs Right Now</h3>
               <p className="text-white/60">
-                New projects are posted regularly — check back soon
+                New projects are posted regularly, check back soon
               </p>
             </div>
           )

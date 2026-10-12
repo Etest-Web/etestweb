@@ -44,7 +44,7 @@ export default function Footer() {
           <div className="lg:col-span-5">
             <Logo className="w-40" />
             <p className="mt-8 max-w-sm text-[17px] leading-relaxed text-muted-foreground">
-              We are the architects of digital narrative — a curated bench
+              We are the architects of digital narrative. A curated bench
               where brands and certified designers meet on terms both can
               read.
             </p>

@@ -29,7 +29,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Glypha — Premium Design Freelancing Platform",
+  title: "Glypha, Premium Design Freelancing Platform",
   description:
     "A curated marketplace of certified designers. Browse the work, pick a defined tier, pay on delivery.",
 };

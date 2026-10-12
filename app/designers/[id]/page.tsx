@@ -281,9 +281,8 @@ export default function DesignerDetailPage() {
                 )}
 
                 {designer.isOnline && (
-                  <div className="ml-auto sm:ml-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                    Online Now
+                  <div className="ml-auto sm:ml-0 flex items-center px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                    Online now
                   </div>
                 )}
               </div>

@@ -120,7 +120,7 @@ export function DesignerCard({
     <Link
       href={`/designers/${designer._id}`}
       className={`group block ${className}`}
-      aria-label={`${designer.name} — ${heading}, from $${tiers[0].price}`}
+      aria-label={`${designer.name}: ${heading}, from $${tiers[0].price}`}
     >
       <article className="shell shell--lift h-full">
         <div className="shell__core flex h-full flex-col overflow-hidden">
@@ -129,7 +129,7 @@ export function DesignerCard({
             {hasCover ? (
               <Image
                 src={cover as string}
-                alt={`${designer.name} — ${heading}`}
+                alt={`${designer.name}: ${heading}`}
                 fill
                 onError={() => setCoverFailed(true)}
                 className="shot-card__image"
@@ -189,7 +189,7 @@ export function DesignerCard({
                   <p className="truncate text-[13px] font-medium">{designer.name}</p>
                   <p className="flex items-center gap-1 truncate text-[11px] text-muted-foreground">
                     <MapPin className="h-3 w-3 shrink-0" />
-                    {designer.location?.country ?? "—"}
+                    {designer.location?.country ?? "Remote"}
                   </p>
                 </div>
               </div>

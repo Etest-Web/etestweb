@@ -8,10 +8,10 @@ import { Reveal } from "@/components/ui/reveal";
 import { CATEGORIES, fromPrice, reviewsFor } from "@/lib/gigs";
 
 const STATS = [
-  { value: "1,240", label: "Certified designers" },
-  { value: "4.9", label: "Average rating" },
-  { value: "98%", label: "Projects delivered" },
-  { value: "50", label: "Countries" },
+  { value: "1,247", label: "Certified designers" },
+  { value: "4.8", label: "Average rating" },
+  { value: "97.4%", label: "Projects delivered" },
+  { value: "52", label: "Countries" },
 ];
 
 const SHELF = [
@@ -79,7 +79,7 @@ export default function Hero() {
               <p className="mt-8 max-w-lg text-[17px] leading-relaxed text-muted-foreground">
                 Dribbble showed you the taste. Glypha gives you the paperwork.
                 Browse a curated bench of certified designers, then buy a
-                defined tier — price, deadline and revisions agreed before
+                defined tier. Price, deadline and revisions agreed before
                 a pixel moves.
               </p>
             </Reveal>

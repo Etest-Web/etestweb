@@ -178,7 +178,7 @@ export default function SignUpPage() {
               }}
               className="text-center text-[12px] text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
             >
-              {resent ? "Sent again — check your inbox" : "Send the code again"}
+              {resent ? "Sent again, check your inbox" : "Send the code again"}
             </button>
 
             <button

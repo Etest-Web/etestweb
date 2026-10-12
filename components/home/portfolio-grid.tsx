@@ -26,11 +26,7 @@ export default function PortfolioGrid() {
         <Reveal>
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              <span className="eyebrow">
-                <Sparkle className="h-3 w-3" />
-                The wall
-              </span>
-              <h2 className="mt-6 font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-light leading-[1.02] tracking-[-0.03em] text-balance">
+              <h2 className="font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-light leading-[1.02] tracking-[-0.03em] text-balance">
                 Shots people are hiring from.
               </h2>
               <p className="mt-6 text-[17px] leading-relaxed text-muted-foreground">
@@ -80,7 +76,7 @@ export default function PortfolioGrid() {
               {items.map((item: Doc<"portfolioItems">, index: number) => {
                 const seller = sellers.get(item.designerId);
                 const title = SKILL_LABELS[item.category]
-                  ? `${SKILL_LABELS[item.category]} — case study`
+                  ? `${SKILL_LABELS[item.category]} case study`
                   : item.category;
 
                 return (

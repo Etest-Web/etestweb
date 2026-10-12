@@ -26,13 +26,7 @@ export default function CTA() {
 
       <div className="relative mx-auto max-w-5xl px-5 text-center md:px-8">
         <Reveal>
-          <span className="eyebrow !bg-white/10 !text-white/70 !shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)]">
-            Open for briefs
-          </span>
-        </Reveal>
-
-        <Reveal delay={90}>
-          <h2 className="mt-8 font-serif text-[clamp(2.75rem,7vw,5.25rem)] font-light leading-[0.98] tracking-[-0.03em] text-white text-balance">
+          <h2 className="font-serif text-[clamp(2.75rem,7vw,5.25rem)] font-light leading-[0.98] tracking-[-0.03em] text-white text-balance">
             Your story is waiting to be <span className="italic text-gold">drawn</span>.
           </h2>
         </Reveal>

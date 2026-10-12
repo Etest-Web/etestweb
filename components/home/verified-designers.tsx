@@ -5,7 +5,7 @@ import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 import { DesignerCard, DesignerCardSkeleton } from "@/components/ui/designer-card";
-import { ArrowUpRight, Award, ShieldCheck } from "@/components/ui/icons";
+import { ArrowUpRight, Award } from "@/components/ui/icons";
 import { Reveal } from "@/components/ui/reveal";
 import { levelFromRating } from "@/lib/gigs";
 
@@ -26,17 +26,13 @@ export default function VerifiedDesigners() {
         <Reveal>
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              <span className="eyebrow">
-                <ShieldCheck className="h-3 w-3" />
-                The certified bench
-              </span>
-              <h2 className="mt-6 font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-light leading-[1.02] tracking-[-0.03em] text-balance">
+              <h2 className="font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-light leading-[1.02] tracking-[-0.03em] text-balance">
                 A shortlist, not a directory.
               </h2>
               <p className="mt-6 text-[17px] leading-relaxed text-muted-foreground">
                 Nobody lists here until Glypha Learn has verified the work and
                 the person behind it. Levels are earned from delivered
-                projects — not bought.
+                projects, not bought.
               </p>
             </div>
 
@@ -65,7 +61,7 @@ export default function VerifiedDesigners() {
                 <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
                   Every designer in this room has cleared Glypha Learn’s
                   portfolio review. The certificate badge on a card is a real
-                  assessment with a date on it — not a self-reported claim.
+                  assessment with a date on it, not a self-reported claim.
                 </p>
               </div>
             </div>

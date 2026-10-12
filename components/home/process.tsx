@@ -2,27 +2,23 @@
 
 import Link from "next/link";
 
-import { ArrowUpRight, Check, Clock, Layers, Quote, Search } from "@/components/ui/icons";
+import { ArrowUpRight, Check, Clock, Quote, Search } from "@/components/ui/icons";
 import { Reveal } from "@/components/ui/reveal";
 
 const STEPS = [
   {
-    n: "01",
     title: "Browse the wall",
     body: "Filter by craft, budget, delivery window and seller level. Every card carries a real starting price.",
   },
   {
-    n: "02",
     title: "Pick your tier",
-    body: "Basic, Standard or Premium — each with its own scope, revision count and delivery date, written down.",
+    body: "Basic, Standard or Premium. Each tier carries its own scope, revision count and delivery date, written down.",
   },
   {
-    n: "03",
     title: "Work in the open",
     body: "Proposals, contracts and milestones live in your dashboard. Scope creep needs a signature.",
   },
   {
-    n: "04",
     title: "Release on delivery",
     body: "Funds move when the files land and you accept them. Escrow is the default, not an upsell.",
   },
@@ -46,11 +42,7 @@ export default function Process() {
         <Reveal>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
-              <span className="eyebrow">
-                <Layers className="h-3 w-3" />
-                How it works
-              </span>
-              <h2 className="mt-6 font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-light leading-[1.02] tracking-[-0.03em] text-balance">
+              <h2 className="font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-light leading-[1.02] tracking-[-0.03em] text-balance">
                 Four steps. Zero ambiguity.
               </h2>
               <p className="mt-6 max-w-md text-[17px] leading-relaxed text-muted-foreground">
@@ -75,39 +67,30 @@ export default function Process() {
             <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
               {STEPS.map((step, index) => (
                 <Reveal
-                  key={step.n}
+                  key={step.title}
                   delay={index * 90}
                   className={index === 0 || index === 3 ? "sm:col-span-2" : ""}
                 >
                   <article className="shell shell--lift h-full">
                     <div
-                      className={`shell__core flex h-full p-7 md:p-10 ${
-                        index === 3
-                          ? "flex-col gap-6 sm:flex-row sm:items-start sm:gap-12"
-                          : "flex-col"
+                      className={`shell__core h-full p-7 md:p-10 ${
+                        index === 0 || index === 3
+                          ? "grid content-center gap-5 md:grid-cols-2 md:items-center md:gap-12"
+                          : "flex flex-col justify-center"
                       }`}
                     >
-                      <span
-                        className={`shrink-0 font-serif font-light leading-none ${
-                          index === 0
-                            ? "text-7xl text-brand-ink md:text-8xl"
-                            : "text-6xl text-muted-foreground"
+                      <h3
+                        className={`font-serif leading-tight ${
+                          index === 0 || index === 3
+                            ? "text-3xl md:text-4xl"
+                            : "text-2xl"
                         }`}
                       >
-                        {step.n}
-                      </span>
-                      <div className="min-w-0">
-                        <h3
-                          className={`font-serif leading-tight ${
-                            index === 0 ? "text-3xl md:text-4xl" : "text-2xl"
-                          }`}
-                        >
-                          {step.title}
-                        </h3>
-                        <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
-                          {step.body}
-                        </p>
-                      </div>
+                        {step.title}
+                      </h3>
+                      <p className="max-w-sm text-[15px] leading-relaxed text-muted-foreground">
+                        {step.body}
+                      </p>
                     </div>
                   </article>
                 </Reveal>

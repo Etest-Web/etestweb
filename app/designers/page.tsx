@@ -387,7 +387,7 @@ function Marketplace() {
             </h1>
             <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-muted-foreground">
               Filter by craft, budget, deadline and level. What you see is what
-              you buy — no “DM for rates”.
+              you buy, no “DM for rates”.
             </p>
           </Reveal>
 
@@ -589,7 +589,7 @@ function Marketplace() {
                     <p className="mt-5 font-serif text-2xl">No one matches that brief</p>
                     <p className="mx-auto mt-3 max-w-md text-[15px] text-muted-foreground">
                       Widen the budget, stretch the deadline, or drop the level
-                      filter — the bench is smaller than the wall.
+                      filter. The bench is smaller than the wall.
                     </p>
                     <button type="button" onClick={clearAll} className="btn-pill group mt-8">
                       Reset everything
