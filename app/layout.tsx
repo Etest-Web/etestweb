@@ -44,6 +44,9 @@ export default function RootLayout({
       {/* suppressHydrationWarning: next-themes sets .dark on <html> before
           paint; the class is written before React hydrates. */}
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <meta name="google-site-verification" content="wFwCJGycYcPHfP8xZ3zVFS9bCobqpYTcgpJH4tS2Q_s" />
+        </head>
         <body
           className={`${fraunces.variable} ${jakarta.variable} ${geistMono.variable} font-sans antialiased`}
         >
