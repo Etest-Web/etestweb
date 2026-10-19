@@ -11,7 +11,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 const navLinks = [
   { name: "Find Talent", href: "/designers" },
   { name: "How It Works", href: "#process" },
-  { name: "Glypha Learn", href: "#" },
+  { name: "Glypha Learn", href: "https://learn.glypha.com.ng" },
 ];
 
 export default function NavMenu() {
