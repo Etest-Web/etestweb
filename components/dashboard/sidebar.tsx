@@ -73,7 +73,7 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
                 // eslint-disable-next-line @next/next/no-img-element -- external Clerk CDN domain
                 <img
                   src={clerkUser.imageUrl}
-                  alt=""
+                  alt={clerkUser.fullName ?? clerkUser.username ?? "Account"}
                   className="h-10 w-10 rounded-full object-cover"
                 />
               ) : (

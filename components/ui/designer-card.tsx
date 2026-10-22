@@ -76,7 +76,7 @@ function Avatar({
   return (
     <Image
       src={src}
-      alt=""
+      alt={name}
       width={64}
       height={64}
       onError={() => setFailed(true)}

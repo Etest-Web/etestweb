@@ -326,7 +326,7 @@ export default function DesignerDetailPage() {
                               : "border-transparent opacity-60 hover:opacity-100"
                           }`}
                         >
-                          <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                          <img src={item.imageUrl} alt={`${designer?.name ?? "Designer"} portfolio item ${index + 1}`} className="w-full h-full object-cover" />
                         </button>
                       ))}
                     </div>
@@ -662,5 +662,5 @@ export default function DesignerDetailPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

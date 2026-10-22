@@ -1,0 +1,42 @@
+# Glypha - AI Crawler Discovery File
+# This file helps AI crawlers (Perplexity, ChatGPT, Gemini, etc.) understand our site
+
+## Site
+- Name: Glypha
+- Type: Premium design freelancing marketplace
+- URL: http://localhost:3000
+- Description: A curated marketplace of certified designers. Browse the work, pick a defined tier, pay on delivery.
+
+## Capabilities
+- Browse certified designers by craft, budget, deadline, and seller level
+- View designer portfolios, ratings, and pricing tiers
+- Post a job brief and receive scoped proposals
+- Manage contracts, messages, and project milestones
+- Pay on delivery with escrow protection
+
+## Key Pages
+- / - Homepage
+- /designers - Designer marketplace
+- /designers/[id] - Designer profile page
+- /dashboard - User dashboard (authenticated)
+- /dashboard/jobs - Job postings
+- /dashboard/contracts - Active contracts
+- /dashboard/messages - Messaging
+- /dashboard/proposals - Proposals
+- /dashboard/profile - Profile management
+- /dashboard/notifications - Notifications
+- /dashboard/settings - Account settings
+
+## Features
+- Certified designer verification
+- Tiered pricing (Basic, Standard, Premium)
+- Escrow payment protection
+- Real-time messaging
+- Contract management
+- Review and rating system
+- Portfolio management
+
+## Contact
+- Contact point: customer service
+- Social: dribbble.com, linkedin.com, twitter.com
+- Founded: 2024

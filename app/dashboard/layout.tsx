@@ -4,6 +4,13 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
+  description: 'Manage your projects, contracts, and account settings on Glypha.',
+  robots: 'noindex, nofollow',
+  openGraph: {
+    title: 'Dashboard | Glypha',
+    description: 'Manage your projects, contracts, and account settings on Glypha.',
+    images: ['/Logo.svg'],
+  },
 };
 
 // Dashboard pages require auth + live Convex data — never prerender at build time.
